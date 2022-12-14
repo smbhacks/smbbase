@@ -1,0 +1,9 @@
+*.cdl
+*.lst
+*.mlb
+*.nes
+levels/output.asm
+famitone/music.txt
+famitone/music.asm
+famitone/sfx.asm
+famitone/sfx.nsf
