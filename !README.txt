@@ -1,2 +1,7 @@
-If you want to disable Famitone, and use the original SMB1 music code instead, then..
-Open up SMBDIS_asm6.asm, scroll down a bit to the settings and undefine FamitoneMusic (put a ; before it)
+If you want to use Famitone instead of the original SMB music engine, open up main.asm,
+put a semicolon (;) before CustomMusicDriver EQU OriginalSMBMusic
+and remove the semicolon before CustomMusicDriver EQU Famitone5Music
+
+Before you can start building your rom, you need to make an output.asm in the levels folder.
+If you want to use the original levels, then rename vanilla.asm to output.asm
+If you want to use levels from another ROM, then read the readme in the levels folder.
