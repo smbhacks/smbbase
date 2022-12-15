@@ -21,10 +21,8 @@ JOYPAD_PORT1          = $4016
 JOYPAD_PORT2          = $4017
 
 ; Custom defines
-OriginalSMBMusic EQU 0
-FamistudioMusic EQU 1
-Famitone5Music EQU 2
-
+OriginalSMB = 0
+Famitone = 1
 
 ; GAME SPECIFIC DEFINES
 

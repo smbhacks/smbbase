@@ -23,6 +23,45 @@ MAX_NOTE = 88
 
 .include "famitone/settings.asm"
 
+macro WriteApuSQ1 arg1
+pha
+lda Square1SoundBuffer
+beq +
+sta arg1+$2100
+pla
+jmp ++ ;unc.
++
+pla
+sta arg1
+++
+endm
+
+macro WriteApuSQ2 arg1
+pha
+lda Square2SoundBuffer
+beq +
+sta arg1+$2100
+pla
+jmp ++ ;unc.
++
+pla
+sta arg1
+++
+endm
+
+macro WriteApuNOI arg1
+pha
+lda NoiseSoundBuffer
+beq +
+sta arg1+$2100
+pla
+jmp ++ ;unc.
++
+pla
+sta arg1
+++
+endm
+
 ;FT_THREAD				;undefine if you are calling sound effects from the same thread as the sound update call
 ;FT_PAL_SUPPORT			;undefine to exclude PAL support
 FT_NTSC_SUPPORT			;undefine to exclude NTSC support
@@ -178,27 +217,33 @@ SIZE_FT_SFX = FT_SFX_STRUCT_SIZE*FT_SFX_STREAMS
 
 ;aliases for the APU registers
 
-APU_PL1_VOL		= $4000
-APU_PL1_SWEEP	= $4001
-APU_PL1_LO		= $4002
-APU_PL1_HI		= $4003
-APU_PL2_VOL		= $4004
-APU_PL2_SWEEP	= $4005
-APU_PL2_LO		= $4006
-APU_PL2_HI		= $4007
+APU_PL1_VOL		= $4000	;ok
+APU_PL1_SWEEP	= $4001	;Set this to 08
+APU_PL1_LO		= $4002	;ok
+APU_PL1_HI		= $4003 ;ok
+APU_PL2_VOL		= $4004 ;ok
+APU_PL2_SWEEP	= $4005 ;Set this to 08
+APU_PL2_LO		= $4006 ;ok
+APU_PL2_HI		= $4007 ;ok
 APU_TRI_LINEAR	= $4008
 APU_TRI_LO		= $400a
 APU_TRI_HI		= $400b
-APU_NOISE_VOL	= $400c
-APU_NOISE_LO	= $400e
-APU_NOISE_HI	= $400f
+APU_NOISE_VOL	= $400c ;ok
+APU_NOISE_LO	= $400e ;ok
+APU_NOISE_HI	= $400f ;set to 00
 APU_DMC_FREQ	= $4010
 APU_DMC_RAW		= $4011
 APU_DMC_START	= $4012
 APU_DMC_LEN		= $4013
 APU_SND_CHN		= $4015
 
+if SFXEngine != Famitone
 
+UpdateSQ1 = $6108
+UpdateSQ2 = $6109
+UpdateNOI = $610a
+
+endif
 ;aliases for the APU registers in the output buffer
 
 ;	.ifndef FT_SFX_ENABLE				;if sound effects are disabled, write to the APU directly
@@ -272,7 +317,7 @@ zero_flag3 = FT_EXTRA+30 ;31 new variables
 ; in: A   0 for PAL, not 0 for NTSC
 ;     X,Y pointer to music data
 ;------------------------------------------------------------------------------
-   
+ 
 FamiToneInit:
 
 	stx FT_SONG_LIST_L		;store music data pointer for further use
@@ -320,19 +365,31 @@ FamiToneInit:
 	sta APU_TRI_LINEAR
 	lda #$00				;load noise length
 	sta APU_NOISE_HI
+if SFXEngine != Famitone
+	sta APU_NOISE_HI+$2100
+endif
 ;	lda #0				;change to 63 for medium, change to 127 for quiet
 ;						;also, change to 63 if using DPCM effects
 ;	sta APU_DMC_RAW		; , for louder Triangle Channel
 ; removed, not needed, should be zero on reset						
 
 	lda #$30				;volumes to 0
+if SFXEngine != Famitone
+	WriteApuSQ1 APU_PL1_VOL
+	WriteApuSQ2 APU_PL2_VOL
+	WriteApuNOI APU_NOISE_VOL
+else
 	sta APU_PL1_VOL
 	sta APU_PL2_VOL
 	sta APU_NOISE_VOL
+endif
 	lda #$08				;no sweep
 	sta APU_PL1_SWEEP
 	sta APU_PL2_SWEEP
-
+if SFXEngine != Famitone
+	sta APU_PL1_SWEEP+$2100
+	sta APU_PL2_SWEEP+$2100
+endif
 	;jmp FamiToneMusicStop
 
 
@@ -931,25 +988,49 @@ ch4cut:
 	;send data from the output buffer to the APU
 
 	lda FT_OUT_BUF		;pulse 1 volume
+if SFXEngine != Famitone
+	WriteApuSQ1 APU_PL1_VOL
+else
 	sta APU_PL1_VOL
+endif
 	lda FT_OUT_BUF+1	;pulse 1 period LSB
+if SFXEngine != Famitone
+	WriteApuSQ1 APU_PL1_LO
+else
 	sta APU_PL1_LO
+endif
 	lda FT_OUT_BUF+2	;pulse 1 period MSB, only applied when changed
 	cmp FT_PULSE1_PREV
 	beq @no_pulse1_upd
 	sta FT_PULSE1_PREV
+if SFXEngine != Famitone
+	WriteApuSQ1 APU_PL1_HI
+else
 	sta APU_PL1_HI
+endif
 @no_pulse1_upd:
 
 	lda FT_OUT_BUF+3	;pulse 2 volume
+if SFXEngine != Famitone
+	WriteApuSQ2 APU_PL2_VOL
+else
 	sta APU_PL2_VOL
+endif
 	lda FT_OUT_BUF+4	;pulse 2 period LSB
+if SFXEngine != Famitone
+	WriteApuSQ2 APU_PL2_LO
+else
 	sta APU_PL2_LO
+endif
 	lda FT_OUT_BUF+5	;pulse 2 period MSB, only applied when changed
 	cmp FT_PULSE2_PREV
 	beq @no_pulse2_upd
 	sta FT_PULSE2_PREV
+if SFXEngine != Famitone
+	WriteApuSQ2 APU_PL2_HI
+else
 	sta APU_PL2_HI
+endif
 @no_pulse2_upd:
 
 	lda FT_OUT_BUF+6	;triangle volume (plays or not)
@@ -959,11 +1040,17 @@ ch4cut:
 	lda FT_OUT_BUF+8	;triangle period MSB
 	sta APU_TRI_HI
 
+if SFXEngine != Famitone
+	lda FT_OUT_BUF+9	;noise volume
+	WriteApuNOI APU_NOISE_VOL
+	lda FT_OUT_BUF+10	;noise period
+	WriteApuNOI APU_NOISE_LO
+else
 	lda FT_OUT_BUF+9	;noise volume
 	sta APU_NOISE_VOL
 	lda FT_OUT_BUF+10	;noise period
 	sta APU_NOISE_LO
-
+endif
 ;	.endif
 
 	.ifdef FT_THREAD

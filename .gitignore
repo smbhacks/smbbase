@@ -2,8 +2,10 @@
 *.lst
 *.mlb
 *.nes
+*.dnes
 levels/output.asm
 famitone/music.txt
 famitone/music.asm
 famitone/sfx.asm
 famitone/sfx.nsf
+famitone/test.ftm

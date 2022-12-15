@@ -65,40 +65,53 @@ endm
 ;SETTINGS
 ;To enable/disable a setting, delete/add the semicolon (;) before the definition
 
-CustomMusicDriver EQU OriginalSMBMusic	;Use the original SMB audio engine
-; CustomMusicDriver EQU Famitone5Music		;Replace SMB's music driver with Famitone5 (compatible with famitracker)
-
+; CustomMusicDriver EQU OriginalSMB	;Use the original SMB audio engine
+ CustomMusicDriver EQU Famitone		;Replace SMB's music driver with Famitone (compatible with famitracker)
+ SFXEngine EQU OriginalSMB
+; SFXEngine EQU Famitone ;EXPERIMENTAL! Use the Famitone engine if you want this(!)
+							;If you are fine with the original sound effects, put a semicolon ; before SFXEngine
 ;-------------------------------------------------------------------------------------
 ;CODE
 
 .base $8000	;bank 0-1 mapped to $8000-$BFFF
 	.include "code/bank0.asm"
+	.include "code/enemycore.asm"
 .pad $c000
 
 
 .base $8000	;bank 2-3 mapped to $8000-$BFFF
 
-if CustomMusicDriver == Famitone5Music
+if CustomMusicDriver == OriginalSMB & SFXEngine == Famitone
+	ERROR "You can't have the SMB1 music engine with Famitone SFX engine."
+endif
+
+if CustomMusicDriver == Famitone
 	CustomAudioInit 		EQU FamiToneInit
 	CustomAudioSfxInit 		EQU FamiToneSfxInit
 	CustomAudioSfxPlay 		EQU FamiToneSfxPlay
 	CustomAudioMusicPlay 	EQU FamiToneMusicPlay
 	CustomAudioMusicPause 	EQU FamiToneMusicPause
 	CustomAudioUpdate 		EQU FamiToneUpdate
+	.include "famitone/famitone5_asm6.asm"
+	.include "famitone/music.asm"
+if SFXEngine == OriginalSMB
+	.include "code/smb1sfx.asm"
+	.include "code/freq.asm"
+else
 	SFX_CH0 EQU FT_SFX_CH0
 	SFX_CH1 EQU FT_SFX_CH1
 	SFX_CH2 EQU FT_SFX_CH2
 	SFX_CH3 EQU FT_SFX_CH3
-	.include "famitone/famitone5_asm6.asm"
-	.include "famitone/music.asm"
 	.include "famitone/sfx.asm"
+endif
+
 else
 	MusicHeaderOffsetData = MusicHeaderData - 1
 	MHD = MusicHeaderData
 	.include "code/smb1music.asm"
 endif
 
-if CustomMusicDriver != OriginalSMBMusic
+if CustomMusicDriver != OriginalSMB
 ; When the music driver is completes playback (and before it loops)
 ; we create a custom callback that will run to clear out the queue
 ; and set song playing to 0
