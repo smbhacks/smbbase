@@ -1,4 +1,4 @@
-If you want to use Famitone instead of the original SMB music engine, open up main.asm,
+If you want to use Famitone instead of the original SMB music engine, open up code/settings.asm,
 put a semicolon (;) before CustomMusicDriver EQU OriginalSMBMusic
 and remove the semicolon before CustomMusicDriver EQU Famitone5Music
 Read further instructions after this in the Famitone folder -> !README.txt

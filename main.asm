@@ -59,14 +59,8 @@ endm
 ;-------------------------------------------------------------------------------------
 ;DEFINES
 
-.include "defines.asm"
-
-;-------------------------------------------------------------------------------------
-;SETTINGS
-;To enable/disable a setting, delete/add the semicolon (;) before the definition
-
-CustomMusicDriver EQU OriginalSMBMusic	;Use the original SMB audio engine
-; CustomMusicDriver EQU Famitone5Music		;Replace SMB's music driver with Famitone5 (compatible with famitracker)
+.include "code/defines.asm"
+.include "code/settings.asm"
 
 ;-------------------------------------------------------------------------------------
 ;CODE
@@ -74,7 +68,6 @@ CustomMusicDriver EQU OriginalSMBMusic	;Use the original SMB audio engine
 .base $8000	;bank 0-1 mapped to $8000-$BFFF
 	.include "code/bank0.asm"
 .pad $c000
-
 
 .base $8000	;bank 2-3 mapped to $8000-$BFFF
 
@@ -126,6 +119,7 @@ endif
 
 .pad $c000 ;fixed bank at $c000-$ffff
 	.include "code/fixed.asm"
+	.include "code/text.asm"
 .pad $ff70
 	.include "code/startup.asm"
 .pad $fffa

@@ -2,6 +2,7 @@
 *.lst
 *.mlb
 *.nes
+*.deb
 levels/output.asm
 famitone/music.txt
 famitone/music.asm

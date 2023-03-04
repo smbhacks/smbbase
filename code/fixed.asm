@@ -474,60 +474,6 @@ SkipMainOper:  lda PPU_STATUS            ;reset flip-flop
                sta PPU_CTRL_REG1
 SkipMainOperPaused:
                rti                       ;we are done until the next frame!	   
-;-------------------------------------------------------------------------------------
-
-GameText:
-TopStatusBarLine:
-  .db $20, $43, $05, $16, $0a, $1b, $12, $18 ; "MARIO"
-  .db $20, $52, $0b, $20, $18, $1b, $15, $0d ; "WORLD  TIME"
-  .db $24, $24, $1d, $12, $16, $0e
-  .db $20, $68, $05, $00, $24, $24, $2e, $29 ; score trailing digit and coin display
-  .db $23, $c0, $7f, $aa ; attribute table data, clears name table 0 to palette 2
-  .db $23, $c2, $01, $ea ; attribute table data, used for coin icon in status bar
-  .db $ff ; end of data block
-
-WorldLivesDisplay:
-  .db $21, $cd, $07, $24, $24 ; cross with spaces used on
-  .db $29, $24, $24, $24, $24 ; lives display
-  .db $21, $4b, $09, $20, $18 ; "WORLD  - " used on lives display
-  .db $1b, $15, $0d, $24, $24, $28, $24
-  .db $22, $0c, $47, $24 ; possibly used to clear time up
-  .db $23, $dc, $01, $ba ; attribute table data for crown if more than 9 lives
-  .db $ff
-
-TwoPlayerTimeUp:
-  .db $21, $cd, $05, $16, $0a, $1b, $12, $18 ; "MARIO"
-OnePlayerTimeUp:
-  .db $22, $0c, $07, $1d, $12, $16, $0e, $24, $1e, $19 ; "TIME UP"
-  .db $ff
-
-TwoPlayerGameOver:
-  .db $21, $cd, $05, $16, $0a, $1b, $12, $18 ; "MARIO"
-OnePlayerGameOver:
-  .db $22, $0b, $09, $10, $0a, $16, $0e, $24 ; "GAME OVER"
-  .db $18, $1f, $0e, $1b
-  .db $ff
-
-WarpZoneWelcome:
-  .db $25, $84, $15, $20, $0e, $15, $0c, $18, $16 ; "WELCOME TO WARP ZONE!"
-  .db $0e, $24, $1d, $18, $24, $20, $0a, $1b, $19
-  .db $24, $23, $18, $17, $0e, $2b
-  .db $26, $25, $01, $24         ; placeholder for left pipe
-  .db $26, $2d, $01, $24         ; placeholder for middle pipe
-  .db $26, $35, $01, $24         ; placeholder for right pipe
-  .db $27, $d9, $46, $aa         ; attribute data
-  .db $27, $e1, $45, $aa
-  .db $ff
-
-GameTextOffsets:
-  .db TopStatusBarLine-GameText, TopStatusBarLine-GameText
-  .db WorldLivesDisplay-GameText, WorldLivesDisplay-GameText
-  .db TwoPlayerTimeUp-GameText, OnePlayerTimeUp-GameText
-  .db TwoPlayerGameOver-GameText, OnePlayerGameOver-GameText
-  .db WarpZoneWelcome-GameText, WarpZoneWelcome-GameText
-
-LuigiName:
-  .db $15, $1e, $12, $10, $12    ; "LUIGI", no address or length
 
 WriteGameText:
                pha                      ;save text number to stack
@@ -543,7 +489,7 @@ Chk2Players:   lda NumberOfPlayers      ;check for number of players
                iny                      ;otherwise increment offset by one to not print name
 LdGameText:    ldx GameTextOffsets,y    ;get offset to message we want to print
                ldy #$00
-GameTextLoop:  lda GameText,x           ;load message data
+GameTextLoop:  lda TopStatusBarLine,x   ;load message data
                cmp #$ff                 ;check for terminator
                beq EndGameText          ;branch to end text if found
                sta VRAM_Buffer1,y       ;otherwise write data to buffer
@@ -1719,7 +1665,7 @@ LargeLiftBBox:
 ;--------------------------------
 
 PlatLiftUp:
-      lda #$10                 ;set movement amount here
+      lda #lift_speed_up       ;set movement amount here
       sta Enemy_Y_MoveForce,x
       lda #$ff                 ;set moving speed for platforms going up
       sta Enemy_Y_Speed,x
@@ -1728,7 +1674,7 @@ PlatLiftUp:
 ;--------------------------------
 
 PlatLiftDown:
-      lda #$f0                 ;set movement amount here
+      lda #lift_speed_down    ;set movement amount here
       sta Enemy_Y_MoveForce,x
       lda #$00                 ;set moving speed for platforms going down
       sta Enemy_Y_Speed,x
@@ -2676,10 +2622,12 @@ BrickQBlockMetatiles:
 ;$07 - used to save ID of brick object
 
 Hidden1UpBlock:
+if _1up_always == 0
       lda Hidden1UpFlag  ;if flag not set, do not render object
       beq ExitDecBlock
       lda #$00           ;if set, init for the next one
       sta Hidden1UpFlag
+endif
       jmp BrickWithItem  ;jump to code shared with unbreakable bricks
 
 QuestionBlock:
@@ -5108,7 +5056,7 @@ RightPlatform:
        sta $00                       ;store saved value here (residual code)
        lda PlatformCollisionFlag,x   ;check collision flag, if no collision between player
        bmi ExRPl                     ;and platform, branch ahead, leave speed unaltered
-       lda #$10
+       lda #riding_speed
        sta Enemy_X_Speed,x           ;otherwise set new speed (gets moving if motionless)
        jsr PositionPlayerOnHPlat     ;use saved value from earlier sub to position player
 ExRPl: rts                           ;then leave
@@ -5389,7 +5337,7 @@ HandlePowerUpCollision:
       bcc Shroom_Flower_PUp   ;if mushroom or fire flower, branch
       cmp #$03
       beq SetFor1Up           ;if 1-up mushroom, branch
-      lda #$23                ;otherwise set star mario invincibility
+      lda #starman_time       ;otherwise set star mario invincibility
       sta StarInvincibleTimer ;timer, and load the star mario music
       lda #StarPowerMusic     ;into the area music queue, then leave
       sta AreaMusicQueue
@@ -5550,7 +5498,7 @@ ForceInjury:
           ldx PlayerStatus          ;check player's status
           beq KillPlayer            ;branch if small
           sta PlayerStatus          ;otherwise set player's status to small
-          lda #$08
+          lda #invincibility_time
           sta InjuryTimer           ;set injured invincibility timer
           asl
           sta Square1SoundQueue     ;play pipedown/injury sound
@@ -5572,7 +5520,7 @@ KillPlayer:
       stx Player_X_Speed   ;halt player's horizontal movement by initializing speed
       inx
       stx EventMusicQueue  ;set event music queue to death music
-      lda #$fc
+      lda #-speed_at_death
       sta Player_Y_Speed   ;set new vertical speed
       lda #$0b             ;set subroutine to run on next frame
       bne SetKRout         ;branch to set player's state and other things
@@ -5618,7 +5566,7 @@ EnemyStompedPts:
       sta Enemy_State,x          ;set d5 in enemy state
       jsr InitVStf               ;nullify vertical speed, physics-related thing,
       sta Enemy_X_Speed,x        ;and horizontal speed
-      lda #$fd                   ;set player's vertical speed, to give bounce
+      lda #y_stomp               ;set player's vertical speed, to give bounce
       sta Player_Y_Speed
       rts
 
@@ -5652,7 +5600,7 @@ HandleStompedShellE:
        ldy PrimaryHardMode        ;check primary hard mode flag
        lda RevivalRateData,y      ;load timer setting according to flag
        sta EnemyIntervalTimer,x   ;set as enemy timer to revive stomped enemy
-SBnce: lda #$fc                   ;set player's vertical speed for bounce
+SBnce: lda #y_bounce              ;set player's vertical speed for bounce
        sta Player_Y_Speed         ;and then leave!!!
        rts
 
@@ -6394,7 +6342,7 @@ ChkForLandJumpSpring:
         bcc ExCJSp                  ;if carry not set, jumpspring not found, therefore leave
         lda #$70
         sta VerticalForce           ;otherwise set vertical movement force for player
-        lda #$f9
+        lda #springboard_riding
         sta JumpspringForce         ;set default jumpspring force
         lda #$03
         sta JumpspringTimer         ;set jumpspring timer to be used later
@@ -6831,7 +6779,7 @@ FireballBGCollision:
       bmi InitFireballExplode     ;branch to set exploding bit in fireball's state
       lda FireballBouncingFlag,x  ;if bouncing flag already set,
       bne InitFireballExplode     ;branch to set exploding bit in fireball's state
-      lda #$fd
+      lda #fb_bounce
       sta Fireball_Y_Speed,x      ;otherwise set vertical speed to move upwards (give it bounce)
       lda #$01
       sta FireballBouncingFlag,x  ;set bouncing flag
@@ -8645,491 +8593,6 @@ PIntLoop: lda IntermediatePlayerData,x   ;load data to display player as he alwa
           ora #%01000000                 ;set horizontal flip bit for bottom-right sprite
           sta Sprite_Attributes+32       ;store and leave
           rts
-
-;-------------------------------------------------------------------------------------
-;$00-$01 - used to hold tile numbers, $00 also used to hold upper extent of animation frames
-;$02 - vertical position
-;$03 - facing direction, used as horizontal flip control
-;$04 - attributes
-;$05 - horizontal position
-;$07 - number of rows to draw
-;these also used in IntermediatePlayerData
-
-RenderPlayerSub:
-        sta $07                      ;store number of rows of sprites to draw
-        lda Player_Rel_XPos
-        sta Player_Pos_ForScroll     ;store player's relative horizontal position
-        sta $05                      ;store it here also
-        lda Player_Rel_YPos
-        sta $02                      ;store player's vertical position
-        lda PlayerFacingDir
-        sta $03                      ;store player's facing direction
-        lda Player_SprAttrib
-        sta $04                      ;store player's sprite attributes
-        ldx PlayerGfxOffset          ;load graphics table offset
-        ldy Player_SprDataOffset     ;get player's sprite data offset
-
-DrawPlayerLoop:
-        lda PlayerGraphicsTable,x    ;load player's left side
-        sta $00
-        lda PlayerGraphicsTable+1,x  ;now load right side
-        jsr DrawOneSpriteRow
-        dec $07                      ;decrement rows of sprites to draw
-        bne DrawPlayerLoop           ;do this until all rows are drawn
-        rts
-
-ProcessPlayerAction:
-        lda Player_State      ;get player's state
-        cmp #$03
-        beq ActionClimbing    ;if climbing, branch here
-        cmp #$02
-        beq ActionFalling     ;if falling, branch here
-        cmp #$01
-        bne ProcOnGroundActs  ;if not jumping, branch here
-        lda SwimmingFlag
-        bne ActionSwimming    ;if swimming flag set, branch elsewhere
-        ldy #$06              ;load offset for crouching
-        lda CrouchingFlag     ;get crouching flag
-        bne NonAnimatedActs   ;if set, branch to get offset for graphics table
-        ldy #$00              ;otherwise load offset for jumping
-        jmp NonAnimatedActs   ;go to get offset to graphics table
-
-ProcOnGroundActs:
-        ldy #$06                   ;load offset for crouching
-        lda CrouchingFlag          ;get crouching flag
-        bne NonAnimatedActs        ;if set, branch to get offset for graphics table
-        ldy #$02                   ;load offset for standing
-        lda Player_X_Speed         ;check player's horizontal speed
-        ora Left_Right_Buttons     ;and left/right controller bits
-        beq NonAnimatedActs        ;if no speed or buttons pressed, use standing offset
-        lda Player_XSpeedAbsolute  ;load walking/running speed
-        cmp #$09
-        bcc ActionWalkRun          ;if less than a certain amount, branch, too slow to skid
-        lda Player_MovingDir       ;otherwise check to see if moving direction
-        and PlayerFacingDir        ;and facing direction are the same
-        bne ActionWalkRun          ;if moving direction = facing direction, branch, don't skid
-        iny                        ;otherwise increment to skid offset ($03)
-
-NonAnimatedActs:
-        jsr GetGfxOffsetAdder      ;do a sub here to get offset adder for graphics table
-        lda #$00
-        sta PlayerAnimCtrl         ;initialize animation frame control
-        lda PlayerGfxTblOffsets,y  ;load offset to graphics table using size as offset
-        rts
-
-ActionFalling:
-        ldy #$04                  ;load offset for walking/running
-        jsr GetGfxOffsetAdder     ;get offset to graphics table
-        jmp GetCurrentAnimOffset  ;execute instructions for falling state
-
-ActionWalkRun:
-        ldy #$04               ;load offset for walking/running
-        jsr GetGfxOffsetAdder  ;get offset to graphics table
-        jmp FourFrameExtent    ;execute instructions for normal state
-
-ActionClimbing:
-        ldy #$05               ;load offset for climbing
-        lda Player_Y_Speed     ;check player's vertical speed
-        beq NonAnimatedActs    ;if no speed, branch, use offset as-is
-        jsr GetGfxOffsetAdder  ;otherwise get offset for graphics table
-        jmp ThreeFrameExtent   ;then skip ahead to more code
-
-ActionSwimming:
-        ldy #$01               ;load offset for swimming
-        jsr GetGfxOffsetAdder
-        lda JumpSwimTimer      ;check jump/swim timer
-        ora PlayerAnimCtrl     ;and animation frame control
-        bne FourFrameExtent    ;if any one of these set, branch ahead
-        lda A_B_Buttons
-        asl                    ;check for A button pressed
-        bcs FourFrameExtent    ;branch to same place if A button pressed
-
-GetCurrentAnimOffset:
-        lda PlayerAnimCtrl         ;get animation frame control
-        jmp GetOffsetFromAnimCtrl  ;jump to get proper offset to graphics table
-
-FourFrameExtent:
-        lda #$03              ;load upper extent for frame control
-        jmp AnimationControl  ;jump to get offset and animate player object
-
-ThreeFrameExtent:
-        lda #$02              ;load upper extent for frame control for climbing
-
-AnimationControl:
-          sta $00                   ;store upper extent here
-          jsr GetCurrentAnimOffset  ;get proper offset to graphics table
-          pha                       ;save offset to stack
-          lda PlayerAnimTimer       ;load animation frame timer
-          bne ExAnimC               ;branch if not expired
-          lda PlayerAnimTimerSet    ;get animation frame timer amount
-          sta PlayerAnimTimer       ;and set timer accordingly
-          lda PlayerAnimCtrl
-          clc                       ;add one to animation frame control
-          adc #$01
-          cmp $00                   ;compare to upper extent
-          bcc SetAnimC              ;if frame control + 1 < upper extent, use as next
-          lda #$00                  ;otherwise initialize frame control
-SetAnimC: sta PlayerAnimCtrl        ;store as new animation frame control
-ExAnimC:  pla                       ;get offset to graphics table from stack and leave
-          rts
-
-GetGfxOffsetAdder:
-        lda PlayerSize  ;get player's size
-        beq SzOfs       ;if player big, use current offset as-is
-        tya             ;for big player
-        clc             ;otherwise add eight bytes to offset
-        adc #$08        ;for small player
-        tay
-SzOfs:  rts             ;go back
-
-ChangeSizeOffsetAdder:
-        .db $00, $01, $00, $01, $00, $01, $02, $00, $01, $02
-        .db $02, $00, $02, $00, $02, $00, $02, $00, $02, $00
-
-HandleChangeSize:
-         ldy PlayerAnimCtrl           ;get animation frame control
-         lda FrameCounter
-         and #%00000011               ;get frame counter and execute this code every
-         bne GorSLog                  ;fourth frame, otherwise branch ahead
-         iny                          ;increment frame control
-         cpy #$0a                     ;check for preset upper extent
-         bcc CSzNext                  ;if not there yet, skip ahead to use
-         ldy #$00                     ;otherwise initialize both grow/shrink flag
-         sty PlayerChangeSizeFlag     ;and animation frame control
-CSzNext: sty PlayerAnimCtrl           ;store proper frame control
-GorSLog: lda PlayerSize               ;get player's size
-         bne ShrinkPlayer             ;if player small, skip ahead to next part
-         lda ChangeSizeOffsetAdder,y  ;get offset adder based on frame control as offset
-         ldy #$0f                     ;load offset for player growing
-
-GetOffsetFromAnimCtrl:
-        asl                        ;multiply animation frame control
-        asl                        ;by eight to get proper amount
-        asl                        ;to add to our offset
-        adc PlayerGfxTblOffsets,y  ;add to offset to graphics table
-        rts                        ;and return with result in A
-
-ShrinkPlayer:
-        tya                          ;add ten bytes to frame control as offset
-        clc
-        adc #$0a                     ;this thing apparently uses two of the swimming frames
-        tax                          ;to draw the player shrinking
-        ldy #$09                     ;load offset for small player swimming
-        lda ChangeSizeOffsetAdder,x  ;get what would normally be offset adder
-        bne ShrPlF                   ;and branch to use offset if nonzero
-        ldy #$01                     ;otherwise load offset for big player swimming
-ShrPlF: lda PlayerGfxTblOffsets,y    ;get offset to graphics table based on offset loaded
-        rts                          ;and leave
-
-ChkForPlayerAttrib:
-           ldy Player_SprDataOffset    ;get sprite data offset
-           lda GameEngineSubroutine
-           cmp #$0b                    ;if executing specific game engine routine,
-           beq KilledAtt               ;branch to change third and fourth row OAM attributes
-           lda PlayerGfxOffset         ;get graphics table offset
-           cmp #$50
-           beq C_S_IGAtt               ;if crouch offset, either standing offset,
-           cmp #$b8                    ;or intermediate growing offset,
-           beq C_S_IGAtt               ;go ahead and execute code to change 
-           cmp #$c0                    ;fourth row OAM attributes only
-           beq C_S_IGAtt
-           cmp #$c8
-           bne ExPlyrAt                ;if none of these, branch to leave
-KilledAtt: lda Sprite_Attributes+16,y
-           and #%00111111              ;mask out horizontal and vertical flip bits
-           sta Sprite_Attributes+16,y  ;for third row sprites and save
-           lda Sprite_Attributes+20,y
-           and #%00111111  
-           ora #%01000000              ;set horizontal flip bit for second
-           sta Sprite_Attributes+20,y  ;sprite in the third row
-C_S_IGAtt: lda Sprite_Attributes+24,y
-           and #%00111111              ;mask out horizontal and vertical flip bits
-           sta Sprite_Attributes+24,y  ;for fourth row sprites and save
-           lda Sprite_Attributes+28,y
-           and #%00111111
-           ora #%01000000              ;set horizontal flip bit for second
-           sta Sprite_Attributes+28,y  ;sprite in the fourth row
-ExPlyrAt:  rts                         ;leave
-
-;-------------------------------------------------------------------------------------
-;$00 - used in adding to get proper offset
-
-RelativePlayerPosition:
-        ldx #$00      ;set offsets for relative cooordinates
-        ldy #$00      ;routine to correspond to player object
-        jmp RelWOfs   ;get the coordinates
-
-RelativeBubblePosition:
-        ldy #$01                ;set for air bubble offsets
-        jsr GetProperObjOffset  ;modify X to get proper air bubble offset
-        ldy #$03
-        jmp RelWOfs             ;get the coordinates
-
-RelativeFireballPosition:
-         ldy #$00                    ;set for fireball offsets
-         jsr GetProperObjOffset      ;modify X to get proper fireball offset
-         ldy #$02
-RelWOfs: jsr GetObjRelativePosition  ;get the coordinates
-         ldx ObjectOffset            ;return original offset
-         rts                         ;leave
-
-RelativeMiscPosition:
-        ldy #$02                ;set for misc object offsets
-        jsr GetProperObjOffset  ;modify X to get proper misc object offset
-        ldy #$06
-        jmp RelWOfs             ;get the coordinates
-
-RelativeEnemyPosition:
-        lda #$01                     ;get coordinates of enemy object 
-        ldy #$01                     ;relative to the screen
-        jmp VariableObjOfsRelPos
-
-RelativeBlockPosition:
-        lda #$09                     ;get coordinates of one block object
-        ldy #$04                     ;relative to the screen
-        jsr VariableObjOfsRelPos
-        inx                          ;adjust offset for other block object if any
-        inx
-        lda #$09
-        iny                          ;adjust other and get coordinates for other one
-
-VariableObjOfsRelPos:
-        stx $00                     ;store value to add to A here
-        clc
-        adc $00                     ;add A to value stored
-        tax                         ;use as enemy offset
-        jsr GetObjRelativePosition
-        ldx ObjectOffset            ;reload old object offset and leave
-        rts
-
-GetObjRelativePosition:
-        lda SprObject_Y_Position,x  ;load vertical coordinate low
-        sta SprObject_Rel_YPos,y    ;store here
-        lda SprObject_X_Position,x  ;load horizontal coordinate
-        sec                         ;subtract left edge coordinate
-        sbc ScreenLeft_X_Pos
-        sta SprObject_Rel_XPos,y    ;store result here
-        rts
-
-;-------------------------------------------------------------------------------------
-;$00 - used as temp variable to hold offscreen bits
-
-GetPlayerOffscreenBits:
-        ldx #$00                 ;set offsets for player-specific variables
-        ldy #$00                 ;and get offscreen information about player
-        jmp GetOffScreenBitsSet
-
-GetFireballOffscreenBits:
-        ldy #$00                 ;set for fireball offsets
-        jsr GetProperObjOffset   ;modify X to get proper fireball offset
-        ldy #$02                 ;set other offset for fireball's offscreen bits
-        jmp GetOffScreenBitsSet  ;and get offscreen information about fireball
-
-GetBubbleOffscreenBits:
-        ldy #$01                 ;set for air bubble offsets
-        jsr GetProperObjOffset   ;modify X to get proper air bubble offset
-        ldy #$03                 ;set other offset for airbubble's offscreen bits
-        jmp GetOffScreenBitsSet  ;and get offscreen information about air bubble
-
-GetMiscOffscreenBits:
-        ldy #$02                 ;set for misc object offsets
-        jsr GetProperObjOffset   ;modify X to get proper misc object offset
-        ldy #$06                 ;set other offset for misc object's offscreen bits
-        jmp GetOffScreenBitsSet  ;and get offscreen information about misc object
-
-ObjOffsetData:
-        .db $07, $16, $0d
-
-GetProperObjOffset:
-        txa                  ;move offset to A
-        clc
-        adc ObjOffsetData,y  ;add amount of bytes to offset depending on setting in Y
-        tax                  ;put back in X and leave
-        rts
-
-GetEnemyOffscreenBits:
-        lda #$01                 ;set A to add 1 byte in order to get enemy offset
-        ldy #$01                 ;set Y to put offscreen bits in Enemy_OffscreenBits
-        jmp SetOffscrBitsOffset
-
-GetBlockOffscreenBits:
-        lda #$09       ;set A to add 9 bytes in order to get block obj offset
-        ldy #$04       ;set Y to put offscreen bits in Block_OffscreenBits
-
-SetOffscrBitsOffset:
-        stx $00
-        clc           ;add contents of X to A to get
-        adc $00       ;appropriate offset, then give back to X
-        tax
-
-GetOffScreenBitsSet:
-        tya                         ;save offscreen bits offset to stack for now
-        pha
-        jsr RunOffscrBitsSubs
-        asl                         ;move low nybble to high nybble
-        asl
-        asl
-        asl
-        ora $00                     ;mask together with previously saved low nybble
-        sta $00                     ;store both here
-        pla                         ;get offscreen bits offset from stack
-        tay
-        lda $00                     ;get value here and store elsewhere
-        sta SprObject_OffscrBits,y
-        ldx ObjectOffset
-        rts
-
-RunOffscrBitsSubs:
-        jsr GetXOffscreenBits  ;do subroutine here
-        lsr                    ;move high nybble to low
-        lsr
-        lsr
-        lsr
-        sta $00                ;store here
-        jmp GetYOffscreenBits
-
-;--------------------------------
-;(these apply to these three subsections)
-;$04 - used to store proper offset
-;$05 - used as adder in DividePDiff
-;$06 - used to store preset value used to compare to pixel difference in $07
-;$07 - used to store difference between coordinates of object and screen edges
-
-XOffscreenBitsData:
-        .db $7f, $3f, $1f, $0f, $07, $03, $01, $00
-        .db $80, $c0, $e0, $f0, $f8, $fc, $fe, $ff
-
-DefaultXOnscreenOfs:
-        .db $07, $0f, $07
-
-GetXOffscreenBits:
-          stx $04                     ;save position in buffer to here
-          ldy #$01                    ;start with right side of screen
-XOfsLoop: lda ScreenEdge_X_Pos,y      ;get pixel coordinate of edge
-          sec                         ;get difference between pixel coordinate of edge
-          sbc SprObject_X_Position,x  ;and pixel coordinate of object position
-          sta $07                     ;store here
-          lda ScreenEdge_PageLoc,y    ;get page location of edge
-          sbc SprObject_PageLoc,x     ;subtract from page location of object position
-          ldx DefaultXOnscreenOfs,y   ;load offset value here
-          cmp #$00      
-          bmi XLdBData                ;if beyond right edge or in front of left edge, branch
-          ldx DefaultXOnscreenOfs+1,y ;if not, load alternate offset value here
-          cmp #$01      
-          bpl XLdBData                ;if one page or more to the left of either edge, branch
-          lda #$38                    ;if no branching, load value here and store
-          sta $06
-          lda #$08                    ;load some other value and execute subroutine
-          jsr DividePDiff
-XLdBData: lda XOffscreenBitsData,x    ;get bits here
-          ldx $04                     ;reobtain position in buffer
-          cmp #$00                    ;if bits not zero, branch to leave
-          bne ExXOfsBS
-          dey                         ;otherwise, do left side of screen now
-          bpl XOfsLoop                ;branch if not already done with left side
-ExXOfsBS: rts
-
-;--------------------------------
-
-YOffscreenBitsData:
-        .db $00, $08, $0c, $0e
-        .db $0f, $07, $03, $01
-        .db $00
-
-DefaultYOnscreenOfs:
-        .db $04, $00, $04
-
-HighPosUnitData:
-        .db $ff, $00
-
-GetYOffscreenBits:
-          stx $04                      ;save position in buffer to here
-          ldy #$01                     ;start with top of screen
-YOfsLoop: lda HighPosUnitData,y        ;load coordinate for edge of vertical unit
-          sec
-          sbc SprObject_Y_Position,x   ;subtract from vertical coordinate of object
-          sta $07                      ;store here
-          lda #$01                     ;subtract one from vertical high byte of object
-          sbc SprObject_Y_HighPos,x
-          ldx DefaultYOnscreenOfs,y    ;load offset value here
-          cmp #$00
-          bmi YLdBData                 ;if under top of the screen or beyond bottom, branch
-          ldx DefaultYOnscreenOfs+1,y  ;if not, load alternate offset value here
-          cmp #$01
-          bpl YLdBData                 ;if one vertical unit or more above the screen, branch
-          lda #$20                     ;if no branching, load value here and store
-          sta $06
-          lda #$04                     ;load some other value and execute subroutine
-          jsr DividePDiff
-YLdBData: lda YOffscreenBitsData,x     ;get offscreen data bits using offset
-          ldx $04                      ;reobtain position in buffer
-          cmp #$00
-          bne ExYOfsBS                 ;if bits not zero, branch to leave
-          dey                          ;otherwise, do bottom of the screen now
-          bpl YOfsLoop
-ExYOfsBS: rts
-
-;--------------------------------
-
-DividePDiff:
-          sta $05       ;store current value in A here
-          lda $07       ;get pixel difference
-          cmp $06       ;compare to preset value
-          bcs ExDivPD   ;if pixel difference >= preset value, branch
-          lsr           ;divide by eight
-          lsr
-          lsr
-          and #$07      ;mask out all but 3 LSB
-          cpy #$01      ;right side of the screen or top?
-          bcs SetOscrO  ;if so, branch, use difference / 8 as offset
-          adc $05       ;if not, add value to difference / 8
-SetOscrO: tax           ;use as offset
-ExDivPD:  rts           ;leave
-
-;-------------------------------------------------------------------------------------
-;$00-$01 - tile numbers
-;$02 - Y coordinate
-;$03 - flip control
-;$04 - sprite attributes
-;$05 - X coordinate
-
-DrawSpriteObject:
-         lda $03                    ;get saved flip control bits
-         lsr
-         lsr                        ;move d1 into carry
-         lda $00
-         bcc NoHFlip                ;if d1 not set, branch
-         sta Sprite_Tilenumber+4,y  ;store first tile into second sprite
-         lda $01                    ;and second into first sprite
-         sta Sprite_Tilenumber,y
-         lda #$40                   ;activate horizontal flip OAM attribute
-         bne SetHFAt                ;and unconditionally branch
-NoHFlip: sta Sprite_Tilenumber,y    ;store first tile into first sprite
-         lda $01                    ;and second into second sprite
-         sta Sprite_Tilenumber+4,y
-         lda #$00                   ;clear bit for horizontal flip
-SetHFAt: ora $04                    ;add other OAM attributes if necessary
-         sta Sprite_Attributes,y    ;store sprite attributes
-         sta Sprite_Attributes+4,y
-         lda $02                    ;now the y coordinates
-         sta Sprite_Y_Position,y    ;note because they are
-         sta Sprite_Y_Position+4,y  ;side by side, they are the same
-         lda $05       
-         sta Sprite_X_Position,y    ;store x coordinate, then
-         clc                        ;add 8 pixels and store another to
-         adc #$08                   ;put them side by side
-         sta Sprite_X_Position+4,y
-         lda $02                    ;add eight pixels to the next y
-         clc                        ;coordinate
-         adc #$08
-         sta $02
-         tya                        ;add eight to the offset in Y to
-         clc                        ;move to the next two sprites
-         adc #$08
-         tay
-         inx                        ;increment offset to return it to the
-         inx                        ;routine that called this subroutine
-         rts
 
 ;-------------------------------------------------------------------------------------
 switchBNK:
