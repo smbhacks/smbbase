@@ -56,6 +56,16 @@ macro Original_Bank
 	pla
 endm
 
+macro jcc address
+	.db $b0, 3
+	jmp address
+endm
+
+macro jcs address
+	.db $90, 3
+	jmp address
+endm
+
 ;-------------------------------------------------------------------------------------
 ;DEFINES
 
