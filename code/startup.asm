@@ -58,4 +58,5 @@ ColdBoot:    jsr InitializeMemory         ;clear memory using pointer in Y
              ; Clear the sleeping flag to allow NMI to start
              lda #0
              sta sleeping
+			 sta $a000
 EndlessLoop: jmp EndlessLoop              ;endless loop, need I say more?
