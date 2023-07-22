@@ -6,3 +6,8 @@ Read further instructions after this in the Famitone folder -> !README.txt
 Before you can start building your rom, you need to make an output.asm in the levels folder.
 If you want to use the original levels, then rename vanilla.asm to output.asm
 If you want to use levels from another ROM, then read the readme in the levels folder.
+
+StudsX's base 
+Nesdraug added code by b0b d0e into the base 
+Search for BOOKMARK in text to find changes 
+Example music included in famitone: Super Mario Extended by Nesdraug 

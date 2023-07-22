@@ -273,6 +273,8 @@ zero_flag3 = FT_EXTRA+30 ;31 new variables
 ;     X,Y pointer to music data
 ;------------------------------------------------------------------------------
    
+   
+   	
 FamiToneInit:
 
 	stx FT_SONG_LIST_L		;store music data pointer for further use

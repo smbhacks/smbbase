@@ -153,7 +153,7 @@ PlayerScoreDisplay    = $07dd
 GameTimerDisplay      = $07f8
 DigitModifier         = $0134
 
-temp				  = $0100
+Temp				  = $0100
 songPlaying			  = $0101
 ScrollH				  = $0102
 ScrollBit			  = $0103

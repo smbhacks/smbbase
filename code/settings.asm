@@ -2,8 +2,8 @@
 ;SETTINGS
 ;To enable/disable a setting, delete/add the semicolon (;) before the definition
 
-CustomMusicDriver EQU OriginalSMBMusic	;Use the original SMB audio engine
-;CustomMusicDriver EQU Famitone5Music		;Replace SMB's music driver with Famitone5 (compatible with famitracker)
+;CustomMusicDriver EQU OriginalSMBMusic	;Use the original SMB audio engine
+CustomMusicDriver EQU Famitone5Music		;Replace SMB's music driver with Famitone5 (compatible with famitracker)
 
 ;Mario's walking/running speed
 	;---> in bank0.asm: "MaxLeftXSpdData" and "MaxRightXSpdData"
