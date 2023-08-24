@@ -1,5 +1,5 @@
 This folder will only be useful for you if you
-have Famitone defined (enabled) in main.asm->settings!
+have Famitone defined (enabled) in code/settings.asm!
 
 When making songs in Famitracker, don't use ROWS = 256. text2data 
 (or any variation) won't work right, and will only output empty songs.
