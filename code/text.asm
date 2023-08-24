@@ -12,7 +12,7 @@ dash = $28
 exclamation = $2b
 period = $af
 ;Example text: 5 TIMES 5 EQUALS 25
-;What you need to input: .db 5, space, "TIMES"-$37, space, 5, space, "EQUALS"-$37, space, 25
+;What you need to input: .db 5, space, "TIMES"-$37, space, 5, space, "EQUALS"-$37, space, 2, 5
 
 ;--END OF CASTLE--
 MarioThanksMessage:
