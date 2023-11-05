@@ -95,25 +95,51 @@ ExitPause:     rts
 
 if CustomMusicDriver != OriginalSMBMusic
 
-					;Enter music number here (Famitracker music number - 1)
 
-GroundMus        =	0
-WaterMus         =  1
-CaveMus          =  2
-CastleMus        =  3
-CloudMus         =  4
-PipeMus          =  5
-StarmanMus       =  6
-DeathMus         =  7
-GameOverMus      =  8
-PrincessMus      =  9
-CastleFinishMus  =  10
-LevelFinishMus   =  11
-HurryMus         =  12
+
+AreaMusicQueue = $107   ;BOOKMARK IS THIS ALREADY DEFINED????? 
+AreaMusicBuffer = $f4  ;BOOKMARK IS THIS ALREADY DEFINED????? 
+EventMusicQueue = $fc  ;BOOKMARK IS THIS ALREADY DEFINED????? 
+NTSC_MODE = $80 ;;; $80 for NTSC, $00 for PAL ;BOOKMARK IS THIS ALREADY DEFINED????? 
+TIMEUP_Timer = $6101   ;BOOKMARK IS THIS ALREADY DEFINED????? 
+Temp				  = $0100 ;BOOKMARK IS THIS ALREADY DEFINED????? 
+WorldNumber = $075f 
+
+TIMEUP_Timer_VALUE = 120		;change this value if you modify the length of the time up music
+
+					;Enter music number here (Famitracker music number - 1)  BOOKMARK 
+
+GroundMus        =	1  		-1
+WaterMus         =  2       -1 
+CaveMus          =  3       -1
+CastleMus        =  4       -1
+CloudMus         =  5	    -1 
+PipeMus          =  1  		-1
+StarmanMus       =  5       -1 
+DeathMus         =  6       -1
+GameOverMus      =  0       -1
+PrincessMus      =  7	    -1 
+CastleFinishMus  =  8 		-1
+LevelFinishMus   =  9       -1 
+HurryMus         =  10    	-1
+WORLD2           =  11      -1  ;bookmark new world musics 
+WORLD3           =  12      -1  
+WORLD4			 =	13		-1	
+WORLD5           =  14      -1  
+WORLD6 			 =	15		-1
+WORLD7 			 =	16		-1	
+WORLD8           =  17      -1  
+
 
 MusicLUT:
 		.db GroundMus, WaterMus, CaveMus, CastleMus, CloudMus, PipeMus, StarmanMus,	-1
 		.db DeathMus, GameOverMus, PrincessMus, CastleFinishMus, 0, LevelFinishMus, HurryMus, -1
+		
+		
+world_music_table: ;bookmark 
+            .db GroundMus, WORLD2, WORLD3, WORLD4, WORLD5, WORLD6, WORLD7, WORLD8
+			
+			
 
 BRICK = 1		-1
 BREATH = 2		-1
@@ -162,81 +188,141 @@ sq1_sfx_table:
 			.db SJUMP      , SFX_CH0
 		
 CustomMusicEngine:
-		lda EventMusicQueue
-		ora AreaMusicQueue
-		beq NoTrigger
 		lda AreaMusicQueue
-		beq +
-		sta AreaMusicBuffer
-		ldx #-1
-		-
-		inx
-		lsr
-		bcc -
-		ldy #0
-		sty AreaMusicQueue
-		+
-		lda EventMusicQueue
-		beq +
-		sta EventMusicBuffer
-		ldx #7
-		-
-		inx
-		lsr
-		bcc -
-		ldy #0
-		sty EventMusicQueue
-		+
-		lda MusicLUT,x
-		pha
-		ldx #<music_music_data
-		ldy #>music_music_data
-		lda #1
-		sta songPlaying
-		jsr CustomAudioInit
-		ldx #<sounds
-		ldy #>sounds
-		jsr CustomAudioSfxInit
-		pla
-		jsr CustomAudioMusicPlay
-NoTrigger:
-		lda Square2SoundQueue
-		beq noSQ2
-		jsr countBITS_asl
-		lda sq2_sfx_table,y
-		ldx sq2_sfx_table+1,y
-		jsr CustomAudioSfxPlay
-		lda #0
-		sta Square2SoundQueue
-noSQ2:
-		lda Square1SoundQueue
-		beq noSQ1
-		jsr countBITS_asl
-		lda sq1_sfx_table,y
-		ldx sq1_sfx_table+1,y
-		jsr CustomAudioSfxPlay
-		lda #0
-		sta Square1SoundQueue
-noSQ1:
-		lda NoiseSoundQueue
-		beq noNOI
-		jsr countBITS_asl
-		lda noise_sfx_table,y
-		ldx noise_sfx_table+1,y
-		jsr CustomAudioSfxPlay
-		lda #0
-		sta NoiseSoundQueue
-noNOI:
-		jsr CustomAudioUpdate
-		rts
+			ora EventMusicQueue
+			beq noTrigger
+			lda AreaMusicQueue
+			jsr countBITS
+			cpx #$08
+			bne +
+			lda EventMusicQueue	
+			jsr countBITS
+			txa
+			clc
+			adc #$08
+			tax
+			
+			+
+			lda MusicLUT,x
+			stx Temp
+			
+			pha
+			ldx #<sounds			;set sound effects data location
+			ldy #>sounds
+			jsr FamiToneSfxInit
+			ldx #<music_music_data	;initialize using the first song data, as it contains the DPCM sound effect
+			ldy #>music_music_data
+			lda #NTSC_MODE
+			jsr FamiToneInit		;init FamiTone
+			pla
+			cmp #HurryMus
+			beq ++
+                ; check to see if we are playing ground theme 
+                cmp #GroundMus
+                bne + ; if we aren't ground theme then just store the value in a into the music buffer
+                    ; we are playing the ground theme so lets load the world specific version
+                    ldx WorldNumber
+                    lda world_music_table,x
+                +
+                sta AreaMusicBuffer
+			++
+			ldx Temp
+			cpx #$08
+			bcc +
+			cmp #Silence ; should be SILENCE or  Silence 
+			beq +
+			ldx #0
+			stx TIMEUP_Timer
+			+
+			cmp #HurryMus
+			bne +
+			ldx #TIMEUP_Timer_VALUE
+			stx TIMEUP_Timer
+			+
+			ldx TIMEUP_Timer
+			cpx #$fe
+			bne +
+			ldx #1
+			stx TIMEUP_Timer
+			+
+			jsr FamiToneMusicPlay
+			
+			lda #0
+			sta AreaMusicQueue
+			sta EventMusicQueue
+noTrigger:
 
-countBITS_asl:
+			lda TIMEUP_Timer
+			beq notim	
+			cmp #$fe
+			beq notim
+			cmp #$ff
+			bne +
+			
+			dec FT_SONG_SPEED
+			dec TIMEUP_Timer
+			jmp notim
+			
+			+
+			dec TIMEUP_Timer
+			bne notim
+			
+			lda AreaMusicBuffer
+			jsr FamiToneMusicPlay
+			lda #$ff
+			sta TIMEUP_Timer
+			
+notim:
+
+
+Square1SoundQueue     = $ff
+Square2SoundQueue     = $fe
+NoiseSoundQueue       = $fd
+
+UpdateSFX:
+			lda Square2SoundQueue
+			beq noSQ2
+			jsr countBITS_asl
+			lda sq2_sfx_table,y
+			ldx sq2_sfx_table+1,y
+			jsr FamiToneSfxPlay
+			lda #0
+			sta Square2SoundQueue
+noSQ2:
+
+			lda Square1SoundQueue
+			beq noSQ1
+			jsr countBITS_asl
+			lda sq1_sfx_table,y
+			ldx sq1_sfx_table+1,y
+			jsr FamiToneSfxPlay
+			lda #0
+			sta Square1SoundQueue
+noSQ1:
+
+			lda NoiseSoundQueue
+			beq noNOI
+			jsr countBITS_asl
+			lda noise_sfx_table,y
+			ldx noise_sfx_table+1,y
+			jsr FamiToneSfxPlay
+			lda #0
+			sta NoiseSoundQueue
+noNOI:
+
+			jmp FamiToneUpdate
+
+countBITS:
 			ldx #$ff
 			sec
 			-
 			inx
 			ror
 			bcc -
+			rts
+
+countBITS_asl:
+			jsr countBITS
 			txa
 			asl
 			tay
@@ -519,6 +605,7 @@ PutLives:      sta VRAM_Buffer1+8
                ldy LevelNumber
                iny
                sty VRAM_Buffer1+21      ;we're done here
+			   	  jsr InitializeCustomAudioValues  ;Bookmark i dont know where to put this  
                rts
 
 CheckPlayerName:
@@ -8576,6 +8663,11 @@ NPROffscr: tya
            rts                           ;then we are done!
 
 ;-------------------------------------------------------------------------------------
+InitializeCustomAudioValues: 			; BOOKMARK I DONT KNOW WHERE TO PUT THIS 
+    lda #0 ; 2 bytes  					; BOOKMARK I DONT KNOW WHERE TO PUT THIS
+    sta TIMEUP_Timer ; 3 bytes 			; BOOKMARK I DONT KNOW WHERE TO PUT THIS
+    rts ; 1 byte 						; BOOKMARK I DONT KNOW WHERE TO PUT THIS
+
 
 IntermediatePlayerData:
         .db $58, $01, $00, $60, $ff, $04
@@ -8595,8 +8687,10 @@ PIntLoop: lda IntermediatePlayerData,x   ;load data to display player as he alwa
           rts
 
 ;-------------------------------------------------------------------------------------
+
+
 switchBNK:
-		stx temp
+		stx Temp
 		tax
 		lda #%00000110
 		sta $8000
@@ -8605,5 +8699,5 @@ switchBNK:
 		sta $8000
 		inx
 		stx $8001
-		ldx temp
+		ldx Temp
 		rts
