@@ -16,6 +16,16 @@ World6Areas: .db $2e, $23, $2d, $60
 World7Areas: .db $33, $29, $01, $27, $64
 World8Areas: .db $30, $32, $21, $65
 
+HalfwayPageNybbles:
+      .db $56, $40
+      .db $65, $70
+      .db $66, $40
+      .db $66, $40
+      .db $66, $40
+      .db $66, $60
+      .db $65, $70
+      .db $00, $00
+
 ;bonus area data offsets, included here for comparison purposes
 ;underground bonus area  - c2
 ;cloud area 1 (day)      - 2b

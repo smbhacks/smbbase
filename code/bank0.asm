@@ -1740,17 +1740,6 @@ SetPESub: lda #$07                    ;set to run player entrance subroutine
 
 ;-------------------------------------------------------------------------------------
 
-;page numbers are in order from -1 to -4
-HalfwayPageNybbles:
-      .db $56, $40
-      .db $65, $70
-      .db $66, $40
-      .db $66, $40
-      .db $66, $40
-      .db $66, $60
-      .db $65, $70
-      .db $00, $00
-
 PlayerLoseLife:
              inc DisableScreenFlag    ;disable screen and sprite 0 check
              lda #$00
@@ -1771,7 +1760,7 @@ StillInGame: lda WorldNumber          ;multiply world number by 2 and use
              and #$02                 ;offset by one byte, otherwise
              beq GetHalfway           ;leave offset alone
              inx
-GetHalfway:  ldy HalfwayPageNybbles,x ;get halfway page number with offset
+GetHalfway:  jsr GetHalfwayPageNumber ;get halfway page number with offset
              lda LevelNumber          ;check area number's LSB
              lsr
              tya                      ;if in area -2 or -4, use lower nybble

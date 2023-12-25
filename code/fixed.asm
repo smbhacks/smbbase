@@ -21,6 +21,12 @@ IRQ:
 		tax
 		pla
 		rti
+
+GetHalfwayPageNumber:
+            Switch_Bank 4
+            ldy HalfwayPageNybbles,x
+            Switch_Bank 0
+            rts
 ;-------------------------------------------------------------------------------------
 ;$00 - vram buffer address table low, also used for pseudorandom bit
 ;$01 - vram buffer address table high
