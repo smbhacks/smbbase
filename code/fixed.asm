@@ -195,8 +195,8 @@ CustomMusicEngine:
 		+
 		lda MusicLUT,x
 		pha
-		ldx #<music_music_data
-		ldy #>music_music_data
+		ldx #<music_data
+		ldy #>music_data
 		lda #1
 		sta songPlaying
 		jsr CustomAudioInit

@@ -4,8 +4,10 @@
 *.nes
 *.deb
 levels/output.asm
-famitone/music.txt
-famitone/music.asm
-famitone/sfx.asm
-famitone/sfx.nsf
+music/famitone/music.txt
+music/famitone/music.asm
+music/famitone/sfx.asm
+music/famitone/sfx.nsf
+music/famistudio/music.asm
+music/famistudio/sfx.asm
 .vscode/tasks.json

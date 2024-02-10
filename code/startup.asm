@@ -6,10 +6,10 @@ Start:
              cld
              lda #%00010000               ;init PPU control register 1 
              sta PPU_CTRL_REG1
-			 cli
+		   cli
              lda #$40
              sta $4017
-			 ldx #$ff                     ;reset stack pointer
+		   ldx #$ff                     ;reset stack pointer
              txs
 VBlank1:     lda PPU_STATUS               ;wait two frames
              bpl VBlank1
@@ -20,11 +20,11 @@ VBlank2:     lda PPU_STATUS
              ; Setup the CHR rom banks to the default as well
              ldx #5
 CHRBankInitLoop:
-                  stx $8000
-                  lda CHRInitTable,x
-                  sta $8001
-                  dex
-                  bpl CHRBankInitLoop
+             stx $8000
+             lda CHRInitTable,x
+             sta $8001
+             dex
+             bpl CHRBankInitLoop
              ldy #ColdBootOffset          ;load default cold boot pointer
              ldx #$05                     ;this is where we check for a warm boot
 WBootCheck:  lda TopScoreDisplay,x        ;check each score digit in the top score
@@ -49,14 +49,27 @@ ColdBoot:    jsr InitializeMemory         ;clear memory using pointer in Y
              jsr MoveAllSpritesOffscreen
              jsr InitializeNameTables     ;initialize both name tables
              inc DisableScreenFlag        ;set flag to disable screen output
-             lda Mirror_PPU_CTRL_REG1
-             ora #%10000000               ;enable NMIs
-             jsr WritePPUReg1
              ; Enable PRG ram with write protect disabled
              lda #$80
              sta $a001
              ; Clear the sleeping flag to allow NMI to start
              lda #0
              sta sleeping
-			 sta $a000
+		   sta $a000
+             ldx #$1f
+             lda #$60
+             sta $01
+             ldy #$00
+             sty $00
+             tya
+@clear_wram:
+             sta ($00),y
+             dey
+             bne @clear_wram
+             inc $01
+             dex
+             bpl @clear_wram
+             lda Mirror_PPU_CTRL_REG1
+             ora #%10000000               ;enable NMIs
+             jsr WritePPUReg1
 EndlessLoop: jmp EndlessLoop              ;endless loop, need I say more?

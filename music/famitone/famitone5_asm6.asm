@@ -21,7 +21,7 @@ MAX_NOTE = 88
 
 ;settings, uncomment or put them into your main program; the latter makes possible updates easier
 
-.include "famitone/settings.asm"
+.include "music/famitone/settings.asm"
 
 ;FT_THREAD				;undefine if you are calling sound effects from the same thread as the sound update call
 ;FT_PAL_SUPPORT			;undefine to exclude PAL support

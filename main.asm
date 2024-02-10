@@ -88,17 +88,35 @@ if CustomMusicDriver == Famitone5Music
 	CustomAudioMusicPlay 	EQU FamiToneMusicPlay
 	CustomAudioMusicPause 	EQU FamiToneMusicPause
 	CustomAudioUpdate 		EQU FamiToneUpdate
+	music_data      		EQU music_music_data
 	SFX_CH0 EQU FT_SFX_CH0
 	SFX_CH1 EQU FT_SFX_CH1
 	SFX_CH2 EQU FT_SFX_CH2
 	SFX_CH3 EQU FT_SFX_CH3
-	.include "famitone/famitone5_asm6.asm"
-	.include "famitone/music.asm"
-	.include "famitone/sfx.asm"
-else
+	.include "music/famitone/famitone5_asm6.asm"
+	.include "music/famitone/music.asm"
+	.include "music/famitone/sfx.asm"
+endif
+if CustomMusicDriver == FamistudioMusic
+	CustomAudioInit 		EQU famistudio_init
+	CustomAudioSfxInit 		EQU famistudio_sfx_init 
+	CustomAudioSfxPlay 		EQU famistudio_sfx_play 
+	CustomAudioMusicPlay 	EQU famistudio_music_play
+	CustomAudioMusicPause 	EQU famistudio_music_pause 
+	CustomAudioUpdate 		EQU famistudio_update 
+	music_data      		EQU music_data_
+	SFX_CH0 EQU FAMISTUDIO_SFX_CH0
+	SFX_CH1 EQU FAMISTUDIO_SFX_CH1
+	SFX_CH2 EQU FAMISTUDIO_SFX_CH2
+	SFX_CH3 EQU FAMISTUDIO_SFX_CH3
+	.include "music/famistudio/famistudio_asm6.asm"
+	.include "music/famistudio/music.asm"
+	.include "music/famistudio/sfx.asm"
+endif
+if CustomMusicDriver == OriginalSMBMusic
 	MusicHeaderOffsetData = MusicHeaderData - 1
 	MHD = MusicHeaderData
-	.include "code/smb1music.asm"
+	.include "music/vanilla/smb1music.asm"
 endif
 
 if CustomMusicDriver != OriginalSMBMusic
@@ -130,7 +148,7 @@ endif
 .pad $c000 ;fixed bank at $c000-$ffff
 	.include "code/fixed.asm"
 	.include "code/text.asm"
-.pad $ff70
+.pad $ff50
 	.include "code/startup.asm"
 .pad $fffa
 ;-------------------------------------------------------------------------------------
