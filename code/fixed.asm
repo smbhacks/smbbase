@@ -103,7 +103,7 @@ if CustomMusicDriver != OriginalSMBMusic
 
 					;Enter music number here (Famitracker music number - 1)
 
-GroundMus        =	0
+GroundMus        =  0
 WaterMus         =  1
 CaveMus          =  2
 CastleMus        =  3
@@ -127,18 +127,18 @@ COIN = 3		-1
 GROWPU = 4		-1
 VINE = 5		-1
 BLAST = 6		-1
-TIMER = 7		-1
-GROW = 8		-1
-EXTRALIFE = 9	-1
-BOWS_FALL = 10	-1
-BJUMP = 11		-1
-BUMP = 12		-1
-STOMP = 13		-1
-SMACK = 14		-1
-INJURY = 15		-1
-FIREBALL = 16	-1
-FLAGPOLE = 17	-1
-SJUMP = 18		-1
+GROW = 7		-1
+EXTRALIFE = 8	-1
+BJUMP = 9		-1
+BUMP = 10		-1
+STOMP = 11		-1
+SMACK = 12		-1
+INJURY = 13		-1
+FIREBALL = 14	-1
+FLAGPOLE = 15	-1
+SJUMP = 16		-1
+TIMER = 17		-1
+BOWS_FALL = 18	-1
 PAUSE_= 19		-1
 
 
@@ -296,7 +296,7 @@ endif
 
 			   Bank_NoSave 2
 if CustomMusicDriver == OriginalSMBMusic
-               jsr SoundEngine           ;play sound
+                     jsr SoundEngine           ;play sound
 else
 			   jsr CustomMusicEngine
 endif
@@ -370,29 +370,29 @@ InitBuffer:    ldx VRAM_Buffer_Offset,y
                lda Mirror_PPU_CTRL_REG2  ;copy mirror of $2001 to register
                sta PPU_CTRL_REG2   
 			   
-			   lda Sprite0HitDetectFlag
-			   beq +
-			   
-			   lda #$1f
-			   sta $c000
-			   sta $c001
-			   sta $e001
-			   cli
-			   
-			   +			   
+		   lda Sprite0HitDetectFlag
+		   beq +
+		   
+		   lda #$1f
+		   sta $c000
+		   sta $c001
+		   sta $e001
+		   cli
+		   
+		   +			   
 
-			   lda HorizontalScroll
-			   sta ScrollH
-			   lda Mirror_PPU_CTRL_REG1
-			   sta ScrollBit
+		   lda HorizontalScroll
+		   sta ScrollH
+		   lda Mirror_PPU_CTRL_REG1
+		   sta ScrollBit
 
-			   Switch_Bank 2
+		   Switch_Bank 2
 if CustomMusicDriver == OriginalSMBMusic
                jsr SoundEngine           ;play sound
 else
-			   jsr CustomMusicEngine
+		   jsr CustomMusicEngine
 endif
-			   Switch_Bank 0
+		   Switch_Bank 0
 			   
                jsr ReadJoypads           ;read joypads
                jsr PauseRoutine          ;handle pause
