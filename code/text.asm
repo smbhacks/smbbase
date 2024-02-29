@@ -164,10 +164,9 @@ OnePlayerGameOver:
 WarpZoneWelcome:
 ;Welcome to Warp Zone!
 	.db $25, $84, @e-@s
-@e
-	.db "WELCOME"-t, space, "TO"-t, space, "WARP"-t, space, "ZONE"-t, exclamation
 @s
-	
+	.db "WELCOME"-t, space, "TO"-t, space, "WARP"-t, space, "ZONE"-t, exclamation
+@e
 ;Misc.
 	.db $26, $25, $01, $24 ;placeholder for left pipe
 	.db $26, $2d, $01, $24 ;placeholder for middle pipe

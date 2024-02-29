@@ -2,7 +2,9 @@
 ;SETTINGS
 ;To enable/disable a setting, delete/add the semicolon (;) before the definition
 
-CustomMusicDriver EQU OriginalSMBMusic		;Use the original SMB audio engine
+;If you don't know which one to use, I recommend reading music/!README.txt
+;CustomMusicDriver EQU OriginalSMBMusic		;Use the original SMB audio engine
+CustomMusicDriver EQU VanillaPlusMusic		;Use a slightly better version of the SMB audio engine
 ;CustomMusicDriver EQU Famitone5Music		;Replace SMB's music driver with Famitone5 (compatible with famitracker)
 ;CustomMusicDriver EQU FamistudioMusic		;Replace SMB's music driver with Famistudio (compatible with famistudio)
 

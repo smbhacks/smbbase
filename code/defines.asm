@@ -24,7 +24,7 @@ JOYPAD_PORT2          = $4017
 OriginalSMBMusic EQU 0
 FamistudioMusic EQU 1
 Famitone5Music EQU 2
-
+VanillaPlusMusic EQU 3
 
 ; GAME SPECIFIC DEFINES
 
@@ -507,11 +507,11 @@ Squ2_SfxLenCounter    = $07bd
 Sfx_SecondaryCounter  = $07be
 Noise_SfxLenCounter   = $07bf
 
-PauseSoundQueue       = $106
+PauseSoundQueue       = $0106
 Square1SoundQueue     = $ff
 Square2SoundQueue     = $fe
 NoiseSoundQueue       = $fd
-AreaMusicQueue        = $107
+AreaMusicQueue        = $0107
 EventMusicQueue       = $fc
 
 Square1SoundBuffer    = $f1
@@ -537,6 +537,24 @@ AreaMusicBuffer_Alt   = $07c5
 PauseModeFlag         = $07c6
 GroundMusicHeaderOfs  = $07c7
 AltRegContentFlag     = $07ca
+
+SQ2_PatternHigh = $f6
+SQ2_PatternLow  = $f5
+SQ1_PatternHigh = $f8
+SQ1_PatternLow  = $f7
+TRI_PatternHigh = $07c0
+TRI_PatternLow  = $07c1
+NOI_PatternHigh = $07c7
+NOI_PatternLow  = $07c8
+SQ2_Offset      = $f9
+SQ1_Offset      = $07c9
+TRI_Offset      = $07b0
+NOI_Offset      = $0108
+CurPattern      = $010a
+Instrument_High = $0150
+Instrument_Low  = $0151
+TriangleMode    = $0152
+Instrument_Length = $0153
 
 ;-------------------------------------------------------------------------------------
 ;CONSTANTS

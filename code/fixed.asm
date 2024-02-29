@@ -77,7 +77,7 @@ ChkStart:      lda SavedJoypad1Bits   ;check to see if start is pressed
                tay
                iny                    ;set pause sfx queue for next pause mode
                sty PauseSoundQueue
-if CustomMusicDriver != OriginalSMBMusic
+if CustomMusicDriver == Famitone5Music || CustomMusicDriver == FamistudioMusic
 			   pha
 			   lda #4
 			   sta NoiseSoundQueue
@@ -99,7 +99,7 @@ ClrPauseTimer: lda GamePauseStatus    ;clear timer flag if timer is at zero and 
 SetPause:      sta GamePauseStatus
 ExitPause:     rts
 
-if CustomMusicDriver != OriginalSMBMusic
+if CustomMusicDriver == Famitone5Music || CustomMusicDriver == FamistudioMusic
 
 					;Enter music number here (Famitracker music number - 1)
 
@@ -295,7 +295,7 @@ endif
 			   sta $2005
 
 			   Bank_NoSave 2
-if CustomMusicDriver == OriginalSMBMusic
+if CustomMusicDriver == OriginalSMBMusic || CustomMusicDriver == VanillaPlusMusic
                      jsr SoundEngine           ;play sound
 else
 			   jsr CustomMusicEngine
@@ -387,7 +387,7 @@ InitBuffer:    ldx VRAM_Buffer_Offset,y
 		   sta ScrollBit
 
 		   Switch_Bank 2
-if CustomMusicDriver == OriginalSMBMusic
+if CustomMusicDriver == OriginalSMBMusic || CustomMusicDriver == VanillaPlusMusic
                jsr SoundEngine           ;play sound
 else
 		   jsr CustomMusicEngine
@@ -4663,7 +4663,7 @@ DelayToAreaEnd:
       jsr DrawStarFlag          ;do sub to draw star flag
       lda EnemyIntervalTimer,x  ;if interval timer set in previous task
       bne StarFlagExit2         ;not yet expired, branch to leave
-      lda songPlaying      ;if event music buffer empty,
+      lda songPlaying           ;if event music buffer empty,
       beq IncrementSFTask2      ;branch to increment task
 
 StarFlagExit2:

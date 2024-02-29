@@ -119,7 +119,13 @@ if CustomMusicDriver == OriginalSMBMusic
 	.include "music/vanilla/smb1music.asm"
 endif
 
-if CustomMusicDriver != OriginalSMBMusic
+if CustomMusicDriver == VanillaPlusMusic
+	MusicHeaderOffsetData = MusicHeaderData - 1
+	MHD = MusicHeaderData
+	.include "music/vanilla_plus/smb1music.asm"
+endif
+
+if CustomMusicDriver == Famitone5Music || CustomMusicDriver == FamistudioMusic
 ; When the music driver is completes playback (and before it loops)
 ; we create a custom callback that will run to clear out the queue
 ; and set song playing to 0
