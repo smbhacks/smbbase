@@ -8,6 +8,19 @@ CustomMusicDriver EQU OriginalSMBMusic		;Use the original SMB audio engine
 ;CustomMusicDriver EQU Famitone5Music		;Replace SMB's music driver with Famitone5 (compatible with famitracker)
 ;CustomMusicDriver EQU FamistudioMusic		;Replace SMB's music driver with Famistudio (compatible with famistudio)
 
+;CHR settings, more information at graphics/chr/!README.txt
+CHR_Feature EQU No_Feature
+;CHR_Feature EQU CHR_Animated
+
+;CHR_SIZE = amount of chr pages * 2 (needs to be a power of 2!)
+if CHR_Feature == CHR_Animated
+CHR_SIZE = 16
+ANIMATION_SPEED = 4 ;you can change this from 1~256
+ANIMATION_FRAMES = 16 ;dont change unless you know what youre doing
+else
+CHR_SIZE = 1 
+endif
+
 ;Mario's walking/running speed
 	;---> in bank0.asm: "MaxLeftXSpdData" and "MaxRightXSpdData"
 	

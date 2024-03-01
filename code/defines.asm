@@ -20,12 +20,6 @@ JOYPAD_PORT           = $4016
 JOYPAD_PORT1          = $4016
 JOYPAD_PORT2          = $4017
 
-; Custom defines
-OriginalSMBMusic EQU 0
-FamistudioMusic EQU 1
-Famitone5Music EQU 2
-VanillaPlusMusic EQU 3
-
 ; GAME SPECIFIC DEFINES
 
 ObjectOffset          = $08
@@ -159,6 +153,14 @@ ScrollH				  = $0102
 ScrollBit			  = $0103
 bank0				  = $0104
 ChangeForHUD		  = $0105
+CHRAnimWait           = $7ff7
+CHRAnimCounter        = $7ff8
+CHR0                  = $7ff9
+CHR2                  = $7ffa
+CHR4                  = $7ffb
+CHR5                  = $7ffc
+CHR6                  = $7ffd
+CHR7                  = $7ffe
 sleeping			  = $7fff
 VerticalFlipFlag      = $0109
 FloateyNum_Control    = $0110
@@ -666,3 +668,12 @@ TitleScreenModeValue  = 0
 GameModeValue         = 1
 VictoryModeValue      = 2
 GameOverModeValue     = 3
+
+; Custom defines
+OriginalSMBMusic EQU 0
+FamistudioMusic EQU 1
+Famitone5Music EQU 2
+VanillaPlusMusic EQU 3
+
+No_Feature EQU 0
+CHR_Animated EQU 1

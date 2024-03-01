@@ -1,6 +1,6 @@
 
 CHRInitTable:
- .db $00,$02,$04,$05,$06,$07
+ .db default_chr, default_chr+2, default_chr+4, default_chr+5, default_chr+6, default_chr+7
 Start:
              ;sei                          ;pretty standard 6502 type init here
              cld
@@ -17,14 +17,6 @@ VBlank2:     lda PPU_STATUS
              bpl VBlank2
              ; make sure to initialize the 8000 and a000 banks before calling code in them!
              Bank_NoSave 0
-             ; Setup the CHR rom banks to the default as well
-             ldx #5
-CHRBankInitLoop:
-             stx $8000
-             lda CHRInitTable,x
-             sta $8001
-             dex
-             bpl CHRBankInitLoop
              ldy #ColdBootOffset          ;load default cold boot pointer
              ldx #$05                     ;this is where we check for a warm boot
 WBootCheck:  lda TopScoreDisplay,x        ;check each score digit in the top score
@@ -55,7 +47,7 @@ ColdBoot:    jsr InitializeMemory         ;clear memory using pointer in Y
              ; Clear the sleeping flag to allow NMI to start
              lda #0
              sta sleeping
-		   sta $a000
+		     sta $a000
              ldx #$1f
              lda #$60
              sta $01
@@ -69,6 +61,15 @@ ColdBoot:    jsr InitializeMemory         ;clear memory using pointer in Y
              inc $01
              dex
              bpl @clear_wram
+             ; Setup the CHR rom banks
+             ldx #5
+CHRBankInitLoop:
+             stx $8000
+             lda CHRInitTable,x
+             sta CHR0,x
+             sta $8001
+             dex
+             bpl CHRBankInitLoop
              lda Mirror_PPU_CTRL_REG1
              ora #%10000000               ;enable NMIs
              jsr WritePPUReg1

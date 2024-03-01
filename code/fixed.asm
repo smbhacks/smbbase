@@ -27,6 +27,43 @@ GetHalfwayPageNumber:
             ldy HalfwayPageNybbles,x
             Switch_Bank 0
             rts
+
+if CHR_Feature == CHR_Animated
+AnimCHRBaseValues:
+      .db animated_chr, animated_chr+2, animated_chr+4, animated_chr+5, animated_chr+6, animated_chr+7
+
+AnimateCHR:
+      lda CHRAnimWait
+      beq @set_chr
+      dec CHRAnimWait
+      rts
+@set_chr:
+      lda #ANIMATION_SPEED-1
+      sta CHRAnimWait
+
+      inc CHRAnimCounter
+      lda CHRAnimCounter
+      cmp #ANIMATION_FRAMES
+      bcc @ok
+      lda #0
+      sta CHRAnimCounter
+@ok:
+      asl
+      asl
+      asl
+      sta $00
+      ldx #5
+@loop:
+      lda AnimCHRBaseValues,x
+      clc
+      adc $00
+      sta CHR0,x
+      dex
+      bpl @loop
+      rts
+
+endif
+
 ;-------------------------------------------------------------------------------------
 ;$00 - vram buffer address table low, also used for pseudorandom bit
 ;$01 - vram buffer address table high
@@ -370,6 +407,16 @@ InitBuffer:    ldx VRAM_Buffer_Offset,y
                lda Mirror_PPU_CTRL_REG2  ;copy mirror of $2001 to register
                sta PPU_CTRL_REG2   
 			   
+if CHR_Feature != No_Feature
+               ldx #5
+-
+               stx $8000
+               lda CHR0,x
+               sta $8001
+               dex
+               bpl -
+endif
+
 		   lda Sprite0HitDetectFlag
 		   beq +
 		   

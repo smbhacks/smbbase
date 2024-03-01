@@ -2171,6 +2171,9 @@ GameCoreRoutine:
       rts
 
 GameEngine:
+if CHR_Feature == CHR_Animated
+              jsr AnimateCHR
+endif
               jsr ProcFireball_Bubble    ;process fireballs and air bubbles
               ldx #$00
 ProcELoop:    stx ObjectOffset           ;put incremented offset in X as enemy object offset

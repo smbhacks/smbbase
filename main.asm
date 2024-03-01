@@ -23,7 +23,7 @@
 ;iNES HEADER
   .db $4E,$45,$53,$1A                           ;  magic signature
   .db 4                                         ;  PRG ROM size in 16384 byte units
-  .db 1                                         ;      CHR
+  .db CHR_SIZE                                  ;  CHR (CHR_SIZE is defined in settings.asm)
   .db $41                                       ;  mirroring type and mapper number lower nibble
   .db %00001000                                 ;  mapper number upper nibble and nes 2.0 id
   .db $00
@@ -77,7 +77,7 @@ endm
 
 .base $8000	;bank 0-1 mapped to $8000-$BFFF
 	.db "----------------"
-	.db "Studsbase v. 2.5"
+	.db "Studsbase v. 3.0"
 	.db "----------------"
 	.include "code/bank0.asm"
 .pad $c000
@@ -163,11 +163,21 @@ endif
 ;-------------------------------------------------------------------------------------
 ;INTERRUPT VECTORS
 
-;.segment "VECTORS"
-      .dw NonMaskableInterrupt
-      .dw Start
-      .dw IRQ  ;unused
+.dw NonMaskableInterrupt
+.dw Start
+.dw IRQ
 
-;.segment "CHRROM"
-.incbin "graphics/chr/smb_chr.chr"
+default_chr = default_chr_start / $400
+;CHR data
+.base $0000
+if CHR_Feature == CHR_Animated
+animated_chr = animated_chr_start / $400
+animated_chr_start:
+default_chr_start:
+.incbin "graphics/chr/animated.chr"
+else
+default_chr_start:
+.incbin "graphics/chr/default.chr"
+endif
+.pad CHR_SIZE*$2000
 
