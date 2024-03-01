@@ -244,7 +244,7 @@ GoContinue:   sta WorldNumber             ;start both players at the first area
 ;-------------------------------------------------------------------------------------
 
 MushroomIconData:
-      .db $07, $22, $49, $83, $ce, $24, $24, $00
+      .db $07, $22, $49, $83, $2a, $24, $24, $00
 
 DrawMushroomIcon:
               ldy #$07                ;read eight bytes to be read by transfer routine
@@ -256,7 +256,7 @@ IconDataRead: lda MushroomIconData,y  ;note that the default position is set for
               beq ExitIcon            ;if set to 1-player game, we're done
               lda #$24                ;otherwise, load blank tile in 1-player position
               sta VRAM_Buffer1+3
-              lda #$ce                ;then load shroom icon tile in 2-player position
+              lda #$2a                ;then load shroom icon tile in 2-player position
               sta VRAM_Buffer1+5
 ExitIcon:     rts
 
@@ -442,17 +442,17 @@ EndExitTwo:    rts                        ;leave
 ;that appear when you defeat enemies
 FloateyNumTileData:
       .db $ff, $ff ;dummy
-      .db $f6, $fb ; "100"
-      .db $f7, $fb ; "200"
-      .db $f8, $fb ; "400"
-      .db $f9, $fb ; "500"
-      .db $fa, $fb ; "800"
-      .db $f6, $50 ; "1000"
-      .db $f7, $50 ; "2000"
-      .db $f8, $50 ; "4000"
-      .db $f9, $50 ; "5000"
-      .db $fa, $50 ; "8000"
-      .db $fd, $fe ; "1-UP"
+      .db $71, $76 ; "100"
+      .db $72, $76 ; "200"
+      .db $73, $76 ; "400"
+      .db $74, $76 ; "500"
+      .db $75, $76 ; "800"
+      .db $71, $70 ; "1000"
+      .db $72, $70 ; "2000"
+      .db $73, $70 ; "4000"
+      .db $74, $70 ; "5000"
+      .db $75, $70 ; "8000"
+      .db $77, $78 ; "1-UP"
 
 ;high nybble is digit number, low nybble is number to
 ;add to the digit of the player's score
@@ -1490,7 +1490,7 @@ DefaultSprOffsets:
       .db $d8, $e8, $24, $f8, $fc, $28, $2c
 
 Sprite0Data:
-      .db $18, $ff, $23, $58
+      .db $18, $79, $23, $58
 
 ;-------------------------------------------------------------------------------------
 

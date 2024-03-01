@@ -516,7 +516,7 @@ EndGameText:   lda #$00                 ;put null terminator at end
                cmp #10                  ;more than 9 lives?
                bcc PutLives
                sbc #10                  ;if so, subtract 10 and put a crown tile
-               ldy #$9f                 ;next to the difference...strange things happen if
+               ldy #$2d                 ;next to the difference...strange things happen if
                sty VRAM_Buffer1+7       ;the number of lives exceeds 19
 PutLives:      sta VRAM_Buffer1+8
                ldy WorldNumber          ;write world and level numbers (incremented for display)
@@ -4447,7 +4447,7 @@ SFlmX:   sta $00                     ;store value here
 SetGfxF: jsr RelativeEnemyPosition   ;get new relative coordinates
          lda Enemy_State,x           ;if bowser's flame not in normal state,
          bne ExFl                    ;branch to leave
-         lda #$51                    ;otherwise, continue
+         lda #$f3                    ;otherwise, continue
          sta $00                     ;write first tile number
          ldy #$02                    ;load attributes without vertical flip by default
          lda FrameCounter
@@ -4545,7 +4545,7 @@ StarFlagXPosAdder:
       .db $00, $08, $00, $08
 
 StarFlagTileData:
-      .db $54, $55, $56, $57
+      .db $e8, $e9, $f8, $f9
 
 RunStarFlagObj:
       lda #$00                 ;initialize enemy frenzy buffer
@@ -4861,9 +4861,9 @@ DrawEraseRope:
          sta VRAM_Buffer1+2,x
          lda Enemy_Y_Speed,y         ;if platform moving upwards, branch 
          bmi EraseR1                 ;to do something else
-         lda #$a2
+         lda #$7d
          sta VRAM_Buffer1+3,x        ;otherwise put tile numbers for left
-         lda #$a3                    ;and right sides of rope in vram buffer
+         lda #$7e                    ;and right sides of rope in vram buffer
          sta VRAM_Buffer1+4,x
          jmp OtherRope               ;jump to skip this part
 EraseR1: lda #$24                    ;put blank tiles in vram buffer
@@ -4884,9 +4884,9 @@ OtherRope:
          sta VRAM_Buffer1+7,x        ;set length again for 2 bytes
          pla                         ;pull first copy of vertical speed from stack
          bpl EraseR2                 ;if moving upwards (note inversion earlier), skip this
-         lda #$a2
+         lda #$7d
          sta VRAM_Buffer1+8,x        ;otherwise put tile numbers for left
-         lda #$a3                    ;and right sides of rope in vram
+         lda #$7e                    ;and right sides of rope in vram
          sta VRAM_Buffer1+9,x        ;transfer buffer
          jmp EndRp                   ;jump to skip this part
 EraseR2: lda #$24                    ;put blank tiles in vram buffer
@@ -7178,7 +7178,7 @@ DrawVine:
          sta Sprite_Attributes+12,y
          sta Sprite_Attributes+20,y
          ldx #$05                   ;set tiles for six sprites
-VineTL:  lda #$e1                   ;set tile number for sprite
+VineTL:  lda #$7b                   ;set tile number for sprite
          sta Sprite_Tilenumber,y
          iny                        ;move offset to next sprite data
          iny
@@ -7189,7 +7189,7 @@ VineTL:  lda #$e1                   ;set tile number for sprite
          ldy $02                    ;get original offset
          lda $00                    ;get offset to vine adding data
          bne SkpVTop                ;if offset not zero, skip this part
-         lda #$e0
+         lda #$7a
          sta Sprite_Tilenumber,y    ;set other tile number for top of vine
 SkpVTop: ldx #$00                   ;start with the first sprite again
 ChkFTop: lda VineStart_Y_Position   ;get original starting vertical coordinate
@@ -7238,10 +7238,10 @@ SecondSprYPos:
       .db $08, $00, $08, $00
 
 FirstSprTilenum:
-      .db $80, $82, $81, $83
+      .db $c8, $ca, $c9, $cb
 
 SecondSprTilenum:
-      .db $81, $83, $80, $82
+      .db $c9, $cb, $c8, $ca
 
 HammerSprAttrib:
       .db $03, $03, $c3, $c3
@@ -7298,13 +7298,12 @@ NoHOffscr:  rts                         ;leave
 ;$03 - residual byte used for flip (but value set here affects nothing)
 ;$04 - attribute byte for floatey number
 ;$05 - used as X coordinate for floatey number
-
 FlagpoleScoreNumTiles:
-      .db $f9, $50
-      .db $f7, $50
-      .db $fa, $fb
-      .db $f8, $fb
-      .db $f6, $fb
+      .db $74, $70
+      .db $72, $70
+      .db $75, $76
+      .db $73, $76
+      .db $71, $76
 
 FlagpoleGfxHandler:
       ldy Enemy_SprDataOffset,x      ;get sprite data offset for flagpole flag
@@ -7329,10 +7328,10 @@ FlagpoleGfxHandler:
       sta Sprite_Attributes,y        ;set attribute bytes for all three sprites
       sta Sprite_Attributes+4,y
       sta Sprite_Attributes+8,y
-      lda #$7e
+      lda #$d8
       sta Sprite_Tilenumber,y        ;put triangle shaped tile
       sta Sprite_Tilenumber+8,y      ;into first and third sprites
-      lda #$7f
+      lda #$d9
       sta Sprite_Tilenumber+4,y      ;put skull tile into second sprite
       lda FlagpoleCollisionYPos      ;get vertical coordinate at time of collision
       beq ChkFlagOffscreen           ;if zero, branch ahead
@@ -7403,10 +7402,10 @@ SetLast2Platform:
       ldy Enemy_SprDataOffset,x   ;get OAM data offset
       sta Sprite_Y_Position+16,y  ;store vertical coordinate or offscreen
       sta Sprite_Y_Position+20,y  ;coordinate into last two sprites as Y coordinate
-      lda #$5b                    ;load default tile for platform (girder)
+      lda #$bc                    ;load default tile for platform (girder)
       ldx CloudTypeOverride
       beq SetPlatformTilenum      ;if cloud level override flag not set, use
-      lda #$75                    ;otherwise load other tile for platform (puff)
+      lda #$fe                    ;otherwise load other tile for platform (puff)
 
 SetPlatformTilenum:
         ldx ObjectOffset            ;get enemy object buffer offset
@@ -7476,9 +7475,9 @@ NotRsNum: lda Misc_Y_Position,x     ;get vertical coordinate
           lda #$02
           sta Sprite_Attributes,y   ;store attribute byte in both sprites
           sta Sprite_Attributes+4,y
-          lda #$f7
+          lda #$72
           sta Sprite_Tilenumber,y   ;put tile numbers into both sprites
-          lda #$fb                  ;that resemble "200"
+          lda #$76                  ;that resemble "200"
           sta Sprite_Tilenumber+4,y
           jmp ExJCGfx               ;then jump to leave (why not an rts here instead?)
 
@@ -7523,10 +7522,10 @@ ExJCGfx: rts                         ;leave
 
 ;tiles arranged in top left, right, bottom left, right order
 PowerUpGfxTable:
-      .db $76, $77, $78, $79 ;regular mushroom
-      .db $d6, $d6, $d9, $d9 ;fire flower
-      .db $8d, $8d, $e4, $e4 ;star
-      .db $76, $77, $78, $79 ;1-up mushroom
+      .db $6e, $6f, $7e, $7f ;regular mushroom
+      .db $6d, $6d, $7d, $7d ;fire flower
+      .db $6c, $6c, $7c, $7c ;star
+      .db $6e, $6f, $7e, $7f ;1-up mushroom
 
 PowerUpAttributes:
       .db $02, $01, $02, $01
@@ -7599,49 +7598,49 @@ PUpOfs: jmp SprObjectOffscrChk     ;jump to check to see if power-up is offscree
 
 ;tiles arranged in top left, right, middle left, right, bottom left, right order
 EnemyGraphicsTable:
-      .db $fc, $fc, $aa, $ab, $ac, $ad  ;buzzy beetle frame 1
-      .db $fc, $fc, $ae, $af, $b0, $b1  ;             frame 2
-      .db $fc, $a5, $a6, $a7, $a8, $a9  ;koopa troopa frame 1
-      .db $fc, $a0, $a1, $a2, $a3, $a4  ;             frame 2
-      .db $69, $a5, $6a, $a7, $a8, $a9  ;koopa paratroopa frame 1
-      .db $6b, $a0, $6c, $a2, $a3, $a4  ;                 frame 2
-      .db $fc, $fc, $96, $97, $98, $99  ;spiny frame 1
-      .db $fc, $fc, $9a, $9b, $9c, $9d  ;      frame 2
-      .db $fc, $fc, $8f, $8e, $8e, $8f  ;spiny's egg frame 1
-      .db $fc, $fc, $95, $94, $94, $95  ;            frame 2
-      .db $fc, $fc, $dc, $dc, $df, $df  ;bloober frame 1
-      .db $dc, $dc, $dd, $dd, $de, $de  ;        frame 2
-      .db $fc, $fc, $b2, $b3, $b4, $b5  ;cheep-cheep frame 1
-      .db $fc, $fc, $b6, $b3, $b7, $b5  ;            frame 2
-      .db $fc, $fc, $70, $71, $72, $73  ;goomba
-      .db $fc, $fc, $6e, $6e, $6f, $6f  ;koopa shell frame 1 (upside-down)
-      .db $fc, $fc, $6d, $6d, $6f, $6f  ;            frame 2
-      .db $fc, $fc, $6f, $6f, $6e, $6e  ;koopa shell frame 1 (rightsideup)
-      .db $fc, $fc, $6f, $6f, $6d, $6d  ;            frame 2
-      .db $fc, $fc, $f4, $f4, $f5, $f5  ;buzzy beetle shell frame 1 (rightsideup)
-      .db $fc, $fc, $f4, $f4, $f5, $f5  ;                   frame 2
-      .db $fc, $fc, $f5, $f5, $f4, $f4  ;buzzy beetle shell frame 1 (upside-down)
-      .db $fc, $fc, $f5, $f5, $f4, $f4  ;                   frame 2
-      .db $fc, $fc, $fc, $fc, $ef, $ef  ;defeated goomba
-      .db $b9, $b8, $bb, $ba, $bc, $bc  ;lakitu frame 1
-      .db $fc, $fc, $bd, $bd, $bc, $bc  ;       frame 2
-      .db $7a, $7b, $da, $db, $d8, $d8  ;princess
-      .db $cd, $cd, $ce, $ce, $cf, $cf  ;mushroom retainer
-      .db $7d, $7c, $d1, $8c, $d3, $d2  ;hammer bro frame 1
-      .db $7d, $7c, $89, $88, $8b, $8a  ;           frame 2
-      .db $d5, $d4, $e3, $e2, $d3, $d2  ;           frame 3
-      .db $d5, $d4, $e3, $e2, $8b, $8a  ;           frame 4
-      .db $e5, $e5, $e6, $e6, $eb, $eb  ;piranha plant frame 1
-      .db $ec, $ec, $ed, $ed, $ee, $ee  ;              frame 2
-      .db $fc, $fc, $d0, $d0, $d7, $d7  ;podoboo
-      .db $bf, $be, $c1, $c0, $c2, $fc  ;bowser front frame 1
-      .db $c4, $c3, $c6, $c5, $c8, $c7  ;bowser rear frame 1
-      .db $bf, $be, $ca, $c9, $c2, $fc  ;       front frame 2
-      .db $c4, $c3, $c6, $c5, $cc, $cb  ;       rear frame 2
-      .db $fc, $fc, $e8, $e7, $ea, $e9  ;bullet bill
-      .db $f2, $f2, $f3, $f3, $f2, $f2  ;jumpspring frame 1
-      .db $f1, $f1, $f1, $f1, $fc, $fc  ;           frame 2
-      .db $f0, $f0, $fc, $fc, $fc, $fc  ;           frame 3
+      .db $ff, $ff, $82, $83, $92, $93  ;buzzy beetle frame 1
+      .db $ff, $ff, $84, $85, $94, $95  ;             frame 2
+      .db $ff, $8b, $9a, $9b, $aa, $ab  ;koopa troopa frame 1
+      .db $ff, $8d, $9c, $9d, $ac, $ad  ;             frame 2
+      .db $8a, $8b, $ba, $9b, $aa, $ab  ;koopa paratroopa frame 1
+      .db $8c, $8d, $bb, $9d, $ac, $ad  ;                 frame 2
+      .db $ff, $ff, $86, $87, $96, $97  ;spiny frame 1
+      .db $ff, $ff, $88, $89, $98, $99  ;      frame 2
+      .db $ff, $ff, $b3, $a3, $a3, $b3  ;spiny's egg frame 1
+      .db $ff, $ff, $b4, $a4, $a4, $b4  ;            frame 2
+      .db $ff, $ff, $cd, $cd, $fd, $fd  ;bloober frame 1
+      .db $cd, $cd, $dd, $dd, $ed, $ed  ;        frame 2
+      .db $ff, $ff, $a6, $a7, $b6, $b7  ;cheep-cheep frame 1
+      .db $ff, $ff, $a5, $a7, $b5, $b7  ;            frame 2
+      .db $ff, $ff, $80, $81, $90, $91  ;goomba
+      .db $ff, $ff, $a1, $a1, $b1, $b1  ;koopa shell frame 1 (upside-down)
+      .db $ff, $ff, $a2, $a2, $b1, $b1  ;            frame 2
+      .db $ff, $ff, $b1, $b1, $a1, $a1  ;koopa shell frame 1 (rightsideup)
+      .db $ff, $ff, $b1, $b1, $a2, $a2  ;            frame 2
+      .db $ff, $ff, $b0, $b0, $a0, $a0  ;buzzy beetle shell frame 1 (rightsideup)
+      .db $ff, $ff, $b0, $b0, $a0, $a0  ;                   frame 2
+      .db $ff, $ff, $a0, $a0, $b0, $b0  ;buzzy beetle shell frame 1 (upside-down)
+      .db $ff, $ff, $a0, $a0, $b0, $b0  ;                   frame 2
+      .db $ff, $ff, $ff, $ff, $b2, $b2  ;defeated goomba
+      .db $8e, $8f, $9e, $9f, $ae, $ae  ;lakitu frame 1
+      .db $ff, $ff, $af, $af, $ae, $ae  ;       frame 2
+      .db $ea, $eb, $fa, $fb, $fc, $fc  ;princess
+      .db $cc, $cc, $dc, $dc, $ec, $ec  ;mushroom retainer
+      .db $c4, $c5, $f6, $f7, $e6, $e7  ;hammer bro frame 1
+      .db $c4, $c5, $d4, $d5, $e4, $e5  ;           frame 2
+      .db $c6, $c7, $d6, $d7, $e6, $e7  ;           frame 3
+      .db $c6, $c7, $d6, $d7, $e4, $e5  ;           frame 4
+      .db $ce, $ce, $de, $de, $ee, $ee  ;piranha plant frame 1
+      .db $cf, $cf, $df, $df, $ef, $ef  ;              frame 2
+      .db $ff, $ff, $da, $da, $db, $db  ;podoboo
+      .db $c2, $c3, $d2, $d3, $e2, $ff  ;bowser front frame 1
+      .db $d0, $d1, $e0, $e1, $f0, $f1  ;bowser rear frame 1
+      .db $c2, $c3, $f2, $e3, $e2, $ff  ;       front frame 2
+      .db $d0, $d1, $e0, $e1, $c0, $c1  ;       rear frame 2
+      .db $ff, $ff, $a8, $a9, $b8, $b9  ;bullet bill
+      .db $6a, $6a, $6b, $6b, $6a, $6a  ;jumpspring frame 1
+      .db $69, $69, $69, $69, $ff, $ff  ;           frame 2
+      .db $68, $68, $ff, $ff, $ff, $ff  ;           frame 3
 
 EnemyGfxTableOffsets:
       .db $0c, $0c, $00, $0c, $0c, $a8, $54, $3c
@@ -8142,7 +8141,7 @@ MoveESprColOffscreen:
 ;$05 - relative X position
 
 DefaultBlockObjTiles:
-      .db $85, $85, $86, $86             ;brick w/ line (these are sprite tiles, not BG!)
+      .db $bd, $bd, $be, $be             ;brick w/ line (these are sprite tiles, not BG!)
 
 DrawBlock:
            lda Block_Rel_YPos            ;get relative vertical coordinate of block object
@@ -8166,13 +8165,13 @@ DBlkLoop:  lda DefaultBlockObjTiles,x    ;get left tile number
            lda AreaType
            cmp #$01                      ;check for ground level type area
            beq ChkRep                    ;if found, branch to next part
-           lda #$86
+           lda #$be
            sta Sprite_Tilenumber,y       ;otherwise remove brick tiles with lines
            sta Sprite_Tilenumber+4,y     ;and replace then with lineless brick tiles
 ChkRep:    lda Block_Metatile,x          ;check replacement metatile
            cmp #$c4                      ;if not used block metatile, then
            bne BlkOffscr                 ;branch ahead to use current graphics
-           lda #$87                      ;set A for used block tile
+           lda #$bf                      ;set A for used block tile
            iny                           ;increment Y to write to tile bytes
            jsr DumpFourSpr               ;do sub to dump into all four sprites
            dey                           ;return Y to original offset
@@ -8212,13 +8211,13 @@ ExDBlk: rts
 DrawBrickChunks:
          lda #$02                   ;set palette bits here
          sta $00
-         lda #$75                   ;set tile number for ball (something residual, likely)
+         lda #$fe                   ;set tile number for ball (something residual, likely)
          ldy GameEngineSubroutine
          cpy #$05                   ;if end-of-level routine running,
          beq DChunks                ;use palette and tile number assigned
          lda #$03                   ;otherwise set different palette bits
          sta $00
-         lda #$84                   ;and set tile number for brick chunks
+         lda #$67                   ;and set tile number for brick chunks
 DChunks: ldy Block_SprDataOffset,x  ;get OAM data offset
          iny                        ;increment to start with tile bytes in OAM
          jsr DumpFourSpr            ;do sub to dump tile number into all four sprites
@@ -8289,7 +8288,7 @@ DrawFirebar:
        lsr
        pha                      ;save result to stack
        and #$01                 ;mask out all but last bit
-       eor #$64                 ;set either tile $64 or $65 as fireball tile
+       eor #$50                 ;set either tile $64 or $65 as fireball tile
        sta Sprite_Tilenumber,y  ;thus tile changes every four frames
        pla                      ;get from stack
        lsr                      ;divide by four again
@@ -8303,7 +8302,7 @@ FireA: sta Sprite_Attributes,y  ;store attribute byte and leave
 ;-------------------------------------------------------------------------------------
 
 ExplosionTiles:
-      .db $68, $67, $66
+      .db $64, $65, $66
 
 DrawExplosion_Fireball:
       ldy Alt_SprDataOffset,x  ;get OAM data offset of alternate sort for fireball's explosion
@@ -8358,7 +8357,7 @@ KillFireBall:
 
 DrawSmallPlatform:
        ldy Enemy_SprDataOffset,x   ;get OAM data offset
-       lda #$5b                    ;load tile number for small platforms
+       lda #$bc                    ;load tile number for small platforms
        iny                         ;increment offset for tile numbers
        jsr DumpSixSpr              ;dump tile number into all six sprites
        iny                         ;increment offset for attributes
@@ -8431,7 +8430,7 @@ DrawBubble:
         sta Sprite_X_Position,y     ;store as X coordinate here
         lda Bubble_Rel_YPos         ;get relative vertical coordinate
         sta Sprite_Y_Position,y     ;store as Y coordinate here
-        lda #$74
+        lda #$52
         sta Sprite_Tilenumber,y     ;put air bubble tile into OAM data
         lda #$02
         sta Sprite_Attributes,y     ;set attribute byte
@@ -8448,39 +8447,39 @@ PlayerGfxTblOffsets:
 
 PlayerGraphicsTable:
 ;big player table
-      .db $00, $01, $02, $03, $04, $05, $06, $07 ;walking frame 1
-      .db $08, $09, $0a, $0b, $0c, $0d, $0e, $0f ;        frame 2
-      .db $10, $11, $12, $13, $14, $15, $16, $17 ;        frame 3
-      .db $18, $19, $1a, $1b, $1c, $1d, $1e, $1f ;skidding
-      .db $20, $21, $22, $23, $24, $25, $26, $27 ;jumping
-      .db $08, $09, $28, $29, $2a, $2b, $2c, $2d ;swimming frame 1
-      .db $08, $09, $0a, $0b, $0c, $30, $2c, $2d ;         frame 2
-      .db $08, $09, $0a, $0b, $2e, $2f, $2c, $2d ;         frame 3
-      .db $08, $09, $28, $29, $2a, $2b, $5c, $5d ;climbing frame 1
-      .db $08, $09, $0a, $0b, $0c, $0d, $5e, $5f ;         frame 2
-      .db $fc, $fc, $08, $09, $58, $59, $5a, $5a ;crouching
-      .db $08, $09, $28, $29, $2a, $2b, $0e, $0f ;fireball throwing
+      .db $00, $01, $10, $11, $20, $21, $30, $31 ;walking frame 1
+      .db $02, $03, $12, $13, $22, $23, $32, $33 ;        frame 2
+      .db $04, $05, $14, $15, $24, $25, $34, $35 ;        frame 3
+      .db $06, $07, $16, $17, $26, $27, $36, $37 ;skidding
+      .db $08, $09, $18, $19, $28, $29, $38, $39 ;jumping
+      .db $02, $03, $0a, $0b, $1a, $1b, $2a, $2b ;swimming frame 1
+      .db $02, $03, $12, $13, $22, $1d, $2a, $2b ;         frame 2
+      .db $02, $03, $12, $13, $0c, $0d, $2a, $2b ;         frame 3
+      .db $02, $03, $0a, $0b, $1a, $1b, $5c, $5d ;climbing frame 1
+      .db $02, $03, $12, $13, $22, $23, $5e, $5f ;         frame 2
+      .db $ff, $ff, $02, $03, $54, $55, $53, $53 ;crouching
+      .db $02, $03, $0a, $0b, $1a, $1b, $32, $33 ;fireball throwing
 
 ;small player table
-      .db $fc, $fc, $fc, $fc, $32, $33, $34, $35 ;walking frame 1
-      .db $fc, $fc, $fc, $fc, $36, $37, $38, $39 ;        frame 2
-      .db $fc, $fc, $fc, $fc, $3a, $37, $3b, $3c ;        frame 3
-      .db $fc, $fc, $fc, $fc, $3d, $3e, $3f, $40 ;skidding
-      .db $fc, $fc, $fc, $fc, $32, $41, $42, $43 ;jumping
-      .db $fc, $fc, $fc, $fc, $32, $33, $44, $45 ;swimming frame 1
-      .db $fc, $fc, $fc, $fc, $32, $33, $44, $47 ;         frame 2
-      .db $fc, $fc, $fc, $fc, $32, $33, $48, $49 ;         frame 3
-      .db $fc, $fc, $fc, $fc, $32, $33, $90, $91 ;climbing frame 1
-      .db $fc, $fc, $fc, $fc, $3a, $37, $92, $93 ;         frame 2
-      .db $fc, $fc, $fc, $fc, $9e, $9e, $9f, $9f ;killed
+      .db $ff, $ff, $ff, $ff, $0e, $0f, $1e, $1f ;walking frame 1
+      .db $ff, $ff, $ff, $ff, $2e, $2f, $3e, $3f ;        frame 2
+      .db $ff, $ff, $ff, $ff, $41, $2f, $44, $45 ;        frame 3
+      .db $ff, $ff, $ff, $ff, $3c, $3d, $4c, $4d ;skidding
+      .db $ff, $ff, $ff, $ff, $0e, $40, $42, $43 ;jumping
+      .db $ff, $ff, $ff, $ff, $0e, $0f, $3a, $3b ;swimming frame 1
+      .db $ff, $ff, $ff, $ff, $0e, $0f, $3a, $4b ;         frame 2
+      .db $ff, $ff, $ff, $ff, $0e, $0f, $2c, $2d ;         frame 3
+      .db $ff, $ff, $ff, $ff, $0e, $0f, $58, $59 ;climbing frame 1
+      .db $ff, $ff, $ff, $ff, $41, $2f, $5a, $5b ;         frame 2
+      .db $ff, $ff, $ff, $ff, $4e, $4e, $4f, $4f ;killed
 
 ;used by both player sizes
-      .db $fc, $fc, $fc, $fc, $3a, $37, $4f, $4f ;small player standing
-      .db $fc, $fc, $00, $01, $4c, $4d, $4e, $4e ;intermediate grow frame
-      .db $00, $01, $4c, $4d, $4a, $4a, $4b, $4b ;big player standing
+      .db $ff, $ff, $ff, $ff, $41, $2f, $49, $49 ;small player standing
+      .db $ff, $ff, $00, $01, $46, $47, $48, $48 ;intermediate grow frame
+      .db $00, $01, $46, $47, $56, $56, $57, $57 ;big player standing
 
 SwimKickTileNum:
-      .db $31, $46
+      .db $1c, $4a
 
 PlayerGfxHandler:
         lda InjuryTimer             ;if player's injured invincibility timer

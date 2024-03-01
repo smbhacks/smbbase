@@ -10,7 +10,7 @@ coin = $2e
 cross = $29
 dash = $28
 exclamation = $2b
-period = $af
+period = $2c
 t = $37
 ;Example text: 5 TIMES 5 EQUALS 25
 ;What you need to input: .db 5, space, "TIMES"-t, space, 5, space, "EQUALS"-t, space, 2, 5
