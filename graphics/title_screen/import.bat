@@ -1,0 +1,2 @@
+reformat_titlescreen_data
+pause

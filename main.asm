@@ -77,7 +77,7 @@ endm
 
 .base $8000	;bank 0-1 mapped to $8000-$BFFF
 	.db "----------------"
-	.db "Studsbase v. 2.4"
+	.db "Studsbase v. 2.5"
 	.db "----------------"
 	.include "code/bank0.asm"
 .pad $c000
@@ -169,5 +169,5 @@ endif
       .dw IRQ  ;unused
 
 ;.segment "CHRROM"
-.incbin "graphics/smb_chr.chr"
+.incbin "graphics/chr/smb_chr.chr"
 

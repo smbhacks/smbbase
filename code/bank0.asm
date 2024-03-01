@@ -765,30 +765,35 @@ OutputCol: lda #$06                  ;set vram buffer to output rendered column 
 ;$00 - vram buffer address table low
 ;$01 - vram buffer address table high
 
+TitleScreenData:
+TitleScreenDataSize = @e - TitleScreenData
+.incbin "graphics/title_screen/titlescreen_smb.nam"
+@e
+
 DrawTitleScreen:
             lda OperMode                 ;are we in title screen mode?
             bne IncModeTask_B            ;if not, exit
-            lda #>TitleScreenDataOffset  ;load address $1ec0 into
-            sta PPU_ADDRESS              ;the vram address register
-            lda #<TitleScreenDataOffset
-            sta PPU_ADDRESS
+            lda #<TitleScreenData
+            sta $02
+            lda #>TitleScreenData
+            sta $03
             lda #$03                     ;put address $0300 into
             sta $01                      ;the indirect at $00
             ldy #$00
             sty $00
-            lda PPU_DATA                 ;do one garbage read
-OutputTScr: lda PPU_DATA                 ;get title screen from chr-rom
+OutputTScr: lda ($02),y                 ;get title screen from chr-rom
             sta ($00),y                  ;store 256 bytes into buffer
             iny
             bne ChkHiByte                ;if not past 256 bytes, do not increment
             inc $01                      ;otherwise increment high byte of indirect
-ChkHiByte:  lda $01                      ;check high byte?
-            cmp #$04                     ;at $0400?
-            bne OutputTScr               ;if not, loop back and do another
-            cpy #$3a                     ;check if offset points past end of data
-            bcc OutputTScr               ;if not, loop back and do another
-            lda #$05                     ;set buffer transfer control to $0300,
-            jmp SetVRAMAddr_B            ;increment task and exit
+            inc $03
+ChkHiByte:  lda $01                      
+            cmp #>TitleScreenDataSize + $03
+            bne OutputTScr 
+            cpy #<TitleScreenDataSize
+            bcc OutputTScr
+            lda #$05
+            jmp SetVRAMAddr_B            
 
 ;-------------------------------------------------------------------------------------
 
