@@ -31,7 +31,6 @@ int main(int argc, char* argv[])
     for (int c = 0; c < 0x400;)
     {
         //go to allowed tile
-        if (c == 0x400) break;
         while (buffer[c] == BAD_TILE && c < 0x3c0) c++;
 
         //set address
@@ -48,11 +47,12 @@ int main(int argc, char* argv[])
             tiles.push_back(buffer[c]);
             do length++;
             while (buffer[c + length] == buffer[c + length + 1] && (c + length) < 0x400 - 2);
-            if (c + length == 0x3fe) if (buffer[c + length] == buffer[c + length + 1]) length += 2;
+            if (c + length == 0x3fe) if (buffer[c + length] == buffer[c + length + 1]) length++;
+            length++;
         }
         else
         {
-            while ((buffer[c] != BAD_TILE || (c + length) >= 0x3c0) && (c + length) < 0x400)
+            while ((buffer[c + length] != BAD_TILE || (c + length) >= 0x3c0) && (c + length) < 0x400)
             {
                 tiles.push_back(buffer[c + length]);
                 length++;
