@@ -404,7 +404,7 @@ InitBuffer:
 
 .if CHR_Feature <> No_Feature
       ldx #5
-@update_chr
+@update_chr:
       stx $8000
       lda CHR0,x
       sta $8001

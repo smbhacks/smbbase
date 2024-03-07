@@ -20,7 +20,9 @@
 
 ;Assembles with x816.
 ;-------------------------------------------------------------------------------------
-;iNES HEADER
+;HEADER
+
+.segment "INESHDR"
   .byte $4E,$45,$53,$1A                           ;  magic signature
   .byte 4                                         ;  PRG ROM size in 16384 byte units
   .byte CHR_SIZE                                  ;  CHR (CHR_SIZE is defined in settings.asm)
@@ -30,9 +32,10 @@
   .byte $00
   .byte $07                                       ; set 8kb PRG RAM (64 << 7)
   .byte $00,$00,$00,$00,$00
-  .org $8000
+
 ;-------------------------------------------------------------------------------------
 ;MISC
+
 .include "misc/charmap.inc"
 .feature force_range
 
@@ -135,4 +138,13 @@ CustomMusicLoopCallback:
 .word IRQ
 ;-------------------------------------------------------------------------------------
 .segment "CHR"
+default_chr = default_chr_start / $400
+.if CHR_Feature = CHR_Animated
+animated_chr = animated_chr_start / $400
+animated_chr_start:
+default_chr_start:
+.incbin "graphics/chr/animated.chr"
+.else
+default_chr_start:
 .incbin "graphics/chr/default.chr"
+.endif

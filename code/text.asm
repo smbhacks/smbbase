@@ -176,8 +176,8 @@ WarpZoneWelcome:
     .byte $ff ;eod
 
 GameTextOffsets:
-  .byte TopStatusBarLineopStatusBarLine, TopStatusBarLineopStatusBarLine
-  .byte WorldLivesDisplayopStatusBarLine, WorldLivesDisplayopStatusBarLine
-  .byte TwoPlayerTimeUpopStatusBarLine, OnePlayerTimeUpopStatusBarLine
-  .byte TwoPlayerGameOveropStatusBarLine, OnePlayerGameOveropStatusBarLine
-  .byte WarpZoneWelcomeopStatusBarLine, WarpZoneWelcomeopStatusBarLine
+  .byte TopStatusBarLine-TopStatusBarLine, TopStatusBarLine-TopStatusBarLine
+  .byte WorldLivesDisplay-TopStatusBarLine, WorldLivesDisplay-TopStatusBarLine
+  .byte TwoPlayerTimeUp-TopStatusBarLine, OnePlayerTimeUp-TopStatusBarLine
+  .byte TwoPlayerGameOver-TopStatusBarLine, OnePlayerGameOver-TopStatusBarLine
+  .byte WarpZoneWelcome-TopStatusBarLine, WarpZoneWelcome-TopStatusBarLine

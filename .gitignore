@@ -11,3 +11,6 @@ music/famitone/sfx.nsf
 music/famistudio/music.asm
 music/famistudio/sfx.asm
 .vscode/tasks.json
+map.txt
+*.dbg
+*.o
