@@ -47,7 +47,8 @@
 ;-------------------------------------------------------------------------------------
 ;DEFINES
 
-.include "code/defines.asm"
+.include "code/defines_.asm"
+.include "code/constants.asm"
 .include "code/settings.asm"
 
 ;-------------------------------------------------------------------------------------

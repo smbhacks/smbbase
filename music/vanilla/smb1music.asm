@@ -873,7 +873,7 @@ AlternateLengthHandler:
 ProcessLengthData:
         and #%00000111              ;clear all but the three LSBs
         clc
-        adc $f0                     ;add offset loaded from first header byte
+        adc NoteLenLookupTblOfs     ;add offset loaded from first header byte
         adc NoteLengthTblAdder      ;add extra if time running out music
         tay
         lda MusicLengthLookupTbl,y  ;load length

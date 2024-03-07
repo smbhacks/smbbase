@@ -3818,8 +3818,8 @@ ExSwCC: rts                       ;leave
 ;$05 - used to evaluate mirror data
 ;$06 - used to store either screen X coordinate or sprite data offset
 ;$07 - used to store screen Y coordinate
-;$ed - used to hold maximum length of firebar
-;$ef - used to hold high byte of spinstate
+;Local_ed - used to hold maximum length of firebar
+;Local_ef - used to hold high byte of spinstate
 
 ;horizontal adder is at first byte + high byte of spinstate,
 ;vertical adder is same + 8 bytes, two's compliment
@@ -3869,7 +3869,7 @@ SusFbar:  lda FirebarSpinState_High,x ;get high byte of spinstate
 SkpFSte:  clc
           adc #$01                    ;add one to spinning thing to avoid horizontal state
           sta FirebarSpinState_High,x
-SetupGFB: sta $ef                     ;save high byte of spinning thing, modified or otherwise
+SetupGFB: sta Local_ef                     ;save high byte of spinning thing, modified or otherwise
           jsr RelativeEnemyPosition   ;get relative coordinates to screen
           jsr GetFirebarPosition      ;do a sub here (residual, too early to be used now)
           ldy Enemy_SprDataOffset,x   ;get OAM data offset
@@ -3887,10 +3887,10 @@ SetupGFB: sta $ef                     ;save high byte of spinning thing, modifie
           cmp #$1f                    ;are we doing a long firebar?
           bcc SetMFbar                ;no, branch then
           ldy #$0b                    ;otherwise load value for long firebars
-SetMFbar: sty $ed                     ;store maximum value for length of firebars
+SetMFbar: sty Local_ed                     ;store maximum value for length of firebars
           lda #$00
           sta $00                     ;initialize counter here
-DrawFbar: lda $ef                     ;load high byte of spinstate
+DrawFbar: lda Local_ef                     ;load high byte of spinstate
           jsr GetFirebarPosition      ;get fireball position data depending on firebar part
           jsr DrawFirebar_Collision   ;position it properly, draw it and do collision detection
           lda $00                     ;check which firebar part
@@ -3901,7 +3901,7 @@ DrawFbar: lda $ef                     ;load high byte of spinstate
           sta $06                     ;using long firebar offset, then store as new one here
 NextFbar: inc $00                     ;move onto the next firebar part
           lda $00
-          cmp $ed                     ;if we end up at the maximum part, go on and leave
+          cmp Local_ed                     ;if we end up at the maximum part, go on and leave
           bcc DrawFbar                ;otherwise go back and do another
 SkipFBar: rts
 
@@ -6043,7 +6043,7 @@ GetEnemyBoundBoxOfsArg:
 ;-------------------------------------------------------------------------------------
 ;$00-$01 - used to hold many values, essentially temp variables
 ;$04 - holds lower nybble of vertical coordinate from block buffer routine
-;$eb - used to hold block buffer adder
+;Local_eb - used to hold block buffer adder
 
 PlayerBGUpperExtent:
       .byte $20, $10
@@ -6086,7 +6086,7 @@ ChkCollSize:
          bne GBBAdr                  ;if swimming flag set, skip ahead
          dey                         ;otherwise decrement offset
 GBBAdr:  lda BlockBufferAdderData,y  ;get value using offset
-         sta $eb                     ;store value here
+         sta Local_eb                     ;store value here
          tay                         ;put value into Y, as offset for block buffer routine
          ldx PlayerSize              ;get player's size as offset
          lda CrouchingFlag
@@ -6122,7 +6122,7 @@ NYSpd: lda #$01               ;set player's vertical speed to nullify
        sta Player_Y_Speed     ;jump or swim
 
 DoFootCheck:
-      ldy $eb                    ;get block buffer adder offset
+      ldy Local_eb                    ;get block buffer adder offset
       lda Player_Y_Position
       cmp #$cf                   ;check to see how low player is
       bcs DoPlayerSideCheck      ;if player is too far down on screen, skip all of this
@@ -6174,7 +6174,7 @@ InitSteP: lda #$00
           sta Player_State           ;set player's state to normal
 
 DoPlayerSideCheck:
-      ldy $eb       ;get block buffer adder offset
+      ldy Local_eb       ;get block buffer adder offset
       iny
       iny           ;increment offset 2 bytes to use adders for side collisions
       lda #$02      ;set value here to be used as counter
@@ -6182,7 +6182,7 @@ DoPlayerSideCheck:
 
 SideCheckLoop:
        iny                       ;move onto the next one
-       sty $eb                   ;store it
+       sty Local_eb                   ;store it
        lda Player_Y_Position
        cmp #$20                  ;check player's vertical position
        bcc BHalf                 ;if player is in status bar area, branch ahead to skip this part
@@ -6196,7 +6196,7 @@ SideCheckLoop:
        beq BHalf                 ;if collided with water pipe (top), branch ahead
        jsr CheckForClimbMTiles   ;do sub to see if player bumped into anything climbable
        bcc CheckSideMTiles       ;if not, branch to alternate section of code
-BHalf: ldy $eb                   ;load block adder offset
+BHalf: ldy Local_eb                   ;load block adder offset
        iny                       ;increment it
        lda Player_Y_Position     ;get player's vertical position
        cmp #$08
@@ -6688,7 +6688,7 @@ SetD6Ste:    sta Enemy_State,x         ;set as new state
 
 ;--------------------------------
 ;$00 - used to store bitmask (not used but initialized here)
-;$eb - used in DoEnemySideCheck as counter and to compare moving directions
+;Local_eb - used in DoEnemySideCheck as counter and to compare moving directions
 
 DoEnemySideCheck:
           lda Enemy_Y_Position,x     ;if enemy within status bar, branch to leave
@@ -6696,8 +6696,8 @@ DoEnemySideCheck:
           bcc ExESdeC
           ldy #$16                   ;start by finding block to the left of enemy ($00,$14)
           lda #$02                   ;set value here in what is also used as
-          sta $eb                    ;OAM data offset
-SdeCLoop: lda $eb                    ;check value
+          sta Local_eb                    ;OAM data offset
+SdeCLoop: lda Local_eb                    ;check value
           cmp Enemy_MovingDir,x      ;compare value against moving direction
           bne NextSdeC               ;branch if different and do not seek block there
           lda #$01                   ;set flag in A for save horizontal coordinate
@@ -6705,7 +6705,7 @@ SdeCLoop: lda $eb                    ;check value
           beq NextSdeC               ;if nothing found, branch
           jsr ChkForNonSolids        ;check for non-solid blocks
           bne ChkForBump_HammerBroJ  ;branch if not found
-NextSdeC: dec $eb                    ;move to the next direction
+NextSdeC: dec Local_eb                    ;move to the next direction
           iny
           cpy #$18                   ;increment Y, loop only if Y < $18, thus we check
           bcc SdeCLoop               ;enemy ($00, $14) and ($10, $14) pixel coordinates
@@ -7642,10 +7642,10 @@ PUpOfs: jmp SprObjectOffscrChk     ;jump to check to see if power-up is offscree
 ;$03 - used to store moving direction, used to flip enemies horizontally
 ;$04 - used to store enemy's sprite attributes
 ;$05 - used to store X position
-;$eb - used to hold sprite data offset
-;$ec - used to hold either altered enemy state or special value used in gfx handler as condition
-;$ed - used to hold enemy state from buffer
-;$ef - used to hold enemy code used in gfx handler (may or may not resemble Enemy_ID values)
+;Local_eb - used to hold sprite data offset
+;Local_ec - used to hold either altered enemy state or special value used in gfx handler as condition
+;Local_ed - used to hold enemy state from buffer
+;Local_ef - used to hold enemy code used in gfx handler (may or may not resemble Enemy_ID values)
 
 ;tiles arranged in top left, right, middle left, right, bottom left, right order
 EnemyGraphicsTable:
@@ -7717,7 +7717,7 @@ EnemyGfxHandler:
       lda Enemy_Rel_XPos          ;get enemy object horizontal position
       sta $05                     ;relative to screen
       ldy Enemy_SprDataOffset,x
-      sty $eb                     ;get sprite data offset
+      sty Local_eb                     ;get sprite data offset
       lda #$00
       sta VerticalFlipFlag        ;initialize vertical flip flag by default
       lda Enemy_MovingDir,x
@@ -7735,7 +7735,7 @@ EnemyGfxHandler:
 
 CheckForRetainerObj:
       lda Enemy_State,x           ;store enemy state
-      sta $ed
+      sta Local_ed
       and #%00011111              ;nullify all but 5 LSB and use as Y
       tay
       lda Enemy_ID,x              ;check for mushroom retainer/princess object
@@ -7756,7 +7756,7 @@ CheckForBulletBillCV:
        ora #%00100000              ;otherwise do so
 SBBAt: sta $04                     ;set new sprite attributes
        ldy #$00                    ;nullify saved enemy state both in Y and in
-       sty $ed                     ;memory location here
+       sty Local_ed                     ;memory location here
        lda #$08                    ;set specific value to unconditionally branch once
 
 CheckForJumpspring:
@@ -7767,8 +7767,8 @@ CheckForJumpspring:
       lda JumpspringFrameOffsets,x ;load data using frame number as offset
 
 CheckForPodoboo:
-      sta $ef                 ;store saved enemy object value here
-      sty $ec                 ;and Y here (enemy state -2 MSB if not changed)
+      sta Local_ef                 ;store saved enemy object value here
+      sty Local_ec                 ;and Y here (enemy state -2 MSB if not changed)
       ldx ObjectOffset        ;get enemy object offset
       cmp #$0c                ;check for podoboo object
       bne CheckBowserGfxFlag  ;branch if not found
@@ -7783,17 +7783,17 @@ CheckBowserGfxFlag:
              cmp #$01
              beq SBwsrGfxOfs
              iny                 ;otherwise draw bowser's rear
-SBwsrGfxOfs: sty $ef
+SBwsrGfxOfs: sty Local_ef
 
 CheckForGoomba:
-          ldy $ef               ;check value for goomba object
+          ldy Local_ef               ;check value for goomba object
           cpy #Goomba
           bne CheckBowserFront  ;branch if not found
           lda Enemy_State,x
           cmp #$02              ;check for defeated state
           bcc GmbaAnim          ;if not defeated, go ahead and animate
           ldx #$04              ;if defeated, write new value here
-          stx $ec
+          stx Local_ec
 GmbaAnim: and #%00100000        ;check for d5 set in enemy object state
           ora TimerControl      ;or timer disable flag set
           bne CheckBowserFront  ;if either condition true, do not animate goomba
@@ -7810,7 +7810,7 @@ CheckBowserFront:
              sta $04
              lda EnemyGfxTableOffsets,y  ;load value based on enemy object as offset
              tax                         ;save as X
-             ldy $ec                     ;get previously saved value
+             ldy Local_ec                     ;get previously saved value
              lda BowserGfxFlag
              beq CheckForSpiny           ;if not drawing bowser object at all, skip all of this
              cmp #$01
@@ -7818,7 +7818,7 @@ CheckBowserFront:
              lda BowserBodyControls      ;check bowser's body control bits
              bpl ChkFrontSte             ;branch if d7 not set (control's bowser's mouth)
              ldx #$de                    ;otherwise load offset for second frame
-ChkFrontSte: lda $ed                     ;check saved enemy state
+ChkFrontSte: lda Local_ed                     ;check saved enemy state
              and #%00100000              ;if bowser not defeated, do not set flag
              beq DrawBowser
 
@@ -7833,7 +7833,7 @@ CheckBowserRear:
             and #$01
             beq ChkRearSte          ;branch if d0 not set (control's bowser's feet)
             ldx #$e4                ;otherwise load offset for second frame
-ChkRearSte: lda $ed                 ;check saved enemy state
+ChkRearSte: lda Local_ed                 ;check saved enemy state
             and #%00100000          ;if bowser not defeated, do not set flag
             beq DrawBowser
             lda $02                 ;subtract 16 pixels from
@@ -7851,13 +7851,13 @@ CheckForSpiny:
         lda #$02
         sta $03                ;set enemy direction to reverse sprites horizontally
         lda #$05
-        sta $ec                ;set enemy state
+        sta Local_ec                ;set enemy state
 NotEgg: jmp CheckForHammerBro  ;skip a big chunk of this if we found spiny but not in egg
 
 CheckForLakitu:
         cpx #$90                  ;check value for lakitu's offset loaded
         bne CheckUpsideDownShell  ;branch if not loaded
-        lda $ed
+        lda Local_ed
         and #%00100000            ;check for d5 set in enemy state
         bne NoLAFr                ;branch if set
         lda FrenzyEnemyTimer
@@ -7867,25 +7867,25 @@ CheckForLakitu:
 NoLAFr: jmp CheckDefeatedState    ;skip this next part if we found lakitu but alt frame not needed
 
 CheckUpsideDownShell:
-      lda $ef                    ;check for enemy object => $04
+      lda Local_ef                    ;check for enemy object => $04
       cmp #$04
       bcs CheckRightSideUpShell  ;branch if true
       cpy #$02
       bcc CheckRightSideUpShell  ;branch if enemy state < $02
       ldx #$5a                   ;set for upside-down koopa shell by default
-      ldy $ef
+      ldy Local_ef
       cpy #BuzzyBeetle           ;check for buzzy beetle object
       bne CheckRightSideUpShell
       ldx #$7e                   ;set for upside-down buzzy beetle shell if found
       inc $02                    ;increment vertical position by one pixel
 
 CheckRightSideUpShell:
-      lda $ec                ;check for value set here
+      lda Local_ec                ;check for value set here
       cmp #$04               ;if enemy state < $02, do not change to shell, if
       bne CheckForHammerBro  ;enemy state => $02 but not = $04, leave shell upside-down
       ldx #$72               ;set right-side up buzzy beetle shell by default
       inc $02                ;increment saved vertical position by one pixel
-      ldy $ef
+      ldy Local_ef
       cpy #BuzzyBeetle       ;check for buzzy beetle object
       beq CheckForDefdGoomba ;branch if found
       ldx #$66               ;change to right-side up koopa shell if not found
@@ -7895,7 +7895,7 @@ CheckForDefdGoomba:
       cpy #Goomba            ;check for goomba object (necessary if previously
       bne CheckForHammerBro  ;failed buzzy beetle object test)
       ldx #$54               ;load for regular goomba
-      lda $ed                ;note that this only gets performed if enemy state => $02
+      lda Local_ed                ;note that this only gets performed if enemy state => $02
       and #%00100000         ;check saved enemy state for d5 set
       bne CheckForHammerBro  ;branch if set
       ldx #$8a               ;load offset for defeated goomba
@@ -7903,10 +7903,10 @@ CheckForDefdGoomba:
 
 CheckForHammerBro:
       ldy ObjectOffset
-      lda $ef                  ;check for hammer bro object
+      lda Local_ef                  ;check for hammer bro object
       cmp #HammerBro
       bne CheckForBloober      ;branch if not found
-      lda $ed
+      lda Local_ed
       beq CheckToAnimateEnemy  ;branch if not in normal enemy state
       and #%00001000
       beq CheckDefeatedState   ;if d3 not set, branch further away
@@ -7929,7 +7929,7 @@ CheckForBloober:
       jmp CheckAnimationStop   ;and do something else
 
 CheckToAnimateEnemy:
-      lda $ef                  ;check for specific enemy objects
+      lda Local_ef                  ;check for specific enemy objects
       cmp #Goomba
       beq CheckDefeatedState   ;branch if goomba
       cmp #$08
@@ -7947,7 +7947,7 @@ CheckToAnimateEnemy:
       bcs CheckDefeatedState   ;if so, leave the offset alone (use princess)
       ldx #$a2                 ;otherwise, set for mushroom retainer object instead
       lda #$03                 ;set alternate state here
-      sta $ec
+      sta Local_ec
       bne CheckDefeatedState   ;unconditional branch
 
 CheckForSecondFrame:
@@ -7956,7 +7956,7 @@ CheckForSecondFrame:
       bne CheckDefeatedState      ;branch if timing is off
 
 CheckAnimationStop:
-      lda $ed                 ;check saved enemy state
+      lda Local_ed                 ;check saved enemy state
       and #%10100000          ;for d7 or d5, or check for timers stopped
       ora TimerControl
       bne CheckDefeatedState  ;if either condition true, branch
@@ -7966,25 +7966,25 @@ CheckAnimationStop:
       tax                     ;to animate various enemy objects
 
 CheckDefeatedState:
-      lda $ed               ;check saved enemy state
+      lda Local_ed               ;check saved enemy state
       and #%00100000        ;for d5 set
       beq DrawEnemyObject   ;branch if not set
-      lda $ef
+      lda Local_ef
       cmp #$04              ;check for saved enemy object => $04
       bcc DrawEnemyObject   ;branch if less
       ldy #$01
       sty VerticalFlipFlag  ;set vertical flip flag
       dey
-      sty $ec               ;init saved value here
+      sty Local_ec               ;init saved value here
 
 DrawEnemyObject:
-      ldy $eb                    ;load sprite data offset
+      ldy Local_eb                    ;load sprite data offset
       jsr DrawEnemyObjRow        ;draw six tiles of data
       jsr DrawEnemyObjRow        ;into sprite data
       jsr DrawEnemyObjRow
       ldx ObjectOffset           ;get enemy object offset
       ldy Enemy_SprDataOffset,x  ;get sprite data offset
-      lda $ef
+      lda Local_ef
       cmp #$08                   ;get saved enemy object and check
       bne CheckForVerticalFlip   ;for bullet bill, branch if not found
 
@@ -8003,7 +8003,7 @@ CheckForVerticalFlip:
       dey                        ;now go back to the Y coordinate offset
       tya
       tax                        ;give offset to X
-      lda $ef
+      lda Local_ef
       cmp #HammerBro             ;check saved enemy object for hammer bro
       beq FlipEnemyVertically
       cmp #Lakitu                ;check saved enemy object for lakitu
@@ -8032,8 +8032,8 @@ FlipEnemyVertically:
 CheckForESymmetry:
         lda BowserGfxFlag           ;are we drawing bowser at all?
         bne SkipToOffScrChk         ;branch if so
-        lda $ef
-        ldx $ec                     ;get alternate enemy state
+        lda Local_ef
+        ldx Local_ec                     ;get alternate enemy state
         cmp #$05                    ;check for hammer bro object
         bne ContES
         jmp SprObjectOffscrChk      ;jump if found
@@ -8080,7 +8080,7 @@ EggExc: sta Sprite_Attributes+4,y   ;set bits of right sprite column
         sta Sprite_Attributes+20,y  ;second and third row right sprites
 
 CheckToMirrorLakitu:
-        lda $ef                     ;check for lakitu enemy object
+        lda Local_ef                     ;check for lakitu enemy object
         cmp #Lakitu
         bne CheckToMirrorJSpring    ;branch if not found
         lda VerticalFlipFlag
@@ -8106,7 +8106,7 @@ NVFLak: lda Sprite_Attributes,y     ;get first row left sprite attributes
         sta Sprite_Attributes+4,y   ;note that vertical flip is left as-is
 
 CheckToMirrorJSpring:
-      lda $ef                     ;check for jumpspring object (any frame)
+      lda Local_ef                     ;check for jumpspring object (any frame)
       cmp #$18
       bcc SprObjectOffscrChk      ;branch if not jumpspring object at all
       lda #$82
