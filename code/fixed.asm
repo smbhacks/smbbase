@@ -28,9 +28,9 @@ GetHalfwayPageNumber:
       Switch_Bank 0
       rts
 
-if CHR_Feature == CHR_Animated
+.if CHR_Feature = CHR_Animated
 AnimCHRBaseValues:
-      .db animated_chr, animated_chr+2, animated_chr+4, animated_chr+5, animated_chr+6, animated_chr+7
+      .byte animated_chr, animated_chr+2, animated_chr+4, animated_chr+5, animated_chr+6, animated_chr+7
 
 AnimateCHR:
       lda CHRAnimWait
@@ -61,33 +61,32 @@ AnimateCHR:
       dex
       bpl @loop
       rts
-
-endif
+.endif
 
 ;-------------------------------------------------------------------------------------
 ;$00 - vram buffer address table low, also used for pseudorandom bit
 ;$01 - vram buffer address table high
 
 VRAM_AddrTable_Low:
-      .db <VRAM_Buffer1, <WaterPaletteData, <GroundPaletteData
-      .db <UndergroundPaletteData, <CastlePaletteData, <VRAM_Buffer1_Offset
-      .db <VRAM_Buffer2, <VRAM_Buffer2, <BowserPaletteData
-      .db <DaySnowPaletteData, <NightSnowPaletteData, <MushroomPaletteData
-      .db <MarioThanksMessage, <LuigiThanksMessage, <MushroomRetainerSaved
-      .db <PrincessSaved1, <PrincessSaved2, <WorldSelectMessage1
-      .db <WorldSelectMessage2
+      .byte <VRAM_Buffer1, <WaterPaletteData, <GroundPaletteData
+      .byte <UndergroundPaletteData, <CastlePaletteData, <VRAM_Buffer1_Offset
+      .byte <VRAM_Buffer2, <VRAM_Buffer2, <BowserPaletteData
+      .byte <DaySnowPaletteData, <NightSnowPaletteData, <MushroomPaletteData
+      .byte <MarioThanksMessage, <LuigiThanksMessage, <MushroomRetainerSaved
+      .byte <PrincessSaved1, <PrincessSaved2, <WorldSelectMessage1
+      .byte <WorldSelectMessage2
 
 VRAM_AddrTable_High:
-      .db >VRAM_Buffer1, >WaterPaletteData, >GroundPaletteData
-      .db >UndergroundPaletteData, >CastlePaletteData, >VRAM_Buffer1_Offset
-      .db >VRAM_Buffer2, >VRAM_Buffer2, >BowserPaletteData
-      .db >DaySnowPaletteData, >NightSnowPaletteData, >MushroomPaletteData
-      .db >MarioThanksMessage, >LuigiThanksMessage, >MushroomRetainerSaved
-      .db >PrincessSaved1, >PrincessSaved2, >WorldSelectMessage1
-      .db >WorldSelectMessage2
+      .byte >VRAM_Buffer1, >WaterPaletteData, >GroundPaletteData
+      .byte >UndergroundPaletteData, >CastlePaletteData, >VRAM_Buffer1_Offset
+      .byte >VRAM_Buffer2, >VRAM_Buffer2, >BowserPaletteData
+      .byte >DaySnowPaletteData, >NightSnowPaletteData, >MushroomPaletteData
+      .byte >MarioThanksMessage, >LuigiThanksMessage, >MushroomRetainerSaved
+      .byte >PrincessSaved1, >PrincessSaved2, >WorldSelectMessage1
+      .byte >WorldSelectMessage2
 
 VRAM_Buffer_Offset:
-      .db <VRAM_Buffer1_Offset, <VRAM_Buffer2_Offset
+      .byte <VRAM_Buffer1_Offset, <VRAM_Buffer2_Offset
 
 PauseRoutine:
                lda OperMode           ;are we in victory mode?
@@ -114,7 +113,7 @@ ChkStart:      lda SavedJoypad1Bits   ;check to see if start is pressed
                tay
                iny                    ;set pause sfx queue for next pause mode
                sty PauseSoundQueue
-if CustomMusicDriver == Famitone5Music || CustomMusicDriver == FamistudioMusic
+.if CustomMusicDriver = Famitone5Music || CustomMusicDriver = FamistudioMusic
 		   pha
 		   lda #4
 		   sta NoiseSoundQueue
@@ -127,7 +126,7 @@ if CustomMusicDriver == Famitone5Music || CustomMusicDriver == FamistudioMusic
 		   jsr CustomAudioMusicPause
 		   Switch_Bank 0
 		   pla
-endif
+.endif
                eor #%00000001         ;invert d0 and set d7
                ora #%10000000
                bne SetPause           ;unconditional branch
@@ -136,8 +135,7 @@ ClrPauseTimer: lda GamePauseStatus    ;clear timer flag if timer is at zero and 
 SetPause:      sta GamePauseStatus
 ExitPause:     rts
 
-if CustomMusicDriver == Famitone5Music || CustomMusicDriver == FamistudioMusic
-
+.if CustomMusicDriver = Famitone5Music || CustomMusicDriver = FamistudioMusic
 ;Enter music number here (Famitracker music number - 1)
 GroundMus        =  0
 WaterMus         =  1
@@ -154,8 +152,8 @@ LevelFinishMus   =  11
 HurryMus         =  12
 
 MusicLUT:
-      .db GroundMus, WaterMus, CaveMus, CastleMus, CloudMus, PipeMus, StarmanMus,	-1
-      .db DeathMus, GameOverMus, PrincessMus, CastleFinishMus, 0, LevelFinishMus, HurryMus, -1
+      .byte GroundMus, WaterMus, CaveMus, CastleMus, CloudMus, PipeMus, StarmanMus,	-1
+      .byte DeathMus, GameOverMus, PrincessMus, CastleFinishMus, 0, LevelFinishMus, HurryMus, -1
 
 BRICK = 1		-1
 BREATH = 2		-1
@@ -179,353 +177,360 @@ PAUSE_= 19		-1
 
 
 noise_sfx_table:
-      .db BRICK      , SFX_CH2
-      .db BREATH     , SFX_CH2
-      .db PAUSE_	   , SFX_CH3 ;put pause here cuz i can
+      .byte BRICK      ,SFX_CH2
+      .byte BREATH     ,SFX_CH2
+      .byte PAUSE_     ,SFX_CH3 ;put pause here cuz i can
 
 sq2_sfx_table:
-      .db COIN       , SFX_CH1
-      .db GROWPU     , SFX_CH1
-      .db VINE       , SFX_CH1
-      .db BLAST      , SFX_CH1
-      .db TIMER      , SFX_CH1
-      .db GROW       , SFX_CH1
-      .db EXTRALIFE  , SFX_CH3
-      .db BOWS_FALL  , SFX_CH1
+      .byte COIN       ,SFX_CH1
+      .byte GROWPU     ,SFX_CH1
+      .byte VINE       ,SFX_CH1
+      .byte BLAST      ,SFX_CH1
+      .byte TIMER      ,SFX_CH1
+      .byte GROW       ,SFX_CH1
+      .byte EXTRALIFE  ,SFX_CH3
+      .byte BOWS_FALL  ,SFX_CH1
 
 sq1_sfx_table:
-      .db BJUMP      , SFX_CH0
-      .db BUMP       , SFX_CH0
-      .db STOMP      , SFX_CH0
-      .db SMACK      , SFX_CH0
-      .db INJURY     , SFX_CH0
-      .db FIREBALL   , SFX_CH0
-      .db FLAGPOLE   , SFX_CH0
-      .db SJUMP      , SFX_CH0
+      .byte BJUMP      ,SFX_CH0
+      .byte BUMP       ,SFX_CH0
+      .byte STOMP      ,SFX_CH0
+      .byte SMACK      ,SFX_CH0
+      .byte INJURY     ,SFX_CH0
+      .byte FIREBALL   ,SFX_CH0
+      .byte FLAGPOLE   ,SFX_CH0
+      .byte SJUMP      ,SFX_CH0
 
 CustomMusicEngine:
-		lda EventMusicQueue
-		ora AreaMusicQueue
-		beq NoTrigger
-		lda AreaMusicQueue
-		beq +
-		sta AreaMusicBuffer
-		ldx #-1
-		-
-		inx
-		lsr
-		bcc -
-		ldy #0
-		sty AreaMusicQueue
-		+
-		lda EventMusicQueue
-		beq +
-		sta EventMusicBuffer
-		ldx #7
-		-
-		inx
-		lsr
-		bcc -
-		ldy #0
-		sty EventMusicQueue
-		+
-		lda MusicLUT,x
-		pha
-		ldx #<music_data
-		ldy #>music_data
-		lda #1
-		sta songPlaying
-		jsr CustomAudioInit
-		ldx #<sounds
-		ldy #>sounds
-		jsr CustomAudioSfxInit
-		pla
-		jsr CustomAudioMusicPlay
+	lda EventMusicQueue
+	ora AreaMusicQueue
+	beq NoTrigger
+	lda AreaMusicQueue
+	beq +
+	sta AreaMusicBuffer
+	ldx #-1
+	-
+	inx
+	lsr
+	bcc -
+	ldy #0
+	sty AreaMusicQueue
+	+
+	lda EventMusicQueue
+	beq +
+	sta EventMusicBuffer
+	ldx #7
+	-
+	inx
+	lsr
+	bcc -
+	ldy #0
+	sty EventMusicQueue
+	+
+	lda MusicLUT,x
+	pha
+	ldx #<music_data
+	ldy #>music_data
+	lda #1
+	sta songPlaying
+	jsr CustomAudioInit
+	ldx #<sounds
+	ldy #>sounds
+	jsr CustomAudioSfxInit
+	pla
+	jsr CustomAudioMusicPlay
 NoTrigger:
-		lda Square2SoundQueue
-		beq noSQ2
-		jsr countBITS_asl
-		lda sq2_sfx_table,y
-		ldx sq2_sfx_table+1,y
-		jsr CustomAudioSfxPlay
-		lda #0
-		sta Square2SoundQueue
+	lda Square2SoundQueue
+	beq noSQ2
+	jsr countBITS_asl
+	lda sq2_sfx_table,y
+	ldx sq2_sfx_table+1,y
+	jsr CustomAudioSfxPlay
+	lda #0
+	sta Square2SoundQueue
 noSQ2:
-		lda Square1SoundQueue
-		beq noSQ1
-		jsr countBITS_asl
-		lda sq1_sfx_table,y
-		ldx sq1_sfx_table+1,y
-		jsr CustomAudioSfxPlay
-		lda #0
-		sta Square1SoundQueue
+	lda Square1SoundQueue
+	beq noSQ1
+	jsr countBITS_asl
+	lda sq1_sfx_table,y
+	ldx sq1_sfx_table+1,y
+	jsr CustomAudioSfxPlay
+	lda #0
+	sta Square1SoundQueue
 noSQ1:
-		lda NoiseSoundQueue
-		beq noNOI
-		jsr countBITS_asl
-		lda noise_sfx_table,y
-		ldx noise_sfx_table+1,y
-		jsr CustomAudioSfxPlay
-		lda #0
-		sta NoiseSoundQueue
+	lda NoiseSoundQueue
+	beq noNOI
+	jsr countBITS_asl
+	lda noise_sfx_table,y
+	ldx noise_sfx_table+1,y
+	jsr CustomAudioSfxPlay
+	lda #0
+	sta NoiseSoundQueue
 noNOI:
-		jsr CustomAudioUpdate
-		rts
+	jmp CustomAudioUpdate
 
 countBITS_asl:
-			ldx #$ff
-			sec
-			-
-			inx
-			ror
-			bcc -
-			txa
-			asl
-			tay
-			rts
-endif
+	ldx #$ff
+	sec
+:
+	inx
+	ror
+	bcc :-
+	txa
+	asl
+	tay
+	rts
+.endif
 
--
-			   ;pha
-			   txa
-			   pha
-			   tya
-			   pha
+LagFrameTasks:
+	;pha
+	txa
+	pha
+	tya
+	pha
 
+	lda Sprite0HitDetectFlag
+	beq @skipIRQ
+	lda #$1f
+	sta $c000
+	sta $c001
+	sta $e001
+	cli
+@skipIRQ:
 
-			   lda Sprite0HitDetectFlag
-			   beq +
+	lda $00
+	pha
+	lda $01
+	pha
+	lda $02
+	pha
+	lda $03
+	pha
+	lda $04
+	pha
+	lda $05
+	pha
+	lda $06
+	pha
+	lda $07
+	pha
 
-			   lda #$1f
-			   sta $c000
-			   sta $c001
-			   sta $e001
-			   cli
+	lda #1
+	sta ChangeForHUD
+	lda Mirror_PPU_CTRL_REG1
+	and #%11111110
+	sta PPU_CTRL_REG1
+	lda #0
+	sta $2005
+	sta $2005
 
-			   +
+      Bank_NoSave 2
+.if CustomMusicDriver = OriginalSMBMusic || CustomMusicDriver = VanillaPlusMusic
+      jsr SoundEngine
+.else
+      jsr CustomMusicEngine
+.endif
+      Original_Bank
 
-			   lda $00
-			   pha
-			   lda $01
-			   pha
-			   lda $02
-			   pha
-			   lda $03
-			   pha
-			   lda $04
-			   pha
-			   lda $05
-			   pha
-			   lda $06
-			   pha
-			   lda $07
-			   pha
+      pla
+      sta $07
+      pla
+      sta $06
+      pla
+      sta $05
+      pla
+      sta $04
+      pla
+      sta $03
+      pla
+      sta $02
+      pla
+      sta $01
+      pla
+      sta $00
 
-			   lda #1
-			   sta ChangeForHUD
-			   lda Mirror_PPU_CTRL_REG1
-			   and #%11111110
-			   sta PPU_CTRL_REG1
-			   lda #0
-			   sta $2005
-			   sta $2005
-
-			   Bank_NoSave 2
-if CustomMusicDriver == OriginalSMBMusic || CustomMusicDriver == VanillaPlusMusic
-                     jsr SoundEngine           ;play sound
-else
-			   jsr CustomMusicEngine
-endif
-			   Original_Bank
-
-			   pla
-			   sta $07
-			   pla
-			   sta $06
-			   pla
-			   sta $05
-			   pla
-			   sta $04
-			   pla
-			   sta $03
-			   pla
-			   sta $02
-			   pla
-			   sta $01
-			   pla
-			   sta $00
-
-			   pla
-			   tay
-			   pla
-			   tax
-			   pla
-			   rti
+      pla
+      tay
+      pla
+      tax
+      pla
+      rti
 
 NonMaskableInterrupt:
-			   pha
-			   lda sleeping
-			   bne -
-               pla
-			   lda Mirror_PPU_CTRL_REG1  ;disable NMIs in mirror reg
-               ;and #%01111111            ;save all other bits
-               ;sta Mirror_PPU_CTRL_REG1
-               and #%11111110            ;alter name table address to be $2800
-               sta PPU_CTRL_REG1         ;(essentially $2000) but save other bits
-               lda Mirror_PPU_CTRL_REG2  ;disable OAM and background display by default
-               and #%11100110
-               ldy DisableScreenFlag     ;get screen disable flag
-               bne ScreenOff             ;if set, used bits as-is
-               lda Mirror_PPU_CTRL_REG2  ;otherwise reenable bits and save them
-               ora #%00011110
-ScreenOff:     sta Mirror_PPU_CTRL_REG2  ;save bits for later but not in register at the moment
-               and #%11100111            ;disable screen for now
-               sta PPU_CTRL_REG2
-               ldx PPU_STATUS            ;reset flip-flop and reset scroll registers to zero
-               lda #$00
-               jsr InitScroll
-               sta PPU_SPR_ADDR          ;reset spr-ram address register
-               lda #$02                  ;perform spr-ram DMA access on $0200-$02ff
-               sta SPR_DMA
-               ldx VRAM_Buffer_AddrCtrl  ;load control for pointer to buffer contents
-               lda VRAM_AddrTable_Low,x  ;set indirect at $00 to pointer
-               sta $00
-               lda VRAM_AddrTable_High,x
-               sta $01
-               jsr UpdateScreen          ;update screen with buffer contents
-               ldy #$00
-               ldx VRAM_Buffer_AddrCtrl  ;check for usage of $0341
-               cpx #$06
-               bne InitBuffer
-               iny                       ;get offset based on usage
-InitBuffer:    ldx VRAM_Buffer_Offset,y
-               lda #$00                  ;clear buffer header at last location
-               sta VRAM_Buffer1_Offset,x
-               sta VRAM_Buffer1,x
-               sta VRAM_Buffer_AddrCtrl  ;reinit address control to $0301
-               lda Mirror_PPU_CTRL_REG2  ;copy mirror of $2001 to register
-               sta PPU_CTRL_REG2
+      pha
+      lda sleeping
+      bne LagFrameTasks
+      pla
+      lda Mirror_PPU_CTRL_REG1  ;disable NMIs in mirror reg
+      ;and #%01111111            ;save all other bits
+      ;sta Mirror_PPU_CTRL_REG1
+      and #%11111110            ;alter name table address to be $2800
+      sta PPU_CTRL_REG1         ;(essentially $2000) but save other bits
+      lda Mirror_PPU_CTRL_REG2  ;disable OAM and background display by default
+      and #%11100110
+      ldy DisableScreenFlag     ;get screen disable flag
+      bne ScreenOff             ;if set, used bits as-is
+      lda Mirror_PPU_CTRL_REG2  ;otherwise reenable bits and save them
+      ora #%00011110
+ScreenOff:     
+      sta Mirror_PPU_CTRL_REG2  ;save bits for later but not in register at the moment
+      and #%11100111            ;disable screen for now
+      sta PPU_CTRL_REG2
+      ldx PPU_STATUS            ;reset flip-flop and reset scroll registers to zero
+      lda #$00
+      jsr InitScroll
+      sta PPU_SPR_ADDR          ;reset spr-ram address register
+      lda #$02                  ;perform spr-ram DMA access on $0200-$02ff
+      sta SPR_DMA
+      ldx VRAM_Buffer_AddrCtrl  ;load control for pointer to buffer contents
+      lda VRAM_AddrTable_Low,x  ;set indirect at $00 to pointer
+      sta $00
+      lda VRAM_AddrTable_High,x
+      sta $01
+      jsr UpdateScreen          ;update screen with buffer contents
+      ldy #$00
+      ldx VRAM_Buffer_AddrCtrl  ;check for usage of $0341
+      cpx #$06
+      bne InitBuffer
+      iny                       ;get offset based on usage
+InitBuffer:    
+      ldx VRAM_Buffer_Offset,y
+      lda #$00                  ;clear buffer header at last location
+      sta VRAM_Buffer1_Offset,x
+      sta VRAM_Buffer1,x
+      sta VRAM_Buffer_AddrCtrl  ;reinit address control to $0301
+      lda Mirror_PPU_CTRL_REG2  ;copy mirror of $2001 to register
+      sta PPU_CTRL_REG2
 
-if CHR_Feature != No_Feature
-               ldx #5
--
-               stx $8000
-               lda CHR0,x
-               sta $8001
-               dex
-               bpl -
-endif
+.if CHR_Feature <> No_Feature
+      ldx #5
+@update_chr
+      stx $8000
+      lda CHR0,x
+      sta $8001
+      dex
+      bpl @update_chr
+.endif
 
-		   lda Sprite0HitDetectFlag
-		   beq +
+	lda Sprite0HitDetectFlag
+	beq @skipIRQ
+	lda #$1f
+	sta $c000
+	sta $c001
+	sta $e001
+	cli
+@skipIRQ:
 
-		   lda #$1f
-		   sta $c000
-		   sta $c001
-		   sta $e001
-		   cli
+	lda HorizontalScroll
+	sta ScrollH
+	lda Mirror_PPU_CTRL_REG1
+	sta ScrollBit
 
-		   +
+	Switch_Bank 2
+.if CustomMusicDriver = OriginalSMBMusic || CustomMusicDriver = VanillaPlusMusic
+      jsr SoundEngine           ;play sound
+.else
+	jsr CustomMusicEngine
+.endif
+	Switch_Bank 0
 
-		   lda HorizontalScroll
-		   sta ScrollH
-		   lda Mirror_PPU_CTRL_REG1
-		   sta ScrollBit
+      jsr ReadJoypads           ;read joypads
+      jsr PauseRoutine          ;handle pause
+      jsr UpdateTopScore
+      lda GamePauseStatus       ;check for pause status
+      lsr
+      bcs PauseSkip
+      lda TimerControl          ;if master timer control not set, decrement
+      beq DecTimers             ;all frame and interval timers
+      dec TimerControl
+      bne NoDecTimers
+DecTimers:     
+      ldx #$14                  ;load end offset for end of frame timers
+      dec IntervalTimerControl  ;decrement interval timer control,
+      bpl DecTimersLoop         ;if not expired, only frame timers will decrement
+      lda #$14
+      sta IntervalTimerControl  ;if control for interval timers expired,
+      ldx #$23                  ;interval timers will decrement along with frame timers
+DecTimersLoop: 
+      lda Timers,x              ;check current timer
+      beq SkipExpTimer          ;if current timer expired, branch to skip,
+      dec Timers,x              ;otherwise decrement the current timer
+SkipExpTimer:  
+      dex                       ;move onto next timer
+      bpl DecTimersLoop         ;do this until all timers are dealt with
+NoDecTimers:   
+      inc FrameCounter          ;increment frame counter
+PauseSkip:     
+      ldx #$00
+      ldy #$07
+      lda PseudoRandomBitReg    ;get first memory location of LSFR bytes
+      and #%00000010            ;mask out all but d1
+      sta $00                   ;save here
+      lda PseudoRandomBitReg+1  ;get second memory location
+      and #%00000010            ;mask out all but d1
+      eor $00                   ;perform exclusive-OR on d1 from first and second bytes
+      clc                       ;if neither or both are set, carry will be clear
+      beq RotPRandomBit
+      sec                       ;if one or the other is set, carry will be set
+RotPRandomBit: 
+      ror PseudoRandomBitReg,x  ;rotate carry into d7, and rotate last bit into carry
+      inx                       ;increment to next byte
+      dey                       ;decrement for loop
+      bne RotPRandomBit
+      lda Sprite0HitDetectFlag  ;check for flag here
+      beq SkipSprite0
+;Sprite0Clr:   
+;      lda PPU_STATUS            ;wait for sprite 0 flag to clear, which will
+;      and #%01000000            ;not happen until vblank has ended
+;      bne Sprite0Clr
+      lda GamePauseStatus       ;if in pause mode, do not bother with sprites at all
+      lsr
+      bcs SkipSprite0
+      jsr MoveSpritesOffscreen
+      jsr SpriteShuffler
+;Sprite0Hit:    
+;      lda PPU_STATUS            ;do sprite #0 hit detection
+;      and #%01000000
+;      beq Sprite0Hit
+;      ldy #$14                  ;small delay, to wait until we hit horizontal blank time
+;HBlankDelay:   
+;      dey
+;      bne HBlankDelay
+SkipSprite0:   
+;      lda HorizontalScroll      ;set scroll registers from variables
+;      sta PPU_SCROLL_REG
+;      lda VerticalScroll
+;      sta PPU_SCROLL_REG
+;      lda Mirror_PPU_CTRL_REG1  ;load saved mirror of $2000
+;      pha
+;      sta PPU_CTRL_REG1
 
-		   Switch_Bank 2
-if CustomMusicDriver == OriginalSMBMusic || CustomMusicDriver == VanillaPlusMusic
-               jsr SoundEngine           ;play sound
-else
-		   jsr CustomMusicEngine
-endif
-		   Switch_Bank 0
-
-               jsr ReadJoypads           ;read joypads
-               jsr PauseRoutine          ;handle pause
-               jsr UpdateTopScore
-               lda GamePauseStatus       ;check for pause status
-               lsr
-               bcs PauseSkip
-               lda TimerControl          ;if master timer control not set, decrement
-               beq DecTimers             ;all frame and interval timers
-               dec TimerControl
-               bne NoDecTimers
-DecTimers:     ldx #$14                  ;load end offset for end of frame timers
-               dec IntervalTimerControl  ;decrement interval timer control,
-               bpl DecTimersLoop         ;if not expired, only frame timers will decrement
-               lda #$14
-               sta IntervalTimerControl  ;if control for interval timers expired,
-               ldx #$23                  ;interval timers will decrement along with frame timers
-DecTimersLoop: lda Timers,x              ;check current timer
-               beq SkipExpTimer          ;if current timer expired, branch to skip,
-               dec Timers,x              ;otherwise decrement the current timer
-SkipExpTimer:  dex                       ;move onto next timer
-               bpl DecTimersLoop         ;do this until all timers are dealt with
-NoDecTimers:   inc FrameCounter          ;increment frame counter
-PauseSkip:     ldx #$00
-               ldy #$07
-               lda PseudoRandomBitReg    ;get first memory location of LSFR bytes
-               and #%00000010            ;mask out all but d1
-               sta $00                   ;save here
-               lda PseudoRandomBitReg+1  ;get second memory location
-               and #%00000010            ;mask out all but d1
-               eor $00                   ;perform exclusive-OR on d1 from first and second bytes
-               clc                       ;if neither or both are set, carry will be clear
-               beq RotPRandomBit
-               sec                       ;if one or the other is set, carry will be set
-RotPRandomBit: ror PseudoRandomBitReg,x  ;rotate carry into d7, and rotate last bit into carry
-               inx                       ;increment to next byte
-               dey                       ;decrement for loop
-               bne RotPRandomBit
-               lda Sprite0HitDetectFlag  ;check for flag here
-               beq SkipSprite0
-;Sprite0Clr:   ;lda PPU_STATUS            ;wait for sprite 0 flag to clear, which will
-               ;and #%01000000            ;not happen until vblank has ended
-               ;bne Sprite0Clr
-               lda GamePauseStatus       ;if in pause mode, do not bother with sprites at all
-               lsr
-               bcs SkipSprite0
-               jsr MoveSpritesOffscreen
-               jsr SpriteShuffler
-;Sprite0Hit:    lda PPU_STATUS            ;do sprite #0 hit detection
-;               and #%01000000
-;               beq Sprite0Hit
-;               ldy #$14                  ;small delay, to wait until we hit horizontal blank time
-;HBlankDelay:   dey
-;               bne HBlankDelay
-SkipSprite0:   ;lda HorizontalScroll      ;set scroll registers from variables
-               ;sta PPU_SCROLL_REG
-               ;lda VerticalScroll
-               ;sta PPU_SCROLL_REG
-               ;lda Mirror_PPU_CTRL_REG1  ;load saved mirror of $2000
-               ;pha
-               ;sta PPU_CTRL_REG1
-
-               lda GamePauseStatus       ;if in pause mode, do not perform operation mode stuff
-               lsr
-               bcs SkipMainOperPaused
-			   lda #1
-			   sta sleeping
-               jsr OperModeExecutionTree ;otherwise do one of many, many possible subroutines
-			   lda #0
-			   sta sleeping
-SkipMainOper:  lda PPU_STATUS            ;reset flip-flop
-               ;pla
-			   lda ChangeForHUD
-			   bne +
-			   lda ScrollBit
-               ora #%10000000            ;reactivate NMIs
-               sta PPU_CTRL_REG1
-               rti                       ;we are done until the next frame!
-+
-			   lda #$00
-			   sta ChangeForHUD
-			   lda ScrollBit
-               ora #%10000000            ;reactivate NMIs
-			   and #%11111110
-               sta PPU_CTRL_REG1
+      lda GamePauseStatus       ;if in pause mode, do not perform operation mode stuff
+      lsr
+      bcs SkipMainOperPaused
+	lda #1
+	sta sleeping
+      jsr OperModeExecutionTree ;otherwise do one of many, many possible subroutines
+	lda #0
+	sta sleeping
+SkipMainOper:  
+      lda PPU_STATUS            ;reset flip-flop
+      ;pla
+	lda ChangeForHUD
+	bne @hud_drawn
+	lda ScrollBit
+      ora #%10000000            ;reactivate NMIs
+      sta PPU_CTRL_REG1
+      rti                       ;we are done until the next frame!
+@hud_drawn:
+	lda #$00
+	sta ChangeForHUD
+	lda ScrollBit
+      ora #%10000000            ;reactivate NMIs
+	and #%11111110
+      sta PPU_CTRL_REG1
 SkipMainOperPaused:
-               rti                       ;we are done until the next frame!
+      rti                       ;we are done until the next frame!
 
 WriteGameText:
                pha                      ;save text number to stack
@@ -809,64 +814,64 @@ InitEnemyRoutines:
 
 ;jump engine table for newly loaded enemy objects
 
-      .dw InitNormalEnemy  ;for objects $00-$0f
-      .dw InitNormalEnemy
-      .dw InitNormalEnemy
-      .dw InitRedKoopa
-      .dw NoInitCode
-      .dw InitHammerBro
-      .dw InitGoomba
-      .dw InitBloober
-      .dw InitBulletBill
-      .dw NoInitCode
-      .dw InitCheepCheep
-      .dw InitCheepCheep
-      .dw InitPodoboo
-      .dw InitPiranhaPlant
-      .dw InitJumpGPTroopa
-      .dw InitRedPTroopa
+      .word InitNormalEnemy  ;for objects $00-$0f
+      .word InitNormalEnemy
+      .word InitNormalEnemy
+      .word InitRedKoopa
+      .word NoInitCode
+      .word InitHammerBro
+      .word InitGoomba
+      .word InitBloober
+      .word InitBulletBill
+      .word NoInitCode
+      .word InitCheepCheep
+      .word InitCheepCheep
+      .word InitPodoboo
+      .word InitPiranhaPlant
+      .word InitJumpGPTroopa
+      .word InitRedPTroopa
 
-      .dw InitHorizFlySwimEnemy  ;for objects $10-$1f
-      .dw InitLakitu
-      .dw InitEnemyFrenzy
-      .dw NoInitCode
-      .dw InitEnemyFrenzy
-      .dw InitEnemyFrenzy
-      .dw InitEnemyFrenzy
-      .dw InitEnemyFrenzy
-      .dw EndFrenzy
-      .dw NoInitCode
-      .dw NoInitCode
-      .dw InitShortFirebar
-      .dw InitShortFirebar
-      .dw InitShortFirebar
-      .dw InitShortFirebar
-      .dw InitLongFirebar
+      .word InitHorizFlySwimEnemy  ;for objects $10-$1f
+      .word InitLakitu
+      .word InitEnemyFrenzy
+      .word NoInitCode
+      .word InitEnemyFrenzy
+      .word InitEnemyFrenzy
+      .word InitEnemyFrenzy
+      .word InitEnemyFrenzy
+      .word EndFrenzy
+      .word NoInitCode
+      .word NoInitCode
+      .word InitShortFirebar
+      .word InitShortFirebar
+      .word InitShortFirebar
+      .word InitShortFirebar
+      .word InitLongFirebar
 
-      .dw NoInitCode ;for objects $20-$2f
-      .dw NoInitCode
-      .dw NoInitCode
-      .dw NoInitCode
-      .dw InitBalPlatform
-      .dw InitVertPlatform
-      .dw LargeLiftUp
-      .dw LargeLiftDown
-      .dw InitHoriPlatform
-      .dw InitDropPlatform
-      .dw InitHoriPlatform
-      .dw PlatLiftUp
-      .dw PlatLiftDown
-      .dw InitBowser
-      .dw PwrUpJmp   ;possibly dummy value
-      .dw Setup_Vine
+      .word NoInitCode ;for objects $20-$2f
+      .word NoInitCode
+      .word NoInitCode
+      .word NoInitCode
+      .word InitBalPlatform
+      .word InitVertPlatform
+      .word LargeLiftUp
+      .word LargeLiftDown
+      .word InitHoriPlatform
+      .word InitDropPlatform
+      .word InitHoriPlatform
+      .word PlatLiftUp
+      .word PlatLiftDown
+      .word InitBowser
+      .word PwrUpJmp   ;possibly dummy value
+      .word Setup_Vine
 
-      .dw NoInitCode ;for objects $30-$36
-      .dw NoInitCode
-      .dw NoInitCode
-      .dw NoInitCode
-      .dw NoInitCode
-      .dw InitRetainerObj
-      .dw EndOfEnemyInitCode
+      .word NoInitCode ;for objects $30-$36
+      .word NoInitCode
+      .word NoInitCode
+      .word NoInitCode
+      .word NoInitCode
+      .word InitRetainerObj
+      .word EndOfEnemyInitCode
 
 ;-------------------------------------------------------------------------------------
 
@@ -924,7 +929,7 @@ NextVO: txa                      ;store object offset to next available vine slo
 ;--------------------------------
 
 NormalXSpdData:
-      .db $f8, $f4
+      .byte $f8, $f4
 
 InitNormalEnemy:
          ldy #$01              ;load offset of 1 by default
@@ -946,7 +951,7 @@ InitRedKoopa:
 ;--------------------------------
 
 HBroWalkingTimerData:
-      .db $80, $50
+      .byte $80, $50
 
 InitHammerBro:
       lda #$00                    ;init horizontal speed and timer used by hammer bro
@@ -1031,9 +1036,9 @@ KillLakitu:
 ;$01-$03 - used to hold pseudorandom difference adjusters
 
 PRDiffAdjustData:
-      .db $26, $2c, $32, $38
-      .db $20, $22, $24, $26
-      .db $13, $14, $15, $16
+      .byte $26, $2c, $32, $38
+      .byte $20, $22, $24, $26
+      .byte $13, $14, $15, $16
 
 LakituAndSpinyHandler:
           lda FrenzyEnemyTimer    ;if timer here not expired, leave
@@ -1130,10 +1135,10 @@ ChpChpEx: rts
 ;--------------------------------
 
 FirebarSpinSpdData:
-      .db $28, $38, $28, $38, $28
+      .byte $28, $38, $28, $38, $28
 
 FirebarSpinDirData:
-      .db $00, $00, $10, $10, $00
+      .byte $00, $00, $10, $10, $00
 
 InitLongFirebar:
       jsr DuplicateEnemyObj       ;create enemy object for long firebar
@@ -1166,18 +1171,18 @@ InitShortFirebar:
 ;$00-$01 - used to hold pseudorandom bits
 
 FlyCCXPositionData:
-      .db $80, $30, $40, $80
-      .db $30, $50, $50, $70
-      .db $20, $40, $80, $a0
-      .db $70, $40, $90, $68
+      .byte $80, $30, $40, $80
+      .byte $30, $50, $50, $70
+      .byte $20, $40, $80, $a0
+      .byte $70, $40, $90, $68
 
 FlyCCXSpeedData:
-      .db $0e, $05, $06, $0e
-      .db $1c, $20, $10, $0c
-      .db $1e, $22, $18, $14
+      .byte $0e, $05, $06, $0e
+      .byte $1c, $20, $10, $0c
+      .byte $1e, $22, $18, $14
 
 FlyCCTimerData:
-      .db $10, $60, $20, $48
+      .byte $10, $60, $20, $48
 
 InitFlyingCheepCheep:
          lda FrenzyEnemyTimer       ;if timer here not expired yet, branch to leave
@@ -1309,10 +1314,10 @@ FlmEx:  rts                     ;and then leave
 ;--------------------------------
 
 FlameYPosData:
-      .db $90, $80, $70, $90
+      .byte $90, $80, $70, $90
 
 FlameYMFAdderData:
-      .db $ff, $01
+      .byte $ff, $01
 
 InitBowserFlame:
         lda FrenzyEnemyTimer        ;if timer not expired yet, branch to leave
@@ -1389,10 +1394,10 @@ FinishFlame:
 ;--------------------------------
 
 FireworksXPosData:
-      .db $00, $30, $60, $60, $00, $20
+      .byte $00, $30, $60, $60, $00, $20
 
 FireworksYPosData:
-      .db $60, $40, $70, $40, $60, $30
+      .byte $60, $40, $70, $40, $60, $30
 
 InitFireworks:
           lda FrenzyEnemyTimer         ;if timer not expired yet, branch to leave
@@ -1437,13 +1442,13 @@ ExitFWk:  rts
 ;--------------------------------
 
 Bitmasks:
-      .db %00000001, %00000010, %00000100, %00001000, %00010000, %00100000, %01000000, %10000000
+      .byte %00000001, %00000010, %00000100, %00001000, %00010000, %00100000, %01000000, %10000000
 
 Enemy17YPosData:
-      .db $40, $30, $90, $50, $20, $60, $a0, $70
+      .byte $40, $30, $90, $50, $20, $60, $a0, $70
 
 SwimCC_IDData:
-      .db $0a, $0b
+      .byte $0a, $0b
 
 BulletBillCheepCheep:
          lda FrenzyEnemyTimer      ;if timer not expired yet, branch to leave
@@ -1598,12 +1603,12 @@ InitEnemyFrenzy:
       jsr JumpEngine
 
 ;frenzy object jump table
-      .dw LakituAndSpinyHandler
-      .dw NoFrenzyCode
-      .dw InitFlyingCheepCheep
-      .dw InitBowserFlame
-      .dw InitFireworks
-      .dw BulletBillCheepCheep
+      .word LakituAndSpinyHandler
+      .word NoFrenzyCode
+      .word InitFlyingCheepCheep
+      .word InitBowserFlame
+      .word InitFireworks
+      .word BulletBillCheepCheep
 
 ;--------------------------------
 
@@ -1743,10 +1748,10 @@ CommonSmallLift:
 ;--------------------------------
 
 PlatPosDataLow:
-      .db $08,$0c,$f8
+      .byte $08,$0c,$f8
 
 PlatPosDataHigh:
-      .db $00,$00,$ff
+      .byte $00,$00,$ff
 
 PosPlatform:
       lda Enemy_X_Position,x  ;get horizontal coordinate
@@ -1965,63 +1970,63 @@ RunAObj:  lda $00                    ;get stored value and add offset to it
           jsr JumpEngine
 
 ;large objects (rows $00-$0b or 00-11, d6-d4 set)
-      .dw VerticalPipe         ;used by warp pipes
-      .dw AreaStyleObject
-      .dw RowOfBricks
-      .dw RowOfSolidBlocks
-      .dw RowOfCoins
-      .dw ColumnOfBricks
-      .dw ColumnOfSolidBlocks
-      .dw VerticalPipe         ;used by decoration pipes
+      .word VerticalPipe         ;used by warp pipes
+      .word AreaStyleObject
+      .word RowOfBricks
+      .word RowOfSolidBlocks
+      .word RowOfCoins
+      .word ColumnOfBricks
+      .word ColumnOfSolidBlocks
+      .word VerticalPipe         ;used by decoration pipes
 
 ;objects for special row $0c or 12
-      .dw Hole_Empty
-      .dw PulleyRopeObject
-      .dw Bridge_High
-      .dw Bridge_Middle
-      .dw Bridge_Low
-      .dw Hole_Water
-      .dw QuestionBlockRow_High
-      .dw QuestionBlockRow_Low
+      .word Hole_Empty
+      .word PulleyRopeObject
+      .word Bridge_High
+      .word Bridge_Middle
+      .word Bridge_Low
+      .word Hole_Water
+      .word QuestionBlockRow_High
+      .word QuestionBlockRow_Low
 
 ;objects for special row $0f or 15
-      .dw EndlessRope
-      .dw BalancePlatRope
-      .dw CastleObject
-      .dw StaircaseObject
-      .dw ExitPipe
-      .dw FlagBalls_Residual
+      .word EndlessRope
+      .word BalancePlatRope
+      .word CastleObject
+      .word StaircaseObject
+      .word ExitPipe
+      .word FlagBalls_Residual
 
 ;small objects (rows $00-$0b or 00-11, d6-d4 all clear)
-      .dw QuestionBlock     ;power-up
-      .dw QuestionBlock     ;coin
-      .dw QuestionBlock     ;hidden, coin
-      .dw Hidden1UpBlock    ;hidden, 1-up
-      .dw BrickWithItem     ;brick, power-up
-      .dw BrickWithItem     ;brick, vine
-      .dw BrickWithItem     ;brick, star
-      .dw BrickWithCoins    ;brick, coins
-      .dw BrickWithItem     ;brick, 1-up
-      .dw WaterPipe
-      .dw EmptyBlock
-      .dw Jumpspring
+      .word QuestionBlock     ;power-up
+      .word QuestionBlock     ;coin
+      .word QuestionBlock     ;hidden, coin
+      .word Hidden1UpBlock    ;hidden, 1-up
+      .word BrickWithItem     ;brick, power-up
+      .word BrickWithItem     ;brick, vine
+      .word BrickWithItem     ;brick, star
+      .word BrickWithCoins    ;brick, coins
+      .word BrickWithItem     ;brick, 1-up
+      .word WaterPipe
+      .word EmptyBlock
+      .word Jumpspring
 
 ;objects for special row $0d or 13 (d6 set)
-      .dw IntroPipe
-      .dw FlagpoleObject
-      .dw AxeObj
-      .dw ChainObj
-      .dw CastleBridgeObj
-      .dw ScrollLockObject_Warp
-      .dw ScrollLockObject
-      .dw ScrollLockObject
-      .dw AreaFrenzy            ;flying cheep-cheeps
-      .dw AreaFrenzy            ;bullet bills or swimming cheep-cheeps
-      .dw AreaFrenzy            ;stop frenzy
-      .dw LoopCmdE
+      .word IntroPipe
+      .word FlagpoleObject
+      .word AxeObj
+      .word ChainObj
+      .word CastleBridgeObj
+      .word ScrollLockObject_Warp
+      .word ScrollLockObject
+      .word ScrollLockObject
+      .word AreaFrenzy            ;flying cheep-cheeps
+      .word AreaFrenzy            ;bullet bills or swimming cheep-cheeps
+      .word AreaFrenzy            ;stop frenzy
+      .word LoopCmdE
 
 ;object for special row $0e or 14
-      .dw AlterAreaAttributes
+      .word AlterAreaAttributes
 
 ;-------------------------------------------------------------------------------------
 ;(these apply to all area object subroutines in this section unless otherwise stated)
@@ -2097,7 +2102,7 @@ NoKillE:   dex               ;do this until all slots are checked
 ;--------------------------------
 
 FrenzyIDData:
-      .db FlyCheepCheepFrenzy, BBill_CCheep_Frenzy, Stop_Frenzy
+      .byte FlyCheepCheepFrenzy, BBill_CCheep_Frenzy, Stop_Frenzy
 
 AreaFrenzy:  ldx $00               ;use area object identifier bit as offset
              lda FrenzyIDData-8,x  ;note that it starts at 8, thus weird address here
@@ -2116,9 +2121,9 @@ ExitAFrenzy: sta EnemyFrenzyQueue  ;store enemy into frenzy queue
 AreaStyleObject:
       lda AreaStyle        ;load level object style and jump to the right sub
       jsr JumpEngine
-      .dw TreeLedge        ;also used for cloud type levels
-      .dw MushroomLedge
-      .dw BulletBillCannon
+      .word TreeLedge        ;also used for cloud type levels
+      .word MushroomLedge
+      .word BulletBillCannon
 
 TreeLedge:
           jsr GetLrgObjAttrib     ;get row and length of green ledge
@@ -2174,7 +2179,7 @@ NoUnder:  ldx $07                    ;load row of ledge
 
 ;tiles used by pulleys and rope object
 PulleyRopeMetatiles:
-      .db $42, $41, $43
+      .byte $42, $41, $43
 
 PulleyRopeObject:
            jsr ChkLrgObjLength       ;get length of pulley/rope object
@@ -2192,17 +2197,17 @@ MushLExit: rts                       ;and leave
 ;$06 - used to store upper limit of rows for CastleObject
 
 CastleMetatiles:
-      .db $00, $45, $45, $45, $00
-      .db $00, $48, $47, $46, $00
-      .db $45, $49, $49, $49, $45
-      .db $47, $47, $4a, $47, $47
-      .db $47, $47, $4b, $47, $47
-      .db $49, $49, $49, $49, $49
-      .db $47, $4a, $47, $4a, $47
-      .db $47, $4b, $47, $4b, $47
-      .db $47, $47, $47, $47, $47
-      .db $4a, $47, $4a, $47, $4a
-      .db $4b, $47, $4b, $47, $4b
+      .byte $00, $45, $45, $45, $00
+      .byte $00, $48, $47, $46, $00
+      .byte $45, $49, $49, $49, $45
+      .byte $47, $47, $4a, $47, $47
+      .byte $47, $47, $4b, $47, $47
+      .byte $49, $49, $49, $49, $49
+      .byte $47, $4a, $47, $4a, $47
+      .byte $47, $4b, $47, $4b, $47
+      .byte $47, $47, $47, $47, $47
+      .byte $4a, $47, $4a, $47, $4a
+      .byte $4b, $47, $4b, $47, $4b
 
 CastleObject:
             jsr GetLrgObjAttrib      ;save lower nybble as starting row
@@ -2293,14 +2298,14 @@ VPipeSectLoop: lda #$00                 ;all the way to the top of the screen
 NoBlankP:      rts
 
 SidePipeShaftData:
-      .db $15, $14  ;used to control whether or not vertical pipe shaft
-      .db $00, $00  ;is drawn, and if so, controls the metatile number
+      .byte $15, $14  ;used to control whether or not vertical pipe shaft
+      .byte $00, $00  ;is drawn, and if so, controls the metatile number
 SidePipeTopPart:
-      .db $15, $1e  ;top part of sideways part of pipe
-      .db $1d, $1c
+      .byte $15, $1e  ;top part of sideways part of pipe
+      .byte $1d, $1c
 SidePipeBottomPart:
-      .db $15, $21  ;bottom part of sideways part of pipe
-      .db $20, $1f
+      .byte $15, $21  ;bottom part of sideways part of pipe
+      .byte $20, $1f
 
 ExitPipe:
       ldy #$03                 ;check if length set, if not set, set it
@@ -2330,10 +2335,10 @@ DrawSidePart: ldy $06                   ;render side pipe part at the bottom
               rts
 
 VerticalPipeData:
-      .db $11, $10 ;used by pipes that lead somewhere
-      .db $15, $14
-      .db $13, $12 ;used by decoration pipes
-      .db $15, $14
+      .byte $11, $10 ;used by pipes that lead somewhere
+      .byte $15, $14
+      .byte $13, $12 ;used by decoration pipes
+      .byte $15, $14
 
 VerticalPipe:
           jsr GetPipeHeight
@@ -2413,7 +2418,7 @@ Hole_Water:
 
 QuestionBlockRow_High:
       lda #$03    ;start on the fourth row
-      .db $2c     ;BIT instruction opcode
+      .byte $2c     ;BIT instruction opcode
 
 QuestionBlockRow_Low:
       lda #$07             ;start on the eighth row
@@ -2429,11 +2434,11 @@ QuestionBlockRow_Low:
 
 Bridge_High:
       lda #$06  ;start on the seventh row from top of screen
-      .db $2c   ;BIT instruction opcode
+      .byte $2c   ;BIT instruction opcode
 
 Bridge_Middle:
       lda #$07  ;start on the eighth row
-      .db $2c   ;BIT instruction opcode
+      .byte $2c   ;BIT instruction opcode
 
 Bridge_Low:
       lda #$09             ;start on the tenth row
@@ -2507,7 +2512,7 @@ DrawRope: lda #$40            ;render the actual rope
 ;--------------------------------
 
 CoinMetatileData:
-      .db $c3, $c2, $c2, $c2
+      .byte $c3, $c2, $c2, $c2
 
 RowOfCoins:
       ldy AreaType            ;get area type
@@ -2517,10 +2522,10 @@ RowOfCoins:
 ;--------------------------------
 
 C_ObjectRow:
-      .db $06, $07, $08
+      .byte $06, $07, $08
 
 C_ObjectMetatile:
-      .db $c5, $0c, $89
+      .byte $c5, $0c, $89
 
 CastleBridgeObj:
       ldy #$0c                  ;load length of 13 columns
@@ -2547,11 +2552,11 @@ ColObj: ldy #$00             ;column length of 1
 ;--------------------------------
 
 SolidBlockMetatiles:
-      .db $69, $61, $61, $62
+      .byte $69, $61, $61, $62
 
 BrickMetatiles:
-      .db $22, $51, $52, $52
-      .db $88 ;used only by row of bricks object
+      .byte $22, $51, $52, $52
+      .byte $88 ;used only by row of bricks object
 
 RowOfBricks:
             ldy AreaType           ;load area type obtained from area offset pointer
@@ -2619,10 +2624,10 @@ StrCOffset:  stx Cannon_Offset        ;save new offset and leave
 ;--------------------------------
 
 StaircaseHeightData:
-      .db $07, $07, $06, $05, $04, $03, $02, $01, $00
+      .byte $07, $07, $06, $05, $04, $03, $02, $01, $00
 
 StaircaseRowData:
-      .db $03, $03, $04, $05, $06, $07, $08, $09, $0a
+      .byte $03, $03, $04, $05, $06, $07, $08, $09, $0a
 
 StaircaseObject:
            jsr ChkLrgObjLength       ;check and load length
@@ -2664,22 +2669,22 @@ Jumpspring:
 ;--------------------------------
 
 BrickQBlockMetatiles:
-      .db $c1, $c0, $5f, $60 ;used by question blocks
+      .byte $c1, $c0, $5f, $60 ;used by question blocks
 
       ;these two sets are functionally identical, but look different
-      .db $55, $56, $57, $58, $59 ;used by ground level types
-      .db $5a, $5b, $5c, $5d, $5e ;used by other level types
+      .byte $55, $56, $57, $58, $59 ;used by ground level types
+      .byte $5a, $5b, $5c, $5d, $5e ;used by other level types
 
 ;--------------------------------
 ;$07 - used to save ID of brick object
 
 Hidden1UpBlock:
-if _1up_always == 0
+.if _1up_always = 0
       lda Hidden1UpFlag  ;if flag not set, do not render object
       beq ExitDecBlock
       lda #$00           ;if set, init for the next one
       sta Hidden1UpFlag
-endif
+.endif
       jmp BrickWithItem  ;jump to code shared with unbreakable bricks
 
 QuestionBlock:
@@ -2716,7 +2721,7 @@ ExitDecBlock: rts
 ;--------------------------------
 
 HoleMetatiles:
-      .db $87, $00, $00, $00
+      .byte $87, $00, $00, $00
 
 Hole_Empty:
             jsr ChkLrgObjLength          ;get lower nybble and save as length
@@ -2828,8 +2833,8 @@ GetAreaObjYPosition:
 ;$06-$07 - used to store block buffer address used as indirect
 
 BlockBufferAddr:
-      .db <Block_Buffer_1, <Block_Buffer_2
-      .db >Block_Buffer_1, >Block_Buffer_2
+      .byte <Block_Buffer_1, <Block_Buffer_2
+      .byte >Block_Buffer_1, >Block_Buffer_2
 
 GetBlockBufferAddr:
       pha                      ;take value of A, save
@@ -2850,19 +2855,19 @@ GetBlockBufferAddr:
 ;-------------------------------------------------------------------------------------
 
 ;unused space
-      .db $ff, $ff
+      .byte $ff, $ff
 
 ;-------------------------------------------------------------------------------------
 
 AreaDataOfsLoopback:
-      .db $12, $36, $0e, $0e, $0e, $32, $32, $32, $0a, $26, $40
+      .byte $12, $36, $0e, $0e, $0e, $32, $32, $32, $0a, $26, $40
 
 ;-------------------------------------------------------------------------------------
 
 WarpZoneNumbers:
-  .db $04, $03, $02, $00         ; warp zone numbers, note spaces on middle
-  .db $24, $05, $24, $00         ; zone, partly responsible for
-  .db $08, $07, $06, $00         ; the minus world
+  .byte $04, $03, $02, $00         ; warp zone numbers, note spaces on middle
+  .byte $24, $05, $24, $00         ; zone, partly responsible for
+  .byte $08, $07, $06, $00         ; the minus world
 
 HandlePipeEntry:
 		 Switch_Bank 4
@@ -3048,13 +3053,13 @@ ExitELCore: rts
 
 ;loop command data
 LoopCmdWorldNumber:
-      .db $03, $03, $06, $06, $06, $06, $06, $06, $07, $07, $07
+      .byte $03, $03, $06, $06, $06, $06, $06, $06, $07, $07, $07
 
 LoopCmdPageNumber:
-      .db $05, $09, $04, $05, $06, $08, $09, $0a, $06, $0b, $10
+      .byte $05, $09, $04, $05, $06, $08, $09, $0a, $06, $0b, $10
 
 LoopCmdYPosition:
-      .db $40, $b0, $b0, $80, $40, $40, $80, $40, $f0, $f0, $f0
+      .byte $40, $b0, $b0, $80, $40, $40, $80, $40, $f0, $f0, $f0
 
 ExecGameLoopback:
       lda Player_PageLoc        ;send player back four pages
@@ -3133,9 +3138,9 @@ InitLCmd: lda #$00                  ;initialize loop command flag
 
 ChkEnemyFrenzy:
       lda EnemyFrenzyQueue  ;check for enemy object in frenzy queue
-      bne +
-	  jmp ProcessEnemyData_
-+
+      bne :+
+	jmp ProcessEnemyData_
+:
       sta Enemy_ID,x        ;store as enemy object identifier here
       lda #$01
       sta Enemy_Flag,x      ;activate enemy object flag
@@ -3156,43 +3161,43 @@ RunEnemyObjectsCore:
        sbc #$14          ;as value for jump engine
 JmpEO: jsr JumpEngine
 
-      .dw RunNormalEnemies  ;for objects $00-$14
+      .word RunNormalEnemies  ;for objects $00-$14
 
-      .dw RunBowserFlame    ;for objects $15-$1f
-      .dw RunFireworks
-      .dw NoRunCode
-      .dw NoRunCode
-      .dw NoRunCode
-      .dw NoRunCode
-      .dw RunFirebarObj
-      .dw RunFirebarObj
-      .dw RunFirebarObj
-      .dw RunFirebarObj
-      .dw RunFirebarObj
+      .word RunBowserFlame    ;for objects $15-$1f
+      .word RunFireworks
+      .word NoRunCode
+      .word NoRunCode
+      .word NoRunCode
+      .word NoRunCode
+      .word RunFirebarObj
+      .word RunFirebarObj
+      .word RunFirebarObj
+      .word RunFirebarObj
+      .word RunFirebarObj
 
-      .dw RunFirebarObj     ;for objects $20-$2f
-      .dw RunFirebarObj
-      .dw RunFirebarObj
-      .dw NoRunCode
-      .dw RunLargePlatform
-      .dw RunLargePlatform
-      .dw RunLargePlatform
-      .dw RunLargePlatform
-      .dw RunLargePlatform
-      .dw RunLargePlatform
-      .dw RunLargePlatform
-      .dw RunSmallPlatform
-      .dw RunSmallPlatform
-      .dw RunBowser
-      .dw PowerUpObjHandler
-      .dw VineObjectHandler
+      .word RunFirebarObj     ;for objects $20-$2f
+      .word RunFirebarObj
+      .word RunFirebarObj
+      .word NoRunCode
+      .word RunLargePlatform
+      .word RunLargePlatform
+      .word RunLargePlatform
+      .word RunLargePlatform
+      .word RunLargePlatform
+      .word RunLargePlatform
+      .word RunLargePlatform
+      .word RunSmallPlatform
+      .word RunSmallPlatform
+      .word RunBowser
+      .word PowerUpObjHandler
+      .word VineObjectHandler
 
-      .dw NoRunCode         ;for objects $30-$35
-      .dw RunStarFlagObj
-      .dw JumpspringHandler
-      .dw NoRunCode
-      .dw WarpZoneObject
-      .dw RunRetainerObj
+      .word NoRunCode         ;for objects $30-$35
+      .word RunStarFlagObj
+      .word JumpspringHandler
+      .word NoRunCode
+      .word WarpZoneObject
+      .word RunRetainerObj
 
 ;--------------------------------
 
@@ -3227,27 +3232,27 @@ EnemyMovementSubs:
       lda Enemy_ID,x
       jsr JumpEngine
 
-      .dw MoveNormalEnemy      ;only objects $00-$14 use this table
-      .dw MoveNormalEnemy
-      .dw MoveNormalEnemy
-      .dw MoveNormalEnemy
-      .dw MoveNormalEnemy
-      .dw ProcHammerBro
-      .dw MoveNormalEnemy
-      .dw MoveBloober
-      .dw MoveBulletBill
-      .dw NoMoveCode
-      .dw MoveSwimmingCheepCheep
-      .dw MoveSwimmingCheepCheep
-      .dw MovePodoboo
-      .dw MovePiranhaPlant
-      .dw MoveJumpingEnemy
-      .dw ProcMoveRedPTroopa
-      .dw MoveFlyGreenPTroopa
-      .dw MoveLakitu
-      .dw MoveNormalEnemy
-      .dw NoMoveCode   ;dummy
-      .dw MoveFlyingCheepCheep
+      .word MoveNormalEnemy      ;only objects $00-$14 use this table
+      .word MoveNormalEnemy
+      .word MoveNormalEnemy
+      .word MoveNormalEnemy
+      .word MoveNormalEnemy
+      .word ProcHammerBro
+      .word MoveNormalEnemy
+      .word MoveBloober
+      .word MoveBulletBill
+      .word NoMoveCode
+      .word MoveSwimmingCheepCheep
+      .word MoveSwimmingCheepCheep
+      .word MovePodoboo
+      .word MovePiranhaPlant
+      .word MoveJumpingEnemy
+      .word ProcMoveRedPTroopa
+      .word MoveFlyGreenPTroopa
+      .word MoveLakitu
+      .word MoveNormalEnemy
+      .word NoMoveCode   ;dummy
+      .word MoveFlyingCheepCheep
 
 ;--------------------------------
 
@@ -3304,13 +3309,13 @@ LargePlatformSubroutines:
       sbc #$24
       jsr JumpEngine
 
-      .dw BalancePlatform   ;table used by objects $24-$2a
-      .dw YMovingPlatform
-      .dw MoveLargeLiftPlat
-      .dw MoveLargeLiftPlat
-      .dw XMovingPlatform
-      .dw DropPlatform
-      .dw RightPlatform
+      .word BalancePlatform   ;table used by objects $24-$2a
+      .word YMovingPlatform
+      .word MoveLargeLiftPlat
+      .word MoveLargeLiftPlat
+      .word XMovingPlatform
+      .word DropPlatform
+      .word RightPlatform
 
 ;-------------------------------------------------------------------------------------
 
@@ -3346,13 +3351,13 @@ PdbM: jmp MoveJ_EnemyVertically  ;branch to impose gravity on podoboo
 ;$00 - used in HammerBroJumpCode as bitmask
 
 HammerThrowTmrData:
-      .db $30, $1c
+      .byte $30, $1c
 
 XSpeedAdderData:
-      .db $00, $e8, $00, $18
+      .byte $00, $e8, $00, $18
 
 RevivedXSpeed:
-      .db $08, $f8, $0c, $f4
+      .byte $08, $f8, $0c, $f4
 
 ProcHammerBro:
        lda Enemy_State,x          ;check hammer bro's enemy state for d5 set
@@ -3380,7 +3385,7 @@ DecHT: dec HammerThrowingTimer,x  ;decrement timer
        jmp MoveHammerBroXDir      ;jump to move hammer bro
 
 HammerBroJumpLData:
-      .db $20, $37
+      .byte $20, $37
 
 HammerBroJumpCode:
        lda Enemy_State,x           ;get hammer bro's enemy state
@@ -3607,7 +3612,7 @@ XMRight: sty Enemy_MovingDir,x        ;store as moving direction
 ;--------------------------------
 
 BlooberBitmasks:
-      .db %00111111, %00000011
+      .byte %00111111, %00000011
 
 MoveBloober:
         lda Enemy_State,x
@@ -3733,8 +3738,8 @@ NotDefB: lda #$e8                   ;set bullet bill's horizontal speed
 ;$03 - used to hold enemy state
 
 SwimCCXMoveData:
-      .db $40, $80
-      .db $04, $04 ;residual data, not used
+      .byte $40, $80
+      .byte $04, $04 ;residual data, not used
 
 MoveSwimmingCheepCheep:
         lda Enemy_State,x         ;check cheep-cheep's enemy object state
@@ -3820,27 +3825,27 @@ ExSwCC: rts                       ;leave
 ;vertical adder is same + 8 bytes, two's compliment
 ;if greater than $08 for proper oscillation
 FirebarPosLookupTbl:
-      .db $00, $01, $03, $04, $05, $06, $07, $07, $08
-      .db $00, $03, $06, $09, $0b, $0d, $0e, $0f, $10
-      .db $00, $04, $09, $0d, $10, $13, $16, $17, $18
-      .db $00, $06, $0c, $12, $16, $1a, $1d, $1f, $20
-      .db $00, $07, $0f, $16, $1c, $21, $25, $27, $28
-      .db $00, $09, $12, $1b, $21, $27, $2c, $2f, $30
-      .db $00, $0b, $15, $1f, $27, $2e, $33, $37, $38
-      .db $00, $0c, $18, $24, $2d, $35, $3b, $3e, $40
-      .db $00, $0e, $1b, $28, $32, $3b, $42, $46, $48
-      .db $00, $0f, $1f, $2d, $38, $42, $4a, $4e, $50
-      .db $00, $11, $22, $31, $3e, $49, $51, $56, $58
+      .byte $00, $01, $03, $04, $05, $06, $07, $07, $08
+      .byte $00, $03, $06, $09, $0b, $0d, $0e, $0f, $10
+      .byte $00, $04, $09, $0d, $10, $13, $16, $17, $18
+      .byte $00, $06, $0c, $12, $16, $1a, $1d, $1f, $20
+      .byte $00, $07, $0f, $16, $1c, $21, $25, $27, $28
+      .byte $00, $09, $12, $1b, $21, $27, $2c, $2f, $30
+      .byte $00, $0b, $15, $1f, $27, $2e, $33, $37, $38
+      .byte $00, $0c, $18, $24, $2d, $35, $3b, $3e, $40
+      .byte $00, $0e, $1b, $28, $32, $3b, $42, $46, $48
+      .byte $00, $0f, $1f, $2d, $38, $42, $4a, $4e, $50
+      .byte $00, $11, $22, $31, $3e, $49, $51, $56, $58
 
 FirebarMirrorData:
-      .db $01, $03, $02, $00
+      .byte $01, $03, $02, $00
 
 FirebarTblOffsets:
-      .db $00, $09, $12, $1b, $24, $2d
-      .db $36, $3f, $48, $51, $5a, $63
+      .byte $00, $09, $12, $1b, $24, $2d
+      .byte $36, $3f, $48, $51, $5a, $63
 
 FirebarYPos:
-      .db $0c, $18
+      .byte $0c, $18
 
 ProcFirebar:
           jsr GetEnemyOffscreenBits   ;get offscreen information
@@ -4058,10 +4063,10 @@ GetVAdder: sta $02                    ;store result here
 ;--------------------------------
 
 PRandomSubtracter:
-      .db $f8, $a0, $70, $bd, $00
+      .byte $f8, $a0, $70, $bd, $00
 
 FlyCCBPriority:
-      .db $20, $20, $20, $00, $00
+      .byte $20, $20, $20, $00, $00
 
 MoveFlyingCheepCheep:
         lda Enemy_State,x          ;check cheep-cheep's enemy state
@@ -4107,7 +4112,7 @@ BPGet:  lda FlyCCBPriority,y       ;load bg priority data and store (this is ver
 ;$01-$03 - used to hold difference adjusters
 
 LakituDiffAdj:
-      .db $15, $30, $40
+      .byte $15, $30, $40
 
 MoveLakitu:
          lda Enemy_State,x          ;check lakitu's enemy state
@@ -4209,10 +4214,10 @@ ExMoveLak: rts                        ;leave!!!
 ;$04-$05 - used to store name table address in little endian order
 
 BridgeCollapseData:
-      .db $1a ;axe
-      .db $58 ;chain
-      .db $98, $96, $94, $92, $90, $8e, $8c ;bridge
-      .db $8a, $88, $86, $84, $82, $80
+      .byte $1a ;axe
+      .byte $58 ;chain
+      .byte $98, $96, $94, $92, $90, $8e, $8c ;bridge
+      .byte $8a, $88, $86, $84, $82, $80
 
 BridgeCollapse:
        ldx BowserFront_Offset    ;get enemy offset for bowser
@@ -4273,7 +4278,7 @@ NoBFall: jmp BowserGfxHandler      ;jump to code that draws bowser
 ;--------------------------------
 
 PRandomRange:
-      .db $21, $41, $11, $31
+      .byte $21, $41, $11, $31
 
 RunBowser:
       lda Enemy_State,x       ;if d5 in enemy state is not set
@@ -4454,7 +4459,7 @@ ProcessBowserHalf:
 ;$01 - used to hold sprite attribute data
 
 FlameTimerData:
-      .db $bf, $40, $bf, $bf, $bf, $40, $40, $bf
+      .byte $bf, $40, $bf, $bf, $bf, $40, $40, $bf
 
 SetFlameTimer:
       ldy BowserFlameTimerCtrl  ;load counter as offset
@@ -4585,13 +4590,13 @@ FireworksSoundScore:
 ;--------------------------------
 
 StarFlagYPosAdder:
-      .db $00, $00, $08, $08
+      .byte $00, $00, $08, $08
 
 StarFlagXPosAdder:
-      .db $00, $08, $00, $08
+      .byte $00, $08, $00, $08
 
 StarFlagTileData:
-      .db $e8, $e9, $f8, $f9
+      .byte $e8, $e9, $f8, $f9
 
 RunStarFlagObj:
       lda #$00                 ;initialize enemy frenzy buffer
@@ -4601,11 +4606,11 @@ RunStarFlagObj:
       bcs StarFlagExit
       jsr JumpEngine           ;otherwise jump to appropriate sub
 
-      .dw StarFlagExit
-      .dw GameTimerFireworks
-      .dw AwardGameTimerPoints
-      .dw RaiseFlagSetoffFWorks
-      .dw DelayToAreaEnd
+      .word StarFlagExit
+      .word GameTimerFireworks
+      .word AwardGameTimerPoints
+      .word RaiseFlagSetoffFWorks
+      .word DelayToAreaEnd
 
 GameTimerFireworks:
         ldy #$05               ;set default state for star flag object
@@ -5196,7 +5201,7 @@ ExScrnBd: rts                     ;leave
 ;-------------------------------------------------------------------------------------
 
 ;some unused space
-      .db $ff, $ff, $ff
+      .byte $ff, $ff, $ff
 
 ;-------------------------------------------------------------------------------------
 ;$01 - enemy buffer offset
@@ -5262,7 +5267,7 @@ ExitFBallEnemy:
       rts
 
 BowserIdentities:
-      .db Goomba, GreenKoopa, BuzzyBeetle, Spiny, Lakitu, Bloober, HammerBro, Bowser
+      .byte Goomba, GreenKoopa, BuzzyBeetle, Spiny, Lakitu, Bloober, HammerBro, Bowser
 
 HandleEnemyFBallCol:
       jsr RelativeEnemyPosition  ;get relative coordinate of enemy
@@ -5426,13 +5431,13 @@ NoPUp: rts
 ;--------------------------------
 
 ResidualXSpdData:
-      .db $18, $e8
+      .byte $18, $e8
 
 KickedShellXSpdData:
-      .db $30, $d0
+      .byte $30, $d0
 
 DemotedKoopaXSpdData:
-      .db $08, $f8
+      .byte $08, $f8
 
 PlayerEnemyCollision:
          lda FrameCounter            ;check counter for d0 set
@@ -5467,7 +5472,7 @@ EColl: lda StarInvincibleTimer       ;if star mario invincibility timer expired,
        jmp ShellOrBlockDefeat        ;hit with a shell, or from beneath
 
 KickedShellPtsData:
-      .db $0a, $06, $04
+      .byte $0a, $06, $04
 
 HandlePECollisions:
        lda Enemy_CollisionBits,x    ;check enemy collision bits for d0 set
@@ -5578,7 +5583,7 @@ KillPlayer:
       bne SetKRout         ;branch to set player's state and other things
 
 StompedEnemyPtsData:
-      .db $02, $06, $05, $06
+      .byte $02, $06, $05, $06
 
 EnemyStomped:
       lda Enemy_ID,x             ;check for spiny, branch to hurt player
@@ -5638,7 +5643,7 @@ ChkForDemoteKoopa:
       jmp SBnce                  ;then move onto something else
 
 RevivalRateData:
-      .db $10, $0b
+      .byte $10, $0b
 
 HandleStompedShellE:
        lda #$04                   ;set defeated state for enemy
@@ -5688,10 +5693,10 @@ ExSFN: rts
 ;$01 - used to hold enemy offset for second enemy
 
 SetBitsMask:
-      .db %10000000, %01000000, %00100000, %00010000, %00001000, %00000100, %00000010
+      .byte %10000000, %01000000, %00100000, %00010000, %00001000, %00000100, %00000010
 
 ClearBitsMask:
-      .db %01111111, %10111111, %11011111, %11101111, %11110111, %11111011, %11111101
+      .byte %01111111, %10111111, %11011111, %11101111, %11110111, %11111011, %11111101
 
 EnemiesCollision:
         lda FrameCounter            ;check counter for d0 set
@@ -5978,14 +5983,14 @@ NoSideC: ldx ObjectOffset           ;return with enemy object buffer offset
 ;-------------------------------------------------------------------------------------
 
 PlayerPosSPlatData:
-      .db $80, $00
+      .byte $80, $00
 
 PositionPlayerOnS_Plat:
       tay                        ;use bounding box counter saved in collision flag
       lda Enemy_Y_Position,x     ;for offset
       clc                        ;add positioning data using offset to the vertical
       adc PlayerPosSPlatData-1,y ;coordinate
-      .db $2c                    ;BIT instruction opcode
+      .byte $2c                    ;BIT instruction opcode
 
 PositionPlayerOnVPlat:
          lda Enemy_Y_Position,x    ;get vertical coordinate
@@ -6041,7 +6046,7 @@ GetEnemyBoundBoxOfsArg:
 ;$eb - used to hold block buffer adder
 
 PlayerBGUpperExtent:
-      .db $20, $10
+      .byte $20, $10
 
 PlayerBGCollision:
           lda DisableCollisionDet   ;if collision detection disabled flag set,
@@ -6261,7 +6266,7 @@ StopPlayerMove:
 ExCSM: rts                       ;leave
 
 AreaChangeTimerData:
-      .db $a0, $34
+      .byte $a0, $34
 
 HandleCoinMetatile:
       jsr ErACM             ;do sub to erase coin metatile from block buffer
@@ -6286,13 +6291,13 @@ ErACM: ldy $02             ;load vertical high nybble offset for block buffer
 ;$06-$07 - block buffer address
 
 ClimbXPosAdder:
-      .db $f9, $07
+      .byte $f9, $07
 
 ClimbPLocAdder:
-      .db $ff, $00
+      .byte $ff, $00
 
 FlagpoleYPosData:
-      .db $18, $22, $50, $68, $90
+      .byte $18, $22, $50, $68, $90
 
 HandleClimbing:
       ldy $04            ;check low nybble of horizontal coordinate returned from
@@ -6449,7 +6454,7 @@ ExIPM: txa                       ;invert contents of X
 ;--------------------------------
 
 SolidMTileUpperExt:
-      .db $10, $61, $88, $c4
+      .byte $10, $61, $88, $c4
 
 CheckForSolidMTiles:
       jsr GetMTileAttrib        ;find appropriate offset based on metatile's 2 MSB
@@ -6457,7 +6462,7 @@ CheckForSolidMTiles:
       rts
 
 ClimbMTileUpperExt:
-      .db $24, $6d, $8a, $c6
+      .byte $24, $6d, $8a, $c6
 
 CheckForClimbMTiles:
       jsr GetMTileAttrib        ;find appropriate offset based on metatile's 2 MSB
@@ -6489,10 +6494,10 @@ ExEBG: rts            ;leave
 ;$06-$07 - address from block buffer routine
 
 EnemyBGCStateData:
-      .db $01, $01, $02, $02, $02, $05
+      .byte $01, $01, $02, $02, $02, $05
 
 EnemyBGCXSpdData:
-      .db $10, $f0
+      .byte $10, $f0
 
 EnemyToBGCollisionDet:
       lda Enemy_State,x        ;check enemy state for d6 set
@@ -6860,18 +6865,18 @@ InitFireballExplode:
 ;this data added to relative coordinates of sprite objects
 ;stored in order: left edge, top edge, right edge, bottom edge
 BoundBoxCtrlData:
-      .db $02, $08, $0e, $20
-      .db $03, $14, $0d, $20
-      .db $02, $14, $0e, $20
-      .db $02, $09, $0e, $15
-      .db $00, $00, $18, $06
-      .db $00, $00, $20, $0d
-      .db $00, $00, $30, $0d
-      .db $00, $00, $08, $08
-      .db $06, $04, $0a, $08
-      .db $03, $0e, $0d, $14
-      .db $00, $02, $10, $15
-      .db $04, $04, $0c, $1c
+      .byte $02, $08, $0e, $20
+      .byte $03, $14, $0d, $20
+      .byte $02, $14, $0e, $20
+      .byte $02, $09, $0e, $15
+      .byte $00, $00, $18, $06
+      .byte $00, $00, $20, $0d
+      .byte $00, $00, $30, $0d
+      .byte $00, $00, $08, $08
+      .byte $06, $04, $0a, $08
+      .byte $03, $0e, $0d, $14
+      .byte $00, $02, $10, $15
+      .byte $04, $04, $0c, $1c
 
 GetFireballBoundBox:
       txa         ;add seven bytes to offset
@@ -7121,26 +7126,26 @@ BBChk_E: jsr BlockBufferCollision  ;do collision detection subroutine for sprite
          rts
 
 BlockBufferAdderData:
-      .db $00, $07, $0e
+      .byte $00, $07, $0e
 
 BlockBuffer_X_Adder:
-      .db $08, $03, $0c, $02, $02, $0d, $0d, $08
-      .db $03, $0c, $02, $02, $0d, $0d, $08, $03
-      .db $0c, $02, $02, $0d, $0d, $08, $00, $10
-      .db $04, $14, $04, $04
+      .byte $08, $03, $0c, $02, $02, $0d, $0d, $08
+      .byte $03, $0c, $02, $02, $0d, $0d, $08, $03
+      .byte $0c, $02, $02, $0d, $0d, $08, $00, $10
+      .byte $04, $14, $04, $04
 
 BlockBuffer_Y_Adder:
-      .db $04, $20, $20, $08, $18, $08, $18, $02
-      .db $20, $20, $08, $18, $08, $18, $12, $20
-      .db $20, $18, $18, $18, $18, $18, $14, $14
-      .db $06, $06, $08, $10
+      .byte $04, $20, $20, $08, $18, $08, $18, $02
+      .byte $20, $20, $08, $18, $08, $18, $12, $20
+      .byte $20, $18, $18, $18, $18, $18, $14, $14
+      .byte $06, $06, $08, $10
 
 BlockBufferColli_Feet:
        iny            ;if branched here, increment to next set of adders
 
 BlockBufferColli_Head:
        lda #$00       ;set flag to return vertical coordinate
-       .db $2c        ;BIT instruction opcode
+       .byte $2c        ;BIT instruction opcode
 
 BlockBufferColli_Side:
        lda #$01       ;set flag to return horizontal coordinate
@@ -7188,14 +7193,14 @@ RetYC: and #%00001111              ;and mask out high nybble
 ;-------------------------------------------------------------------------------------
 
 ;unused byte
-      .db $ff
+      .byte $ff
 
 ;-------------------------------------------------------------------------------------
 ;$00 - offset to vine Y coordinate adder
 ;$02 - offset to sprite data
 
 VineYPosAdder:
-      .db $00, $30
+      .byte $00, $30
 
 DrawVine:
          sty $00                    ;save offset here
@@ -7272,25 +7277,25 @@ StkLp: sta Sprite_Data,y  ;store X or Y coordinate into OAM data
 ;-------------------------------------------------------------------------------------
 
 FirstSprXPos:
-      .db $04, $00, $04, $00
+      .byte $04, $00, $04, $00
 
 FirstSprYPos:
-      .db $00, $04, $00, $04
+      .byte $00, $04, $00, $04
 
 SecondSprXPos:
-      .db $00, $08, $00, $08
+      .byte $00, $08, $00, $08
 
 SecondSprYPos:
-      .db $08, $00, $08, $00
+      .byte $08, $00, $08, $00
 
 FirstSprTilenum:
-      .db $c8, $ca, $c9, $cb
+      .byte $c8, $ca, $c9, $cb
 
 SecondSprTilenum:
-      .db $c9, $cb, $c8, $ca
+      .byte $c9, $cb, $c8, $ca
 
 HammerSprAttrib:
-      .db $03, $03, $c3, $c3
+      .byte $03, $03, $c3, $c3
 
 DrawHammer:
             ldy Misc_SprDataOffset,x    ;get misc object OAM data offset
@@ -7345,11 +7350,11 @@ NoHOffscr:  rts                         ;leave
 ;$04 - attribute byte for floatey number
 ;$05 - used as X coordinate for floatey number
 FlagpoleScoreNumTiles:
-      .db $74, $70
-      .db $72, $70
-      .db $75, $76
-      .db $73, $76
-      .db $71, $76
+      .byte $74, $70
+      .byte $72, $70
+      .byte $75, $76
+      .byte $73, $76
+      .byte $71, $76
 
 FlagpoleGfxHandler:
       ldy Enemy_SprDataOffset,x      ;get sprite data offset for flagpole flag
@@ -7528,7 +7533,7 @@ NotRsNum: lda Misc_Y_Position,x     ;get vertical coordinate
           jmp ExJCGfx               ;then jump to leave (why not an rts here instead?)
 
 JumpingCoinTiles:
-      .db $60, $61, $62, $63
+      .byte $60, $61, $62, $63
 
 JCoinGfxHandler:
          ldy Misc_SprDataOffset,x    ;get coin/floatey number's OAM data offset
@@ -7568,13 +7573,13 @@ ExJCGfx: rts                         ;leave
 
 ;tiles arranged in top left, right, bottom left, right order
 PowerUpGfxTable:
-      .db $6e, $6f, $7e, $7f ;regular mushroom
-      .db $6d, $6d, $7d, $7d ;fire flower
-      .db $6c, $6c, $7c, $7c ;star
-      .db $6e, $6f, $7e, $7f ;1-up mushroom
+      .byte $6e, $6f, $7e, $7f ;regular mushroom
+      .byte $6d, $6d, $7d, $7d ;fire flower
+      .byte $6c, $6c, $7c, $7c ;star
+      .byte $6e, $6f, $7e, $7f ;1-up mushroom
 
 PowerUpAttributes:
-      .db $02, $01, $02, $01
+      .byte $02, $01, $02, $01
 
 DrawPowerUp:
       ldy Enemy_SprDataOffset+5  ;get power-up's sprite data offset
@@ -7644,67 +7649,67 @@ PUpOfs: jmp SprObjectOffscrChk     ;jump to check to see if power-up is offscree
 
 ;tiles arranged in top left, right, middle left, right, bottom left, right order
 EnemyGraphicsTable:
-      .db $ff, $ff, $82, $83, $92, $93  ;buzzy beetle frame 1
-      .db $ff, $ff, $84, $85, $94, $95  ;             frame 2
-      .db $ff, $8b, $9a, $9b, $aa, $ab  ;koopa troopa frame 1
-      .db $ff, $8d, $9c, $9d, $ac, $ad  ;             frame 2
-      .db $8a, $8b, $ba, $9b, $aa, $ab  ;koopa paratroopa frame 1
-      .db $8c, $8d, $bb, $9d, $ac, $ad  ;                 frame 2
-      .db $ff, $ff, $86, $87, $96, $97  ;spiny frame 1
-      .db $ff, $ff, $88, $89, $98, $99  ;      frame 2
-      .db $ff, $ff, $b3, $a3, $a3, $b3  ;spiny's egg frame 1
-      .db $ff, $ff, $b4, $a4, $a4, $b4  ;            frame 2
-      .db $ff, $ff, $cd, $cd, $fd, $fd  ;bloober frame 1
-      .db $cd, $cd, $dd, $dd, $ed, $ed  ;        frame 2
-      .db $ff, $ff, $a6, $a7, $b6, $b7  ;cheep-cheep frame 1
-      .db $ff, $ff, $a5, $a7, $b5, $b7  ;            frame 2
-      .db $ff, $ff, $80, $81, $90, $91  ;goomba
-      .db $ff, $ff, $a1, $a1, $b1, $b1  ;koopa shell frame 1 (upside-down)
-      .db $ff, $ff, $a2, $a2, $b1, $b1  ;            frame 2
-      .db $ff, $ff, $b1, $b1, $a1, $a1  ;koopa shell frame 1 (rightsideup)
-      .db $ff, $ff, $b1, $b1, $a2, $a2  ;            frame 2
-      .db $ff, $ff, $b0, $b0, $a0, $a0  ;buzzy beetle shell frame 1 (rightsideup)
-      .db $ff, $ff, $b0, $b0, $a0, $a0  ;                   frame 2
-      .db $ff, $ff, $a0, $a0, $b0, $b0  ;buzzy beetle shell frame 1 (upside-down)
-      .db $ff, $ff, $a0, $a0, $b0, $b0  ;                   frame 2
-      .db $ff, $ff, $ff, $ff, $b2, $b2  ;defeated goomba
-      .db $8e, $8f, $9e, $9f, $ae, $ae  ;lakitu frame 1
-      .db $ff, $ff, $af, $af, $ae, $ae  ;       frame 2
-      .db $ea, $eb, $fa, $fb, $fc, $fc  ;princess
-      .db $cc, $cc, $dc, $dc, $ec, $ec  ;mushroom retainer
-      .db $c4, $c5, $f6, $f7, $e6, $e7  ;hammer bro frame 1
-      .db $c4, $c5, $d4, $d5, $e4, $e5  ;           frame 2
-      .db $c6, $c7, $d6, $d7, $e6, $e7  ;           frame 3
-      .db $c6, $c7, $d6, $d7, $e4, $e5  ;           frame 4
-      .db $ce, $ce, $de, $de, $ee, $ee  ;piranha plant frame 1
-      .db $cf, $cf, $df, $df, $ef, $ef  ;              frame 2
-      .db $ff, $ff, $da, $da, $db, $db  ;podoboo
-      .db $c2, $c3, $d2, $d3, $e2, $ff  ;bowser front frame 1
-      .db $d0, $d1, $e0, $e1, $f0, $f1  ;bowser rear frame 1
-      .db $c2, $c3, $f2, $e3, $e2, $ff  ;       front frame 2
-      .db $d0, $d1, $e0, $e1, $c0, $c1  ;       rear frame 2
-      .db $ff, $ff, $a8, $a9, $b8, $b9  ;bullet bill
-      .db $6a, $6a, $6b, $6b, $6a, $6a  ;jumpspring frame 1
-      .db $69, $69, $69, $69, $ff, $ff  ;           frame 2
-      .db $68, $68, $ff, $ff, $ff, $ff  ;           frame 3
+      .byte $ff, $ff, $82, $83, $92, $93  ;buzzy beetle frame 1
+      .byte $ff, $ff, $84, $85, $94, $95  ;             frame 2
+      .byte $ff, $8b, $9a, $9b, $aa, $ab  ;koopa troopa frame 1
+      .byte $ff, $8d, $9c, $9d, $ac, $ad  ;             frame 2
+      .byte $8a, $8b, $ba, $9b, $aa, $ab  ;koopa paratroopa frame 1
+      .byte $8c, $8d, $bb, $9d, $ac, $ad  ;                 frame 2
+      .byte $ff, $ff, $86, $87, $96, $97  ;spiny frame 1
+      .byte $ff, $ff, $88, $89, $98, $99  ;      frame 2
+      .byte $ff, $ff, $b3, $a3, $a3, $b3  ;spiny's egg frame 1
+      .byte $ff, $ff, $b4, $a4, $a4, $b4  ;            frame 2
+      .byte $ff, $ff, $cd, $cd, $fd, $fd  ;bloober frame 1
+      .byte $cd, $cd, $dd, $dd, $ed, $ed  ;        frame 2
+      .byte $ff, $ff, $a6, $a7, $b6, $b7  ;cheep-cheep frame 1
+      .byte $ff, $ff, $a5, $a7, $b5, $b7  ;            frame 2
+      .byte $ff, $ff, $80, $81, $90, $91  ;goomba
+      .byte $ff, $ff, $a1, $a1, $b1, $b1  ;koopa shell frame 1 (upside-down)
+      .byte $ff, $ff, $a2, $a2, $b1, $b1  ;            frame 2
+      .byte $ff, $ff, $b1, $b1, $a1, $a1  ;koopa shell frame 1 (rightsideup)
+      .byte $ff, $ff, $b1, $b1, $a2, $a2  ;            frame 2
+      .byte $ff, $ff, $b0, $b0, $a0, $a0  ;buzzy beetle shell frame 1 (rightsideup)
+      .byte $ff, $ff, $b0, $b0, $a0, $a0  ;                   frame 2
+      .byte $ff, $ff, $a0, $a0, $b0, $b0  ;buzzy beetle shell frame 1 (upside-down)
+      .byte $ff, $ff, $a0, $a0, $b0, $b0  ;                   frame 2
+      .byte $ff, $ff, $ff, $ff, $b2, $b2  ;defeated goomba
+      .byte $8e, $8f, $9e, $9f, $ae, $ae  ;lakitu frame 1
+      .byte $ff, $ff, $af, $af, $ae, $ae  ;       frame 2
+      .byte $ea, $eb, $fa, $fb, $fc, $fc  ;princess
+      .byte $cc, $cc, $dc, $dc, $ec, $ec  ;mushroom retainer
+      .byte $c4, $c5, $f6, $f7, $e6, $e7  ;hammer bro frame 1
+      .byte $c4, $c5, $d4, $d5, $e4, $e5  ;           frame 2
+      .byte $c6, $c7, $d6, $d7, $e6, $e7  ;           frame 3
+      .byte $c6, $c7, $d6, $d7, $e4, $e5  ;           frame 4
+      .byte $ce, $ce, $de, $de, $ee, $ee  ;piranha plant frame 1
+      .byte $cf, $cf, $df, $df, $ef, $ef  ;              frame 2
+      .byte $ff, $ff, $da, $da, $db, $db  ;podoboo
+      .byte $c2, $c3, $d2, $d3, $e2, $ff  ;bowser front frame 1
+      .byte $d0, $d1, $e0, $e1, $f0, $f1  ;bowser rear frame 1
+      .byte $c2, $c3, $f2, $e3, $e2, $ff  ;       front frame 2
+      .byte $d0, $d1, $e0, $e1, $c0, $c1  ;       rear frame 2
+      .byte $ff, $ff, $a8, $a9, $b8, $b9  ;bullet bill
+      .byte $6a, $6a, $6b, $6b, $6a, $6a  ;jumpspring frame 1
+      .byte $69, $69, $69, $69, $ff, $ff  ;           frame 2
+      .byte $68, $68, $ff, $ff, $ff, $ff  ;           frame 3
 
 EnemyGfxTableOffsets:
-      .db $0c, $0c, $00, $0c, $0c, $a8, $54, $3c
-      .db $ea, $18, $48, $48, $cc, $c0, $18, $18
-      .db $18, $90, $24, $ff, $48, $9c, $d2, $d8
-      .db $f0, $f6, $fc
+      .byte $0c, $0c, $00, $0c, $0c, $a8, $54, $3c
+      .byte $ea, $18, $48, $48, $cc, $c0, $18, $18
+      .byte $18, $90, $24, $ff, $48, $9c, $d2, $d8
+      .byte $f0, $f6, $fc
 
 EnemyAttributeData:
-      .db $01, $02, $03, $02, $01, $01, $03, $03
-      .db $03, $01, $01, $02, $02, $21, $01, $02
-      .db $01, $01, $02, $ff, $02, $02, $01, $01
-      .db $02, $02, $02
+      .byte $01, $02, $03, $02, $01, $01, $03, $03
+      .byte $03, $01, $01, $02, $02, $21, $01, $02
+      .byte $01, $01, $02, $ff, $02, $02, $01, $01
+      .byte $02, $02, $02
 
 EnemyAnimTimingBMask:
-      .db $08, $18
+      .byte $08, $18
 
 JumpspringFrameOffsets:
-      .db $18, $19, $1a, $19, $18
+      .byte $18, $19, $1a, $19, $18
 
 EnemyGfxHandler:
       lda Enemy_Y_Position,x      ;get enemy object vertical position
@@ -8187,7 +8192,7 @@ MoveESprColOffscreen:
 ;$05 - relative X position
 
 DefaultBlockObjTiles:
-      .db $bd, $bd, $be, $be             ;brick w/ line (these are sprite tiles, not BG!)
+      .byte $bd, $bd, $be, $be             ;brick w/ line (these are sprite tiles, not BG!)
 
 DrawBlock:
            lda Block_Rel_YPos            ;get relative vertical coordinate of block object
@@ -8348,7 +8353,7 @@ FireA: sta Sprite_Attributes,y  ;store attribute byte and leave
 ;-------------------------------------------------------------------------------------
 
 ExplosionTiles:
-      .db $64, $65, $66
+      .byte $64, $65, $66
 
 DrawExplosion_Fireball:
       ldy Alt_SprDataOffset,x  ;get OAM data offset of alternate sort for fireball's explosion
@@ -8486,46 +8491,46 @@ ExDBub: rts                         ;leave
 ;$00 - used to store player's vertical offscreen bits
 
 PlayerGfxTblOffsets:
-      .db $20, $28, $c8, $18, $00, $40, $50, $58
-      .db $80, $88, $b8, $78, $60, $a0, $b0, $b8
+      .byte $20, $28, $c8, $18, $00, $40, $50, $58
+      .byte $80, $88, $b8, $78, $60, $a0, $b0, $b8
 
 ;tiles arranged in order, 2 tiles per row, top to bottom
 
 PlayerGraphicsTable:
 ;big player table
-      .db $00, $01, $10, $11, $20, $21, $30, $31 ;walking frame 1
-      .db $02, $03, $12, $13, $22, $23, $32, $33 ;        frame 2
-      .db $04, $05, $14, $15, $24, $25, $34, $35 ;        frame 3
-      .db $06, $07, $16, $17, $26, $27, $36, $37 ;skidding
-      .db $08, $09, $18, $19, $28, $29, $38, $39 ;jumping
-      .db $02, $03, $0a, $0b, $1a, $1b, $2a, $2b ;swimming frame 1
-      .db $02, $03, $12, $13, $22, $1d, $2a, $2b ;         frame 2
-      .db $02, $03, $12, $13, $0c, $0d, $2a, $2b ;         frame 3
-      .db $02, $03, $0a, $0b, $1a, $1b, $5c, $5d ;climbing frame 1
-      .db $02, $03, $12, $13, $22, $23, $5e, $5f ;         frame 2
-      .db $ff, $ff, $02, $03, $54, $55, $53, $53 ;crouching
-      .db $02, $03, $0a, $0b, $1a, $1b, $32, $33 ;fireball throwing
+      .byte $00, $01, $10, $11, $20, $21, $30, $31 ;walking frame 1
+      .byte $02, $03, $12, $13, $22, $23, $32, $33 ;        frame 2
+      .byte $04, $05, $14, $15, $24, $25, $34, $35 ;        frame 3
+      .byte $06, $07, $16, $17, $26, $27, $36, $37 ;skidding
+      .byte $08, $09, $18, $19, $28, $29, $38, $39 ;jumping
+      .byte $02, $03, $0a, $0b, $1a, $1b, $2a, $2b ;swimming frame 1
+      .byte $02, $03, $12, $13, $22, $1d, $2a, $2b ;         frame 2
+      .byte $02, $03, $12, $13, $0c, $0d, $2a, $2b ;         frame 3
+      .byte $02, $03, $0a, $0b, $1a, $1b, $5c, $5d ;climbing frame 1
+      .byte $02, $03, $12, $13, $22, $23, $5e, $5f ;         frame 2
+      .byte $ff, $ff, $02, $03, $54, $55, $53, $53 ;crouching
+      .byte $02, $03, $0a, $0b, $1a, $1b, $32, $33 ;fireball throwing
 
 ;small player table
-      .db $ff, $ff, $ff, $ff, $0e, $0f, $1e, $1f ;walking frame 1
-      .db $ff, $ff, $ff, $ff, $2e, $2f, $3e, $3f ;        frame 2
-      .db $ff, $ff, $ff, $ff, $41, $2f, $44, $45 ;        frame 3
-      .db $ff, $ff, $ff, $ff, $3c, $3d, $4c, $4d ;skidding
-      .db $ff, $ff, $ff, $ff, $0e, $40, $42, $43 ;jumping
-      .db $ff, $ff, $ff, $ff, $0e, $0f, $3a, $3b ;swimming frame 1
-      .db $ff, $ff, $ff, $ff, $0e, $0f, $3a, $4b ;         frame 2
-      .db $ff, $ff, $ff, $ff, $0e, $0f, $2c, $2d ;         frame 3
-      .db $ff, $ff, $ff, $ff, $0e, $0f, $58, $59 ;climbing frame 1
-      .db $ff, $ff, $ff, $ff, $41, $2f, $5a, $5b ;         frame 2
-      .db $ff, $ff, $ff, $ff, $4e, $4e, $4f, $4f ;killed
+      .byte $ff, $ff, $ff, $ff, $0e, $0f, $1e, $1f ;walking frame 1
+      .byte $ff, $ff, $ff, $ff, $2e, $2f, $3e, $3f ;        frame 2
+      .byte $ff, $ff, $ff, $ff, $41, $2f, $44, $45 ;        frame 3
+      .byte $ff, $ff, $ff, $ff, $3c, $3d, $4c, $4d ;skidding
+      .byte $ff, $ff, $ff, $ff, $0e, $40, $42, $43 ;jumping
+      .byte $ff, $ff, $ff, $ff, $0e, $0f, $3a, $3b ;swimming frame 1
+      .byte $ff, $ff, $ff, $ff, $0e, $0f, $3a, $4b ;         frame 2
+      .byte $ff, $ff, $ff, $ff, $0e, $0f, $2c, $2d ;         frame 3
+      .byte $ff, $ff, $ff, $ff, $0e, $0f, $58, $59 ;climbing frame 1
+      .byte $ff, $ff, $ff, $ff, $41, $2f, $5a, $5b ;         frame 2
+      .byte $ff, $ff, $ff, $ff, $4e, $4e, $4f, $4f ;killed
 
 ;used by both player sizes
-      .db $ff, $ff, $ff, $ff, $41, $2f, $49, $49 ;small player standing
-      .db $ff, $ff, $00, $01, $46, $47, $48, $48 ;intermediate grow frame
-      .db $00, $01, $46, $47, $56, $56, $57, $57 ;big player standing
+      .byte $ff, $ff, $ff, $ff, $41, $2f, $49, $49 ;small player standing
+      .byte $ff, $ff, $00, $01, $46, $47, $48, $48 ;intermediate grow frame
+      .byte $00, $01, $46, $47, $56, $56, $57, $57 ;big player standing
 
 SwimKickTileNum:
-      .db $1c, $4a
+      .byte $1c, $4a
 
 PlayerGfxHandler:
         lda InjuryTimer             ;if player's injured invincibility timer
@@ -8629,7 +8634,7 @@ NPROffscr: tya
 ;-------------------------------------------------------------------------------------
 
 IntermediatePlayerData:
-        .db $58, $01, $00, $60, $ff, $04
+        .byte $58, $01, $00, $60, $ff, $04
 
 DrawPlayer_Intermediate:
           ldx #$05                       ;store data into zero page memory

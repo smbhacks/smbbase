@@ -21,16 +21,21 @@
 ;Assembles with x816.
 ;-------------------------------------------------------------------------------------
 ;iNES HEADER
-  .db $4E,$45,$53,$1A                           ;  magic signature
-  .db 4                                         ;  PRG ROM size in 16384 byte units
-  .db CHR_SIZE                                  ;  CHR (CHR_SIZE is defined in settings.asm)
-  .db $41                                       ;  mirroring type and mapper number lower nibble
-  .db %00001000                                 ;  mapper number upper nibble and nes 2.0 id
-  .db $00
-  .db $00
-  .db $07                                       ; set 8kb PRG RAM (64 << 7)
-  .db $00,$00,$00,$00,$00
+  .byte $4E,$45,$53,$1A                           ;  magic signature
+  .byte 4                                         ;  PRG ROM size in 16384 byte units
+  .byte CHR_SIZE                                  ;  CHR (CHR_SIZE is defined in settings.asm)
+  .byte $41                                       ;  mirroring type and mapper number lower nibble
+  .byte %00001000                                 ;  mapper number upper nibble and nes 2.0 id
+  .byte $00
+  .byte $00
+  .byte $07                                       ; set 8kb PRG RAM (64 << 7)
+  .byte $00,$00,$00,$00,$00
   .org $8000
+;-------------------------------------------------------------------------------------
+;MISC
+.include "misc/charmap.inc"
+.feature force_range
+
 ;-------------------------------------------------------------------------------------
 ;MACROS
 
@@ -45,15 +50,14 @@
 ;-------------------------------------------------------------------------------------
 ;CODE
 
-.base $8000	;bank 0-1 mapped to $8000-$BFFF
-    .db "----------------"
-    .db "Studsbase v. 3.2"
-    .db "----------------"
+.segment "GAME"
+    .byte "----------------"
+    .byte "Studsbase v. 3.2"
+    .byte "----------------"
     .include "code/bank0.asm"
-.pad $c000
-
-.base $8000	;bank 2-3 mapped to $8000-$BFFF
-if CustomMusicDriver == Famitone5Music
+;-------------------------------------------------------------------------------------
+.segment "MUSIC"
+.if CustomMusicDriver = Famitone5Music
     CustomAudioInit 		EQU FamiToneInit
     CustomAudioSfxInit 		EQU FamiToneSfxInit
     CustomAudioSfxPlay 		EQU FamiToneSfxPlay
@@ -68,8 +72,8 @@ if CustomMusicDriver == Famitone5Music
     .include "music/famitone/famitone5_asm6.asm"
     .include "music/famitone/music.asm"
     .include "music/famitone/sfx.asm"
-endif
-if CustomMusicDriver == FamistudioMusic
+.endif
+.if CustomMusicDriver = FamistudioMusic
     CustomAudioInit 		EQU famistudio_init
     CustomAudioSfxInit 		EQU famistudio_sfx_init 
     CustomAudioSfxPlay 		EQU famistudio_sfx_play 
@@ -84,20 +88,20 @@ if CustomMusicDriver == FamistudioMusic
     .include "music/famistudio/famistudio_asm6.asm"
     .include "music/famistudio/music.asm"
     .include "music/famistudio/sfx.asm"
-endif
-if CustomMusicDriver == OriginalSMBMusic
+.endif
+.if CustomMusicDriver = OriginalSMBMusic
     MusicHeaderOffsetData = MusicHeaderData - 1
     MHD = MusicHeaderData
     .include "music/vanilla/smb1music.asm"
-endif
+.endif
 
-if CustomMusicDriver == VanillaPlusMusic
+.if CustomMusicDriver = VanillaPlusMusic
     MusicHeaderOffsetData = MusicHeaderData - 1
     MHD = MusicHeaderData
     .include "music/vanilla_plus/smb1music.asm"
-endif
+.endif
 
-if CustomMusicDriver == Famitone5Music || CustomMusicDriver == FamistudioMusic
+.if CustomMusicDriver = Famitone5Music || CustomMusicDriver = FamistudioMusic
 ; When the music driver is completes playback (and before it loops)
 ; we create a custom callback that will run to clear out the queue
 ; and set song playing to 0
@@ -113,38 +117,22 @@ CustomMusicLoopCallback:
     sta AreaMusicQueue
     +
     rts
-endif
-.pad $c000
-
-
-.base $8000 ;bank 4-5 mapped to $8000-$BFFF
+.endif
+;-------------------------------------------------------------------------------------
+.segment "LEVELS"
     .include "levels/output.asm"
-.pad $c000
-
-
-.pad $c000 ;fixed bank at $c000-$ffff
+;-------------------------------------------------------------------------------------
+.segment "CODE"
     .include "code/fixed.asm"
     .include "code/text.asm"
-.pad $ff50
-    .include "code/startup.asm"
-.pad $fffa
 ;-------------------------------------------------------------------------------------
-;INTERRUPT VECTORS
-
-.dw NonMaskableInterrupt
-.dw Start
-.dw IRQ
-
-default_chr = default_chr_start / $400
-;CHR data
-.base $0000
-if CHR_Feature == CHR_Animated
-animated_chr = animated_chr_start / $400
-animated_chr_start:
-default_chr_start:
-.incbin "graphics/chr/animated.chr"
-else
-default_chr_start:
+.segment "INIT"
+    .include "code/startup.asm"
+;-------------------------------------------------------------------------------------
+.segment "Vectors"
+.word NonMaskableInterrupt
+.word Start
+.word IRQ
+;-------------------------------------------------------------------------------------
+.segment "CHR"
 .incbin "graphics/chr/default.chr"
-endif
-.pad CHR_SIZE*$2000

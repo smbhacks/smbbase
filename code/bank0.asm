@@ -49,16 +49,16 @@ OperModeExecutionTree:
       lda OperMode     ;this is the heart of the entire program,
       jsr JumpEngine   ;most of what goes on starts here
 
-      .dw TitleScreenMode
-      .dw GameMode
-      .dw VictoryMode
-      .dw GameOverMode
+      .word TitleScreenMode
+      .word GameMode
+      .word VictoryMode
+      .word GameOverMode
 
 ;-------------------------------------------------------------------------------------
 
 MoveAllSpritesOffscreen:
               ldy #$00                ;this routine moves all sprites off the screen
-              .db $2c                 ;BIT instruction opcode
+              .byte $2c                 ;BIT instruction opcode
 
 MoveSpritesOffscreen:
               ldy #$04                ;this routine moves all but sprite 0
@@ -136,15 +136,15 @@ TitleScreenMode:
       lda OperMode_Task
       jsr JumpEngine
 
-      .dw InitializeGame
-      .dw ScreenRoutines
-      .dw PrimaryGameSetup
-      .dw GameMenuRoutine
+      .word InitializeGame
+      .word ScreenRoutines
+      .word PrimaryGameSetup
+      .word GameMenuRoutine
 
 ;-------------------------------------------------------------------------------------
 
 WSelectBufferTemplate:
-      .db $04, $20, $73, $01, $00, $00
+      .byte $04, $20, $73, $01, $00, $00
 
 GameMenuRoutine:
               ldy #$00
@@ -164,10 +164,10 @@ ChkSelect:    cmp #Select_Button          ;check to see if the select button was
               bcs ResetTitle              ;if carry flag set, demo over, thus branch
               jmp RunDemo                 ;otherwise, run game engine for demo
 ChkWorldSel:
-if world_select_enabled == 0
-			  ldx WorldSelectEnableFlag   ;check to see if world selection has been enabled
+.if world_select_enabled = 0
+	        ldx WorldSelectEnableFlag   ;check to see if world selection has been enabled
               beq NullJoypad
-endif
+.endif
               cmp #B_Button               ;if so, check to see if the B button was pressed
               bne NullJoypad
               iny                         ;if so, increment Y and execute same code as select
@@ -244,7 +244,7 @@ GoContinue:   sta WorldNumber             ;start both players at the first area
 ;-------------------------------------------------------------------------------------
 
 MushroomIconData:
-      .db $07, $22, $49, $83, $2a, $24, $24, $00
+      .byte $07, $22, $49, $83, $2a, $24, $24, $00
 
 DrawMushroomIcon:
               ldy #$07                ;read eight bytes to be read by transfer routine
@@ -263,14 +263,14 @@ ExitIcon:     rts
 ;-------------------------------------------------------------------------------------
 
 DemoActionData:
-      .db $01, $80, $02, $81, $41, $80, $01
-      .db $42, $c2, $02, $80, $41, $c1, $41, $c1
-      .db $01, $c1, $01, $02, $80, $00
+      .byte $01, $80, $02, $81, $41, $80, $01
+      .byte $42, $c2, $02, $80, $41, $c1, $41, $c1
+      .byte $01, $c1, $01, $02, $80, $00
 
 DemoTimingData:
-      .db $9b, $10, $18, $05, $2c, $20, $24
-      .db $15, $5a, $10, $20, $28, $30, $20, $10
-      .db $80, $20, $30, $30, $01, $ff, $00
+      .byte $9b, $10, $18, $05, $2c, $20, $24
+      .byte $15, $5a, $10, $20, $28, $30, $20, $10
+      .byte $80, $20, $30, $30, $01, $ff, $00
 
 DemoEngine:
           ldx DemoAction         ;load current demo action
@@ -304,11 +304,11 @@ VictoryModeSubroutines:
       lda OperMode_Task
       jsr JumpEngine
 
-      .dw BridgeCollapse
-      .dw SetupVictoryMode
-      .dw PlayerVictoryWalk
-      .dw PrintVictoryMessages
-      .dw PlayerEndWorld
+      .word BridgeCollapse
+      .word SetupVictoryMode
+      .word PlayerVictoryWalk
+      .word PrintVictoryMessages
+      .word PlayerEndWorld
 
 ;-------------------------------------------------------------------------------------
 
@@ -441,25 +441,25 @@ EndExitTwo:    rts                        ;leave
 ;data is used as tiles for numbers
 ;that appear when you defeat enemies
 FloateyNumTileData:
-      .db $ff, $ff ;dummy
-      .db $71, $76 ; "100"
-      .db $72, $76 ; "200"
-      .db $73, $76 ; "400"
-      .db $74, $76 ; "500"
-      .db $75, $76 ; "800"
-      .db $71, $70 ; "1000"
-      .db $72, $70 ; "2000"
-      .db $73, $70 ; "4000"
-      .db $74, $70 ; "5000"
-      .db $75, $70 ; "8000"
-      .db $77, $78 ; "1-UP"
+      .byte $ff, $ff ;dummy
+      .byte $71, $76 ; "100"
+      .byte $72, $76 ; "200"
+      .byte $73, $76 ; "400"
+      .byte $74, $76 ; "500"
+      .byte $75, $76 ; "800"
+      .byte $71, $70 ; "1000"
+      .byte $72, $70 ; "2000"
+      .byte $73, $70 ; "4000"
+      .byte $74, $70 ; "5000"
+      .byte $75, $70 ; "8000"
+      .byte $77, $78 ; "1-UP"
 
 ;high nybble is digit number, low nybble is number to
 ;add to the digit of the player's score
 ScoreUpdateData:
-      .db $ff ;dummy
-      .db $41, $42, $44, $45, $48
-      .db $31, $32, $34, $35, $38, $00
+      .byte $ff ;dummy
+      .byte $41, $42, $44, $45, $48
+      .byte $31, $32, $34, $35, $38, $00
 
 FloateyNumbersRoutine:
               lda FloateyNum_Control,x     ;load control for floatey number
@@ -543,21 +543,21 @@ ScreenRoutines:
       lda ScreenRoutineTask        ;run one of the following subroutines
       jsr JumpEngine
 
-      .dw InitScreen
-      .dw SetupIntermediate
-      .dw WriteTopStatusLine
-      .dw WriteBottomStatusLine
-      .dw DisplayTimeUp
-      .dw ResetSpritesAndScreenTimer
-      .dw DisplayIntermediate
-      .dw ResetSpritesAndScreenTimer
-      .dw AreaParserTaskControl
-      .dw GetAreaPalette
-      .dw GetBackgroundColor
-      .dw GetAlternatePalette1
-      .dw DrawTitleScreen
-      .dw ClearBuffersDrawIcon
-      .dw WriteTopScore
+      .word InitScreen
+      .word SetupIntermediate
+      .word WriteTopStatusLine
+      .word WriteBottomStatusLine
+      .word DisplayTimeUp
+      .word ResetSpritesAndScreenTimer
+      .word DisplayIntermediate
+      .word ResetSpritesAndScreenTimer
+      .word AreaParserTaskControl
+      .word GetAreaPalette
+      .word GetBackgroundColor
+      .word GetAlternatePalette1
+      .word DrawTitleScreen
+      .word ClearBuffersDrawIcon
+      .word WriteTopScore
 
 ;-------------------------------------------------------------------------------------
 
@@ -590,7 +590,7 @@ SetupIntermediate:
 ;-------------------------------------------------------------------------------------
 
 AreaPalette:
-      .db $01, $02, $03, $04
+      .byte $01, $02, $03, $04
 
 GetAreaPalette:
                ldy AreaType             ;select appropriate palette to load
@@ -602,16 +602,16 @@ NextSubtask:   jmp IncSubtask           ;move onto next task
 ;$00 - used as temp counter in GetPlayerColors
 
 BGColorCtrl_Addr:
-      .db $00, $09, $0a, $04
+      .byte $00, $09, $0a, $04
 
 BackgroundColors:
-      .db $22, $22, $0f, $0f ;used by area type if bg color ctrl not set
-      .db $0f, $22, $0f, $0f ;used by background color control if set
+      .byte $22, $22, $0f, $0f ;used by area type if bg color ctrl not set
+      .byte $0f, $22, $0f, $0f ;used by background color control if set
 
 PlayerColors:
-      .db $22, $16, $27, $18 ;mario's colors
-      .db $22, $30, $27, $19 ;luigi's colors
-      .db $22, $37, $27, $16 ;fiery (used by both)
+      .byte $22, $16, $27, $18 ;mario's colors
+      .byte $22, $30, $27, $19 ;luigi's colors
+      .byte $22, $37, $27, $16 ;fiery (used by both)
 
 GetBackgroundColor:
            ldy BackgroundColorCtrl   ;check background color control
@@ -766,9 +766,8 @@ OutputCol: lda #$06                  ;set vram buffer to output rendered column 
 ;$01 - vram buffer address table high
 
 TitleScreenData:
-TitleScreenDataSize = @e - TitleScreenData
 .incbin "graphics/title_screen/titlescreen_smb.nam"
-@e
+TitleScreenDataSize = * - TitleScreenData
 
 DrawTitleScreen:
             lda OperMode                 ;are we in title screen mode?
@@ -1001,17 +1000,17 @@ SetVRAMCtrl: lda #$06
 ;$00 - used as temporary counter in ColorRotation
 
 ColorRotatePalette:
-       .db $27, $27, $27, $17, $07, $17
+       .byte $27, $27, $27, $17, $07, $17
 
 BlankPalette:
-       .db $3f, $0c, $04, $ff, $ff, $ff, $ff, $00
+       .byte $3f, $0c, $04, $ff, $ff, $ff, $ff, $00
 
 ;used based on area type
 Palette3Data:
-       .db $0f, $07, $12, $0f
-       .db $0f, $07, $17, $0f
-       .db $0f, $07, $17, $1c
-       .db $0f, $07, $17, $00
+       .byte $0f, $07, $12, $0f
+       .byte $0f, $07, $17, $0f
+       .byte $0f, $07, $17, $1c
+       .byte $0f, $07, $17, $00
 
 ColorRotation:
               lda FrameCounter         ;get frame counter
@@ -1170,72 +1169,72 @@ RemBridge:  lda BlockGfxData,x    ;write top left and top right
 ;VRAM BUFFER DATA FOR LOCATIONS IN PRG-ROM
 
 WaterPaletteData:
-  .db $3f, $00, $20
-  .db $0f, $15, $12, $25
-  .db $0f, $3a, $1a, $0f
-  .db $0f, $30, $12, $0f
-  .db $0f, $27, $12, $0f
-  .db $22, $16, $27, $18
-  .db $0f, $10, $30, $27
-  .db $0f, $16, $30, $27
-  .db $0f, $0f, $30, $10
-  .db $00
+  .byte $3f, $00, $20
+  .byte $0f, $15, $12, $25
+  .byte $0f, $3a, $1a, $0f
+  .byte $0f, $30, $12, $0f
+  .byte $0f, $27, $12, $0f
+  .byte $22, $16, $27, $18
+  .byte $0f, $10, $30, $27
+  .byte $0f, $16, $30, $27
+  .byte $0f, $0f, $30, $10
+  .byte $00
 
 GroundPaletteData:
-  .db $3f, $00, $20
-  .db $0f, $29, $1a, $0f
-  .db $0f, $36, $17, $0f
-  .db $0f, $30, $21, $0f
-  .db $0f, $27, $17, $0f
-  .db $0f, $16, $27, $18
-  .db $0f, $1a, $30, $27
-  .db $0f, $16, $30, $27
-  .db $0f, $0f, $36, $17
-  .db $00
+  .byte $3f, $00, $20
+  .byte $0f, $29, $1a, $0f
+  .byte $0f, $36, $17, $0f
+  .byte $0f, $30, $21, $0f
+  .byte $0f, $27, $17, $0f
+  .byte $0f, $16, $27, $18
+  .byte $0f, $1a, $30, $27
+  .byte $0f, $16, $30, $27
+  .byte $0f, $0f, $36, $17
+  .byte $00
 
 UndergroundPaletteData:
-  .db $3f, $00, $20
-  .db $0f, $29, $1a, $09
-  .db $0f, $3c, $1c, $0f
-  .db $0f, $30, $21, $1c
-  .db $0f, $27, $17, $1c
-  .db $0f, $16, $27, $18
-  .db $0f, $1c, $36, $17
-  .db $0f, $16, $30, $27
-  .db $0f, $0c, $3c, $1c
-  .db $00
+  .byte $3f, $00, $20
+  .byte $0f, $29, $1a, $09
+  .byte $0f, $3c, $1c, $0f
+  .byte $0f, $30, $21, $1c
+  .byte $0f, $27, $17, $1c
+  .byte $0f, $16, $27, $18
+  .byte $0f, $1c, $36, $17
+  .byte $0f, $16, $30, $27
+  .byte $0f, $0c, $3c, $1c
+  .byte $00
 
 CastlePaletteData:
-  .db $3f, $00, $20
-  .db $0f, $30, $10, $00
-  .db $0f, $30, $10, $00
-  .db $0f, $30, $16, $00
-  .db $0f, $27, $17, $00
-  .db $0f, $16, $27, $18
-  .db $0f, $1c, $36, $17
-  .db $0f, $16, $30, $27
-  .db $0f, $00, $30, $10
-  .db $00
+  .byte $3f, $00, $20
+  .byte $0f, $30, $10, $00
+  .byte $0f, $30, $10, $00
+  .byte $0f, $30, $16, $00
+  .byte $0f, $27, $17, $00
+  .byte $0f, $16, $27, $18
+  .byte $0f, $1c, $36, $17
+  .byte $0f, $16, $30, $27
+  .byte $0f, $00, $30, $10
+  .byte $00
 
 DaySnowPaletteData:
-  .db $3f, $00, $04
-  .db $22, $30, $00, $10
-  .db $00
+  .byte $3f, $00, $04
+  .byte $22, $30, $00, $10
+  .byte $00
 
 NightSnowPaletteData:
-  .db $3f, $00, $04
-  .db $0f, $30, $00, $10
-  .db $00
+  .byte $3f, $00, $04
+  .byte $0f, $30, $00, $10
+  .byte $00
 
 MushroomPaletteData:
-  .db $3f, $00, $04
-  .db $22, $27, $16, $0f
-  .db $00
+  .byte $3f, $00, $04
+  .byte $22, $27, $16, $0f
+  .byte $00
 
 BowserPaletteData:
-  .db $3f, $14, $04
-  .db $0f, $1a, $30, $27
-  .db $00
+  .byte $3f, $14, $04
+  .byte $0f, $1a, $30, $27
+  .byte $00
 
 InitializeNameTables:
               lda PPU_STATUS            ;reset flip-flop
@@ -1370,15 +1369,15 @@ WritePPUReg1:
 
 ;status bar name table offset and length data
 StatusBarData:
-      .db $f0, $06 ; top score display on title screen
-      .db $62, $06 ; player score
-      .db $62, $06
-      .db $6d, $02 ; coin tally
-      .db $6d, $02
-      .db $7a, $03 ; game timer
+      .byte $f0, $06 ; top score display on title screen
+      .byte $62, $06 ; player score
+      .byte $62, $06
+      .byte $6d, $02 ; coin tally
+      .byte $6d, $02
+      .byte $7a, $03 ; game timer
 
 StatusBarOffset:
-      .db $06, $0c, $12, $18, $1e, $24
+      .byte $06, $0c, $12, $18, $1e, $24
 
 PrintStatusBarNumbers:
       sta $00            ;store player-specific offset
@@ -1491,11 +1490,11 @@ NoTopSc:      rts
 ;-------------------------------------------------------------------------------------
 
 DefaultSprOffsets:
-      .db $04, $30, $48, $60, $78, $90, $a8, $c0
-      .db $d8, $e8, $24, $f8, $fc, $28, $2c
+      .byte $04, $30, $48, $60, $78, $90, $a8, $c0
+      .byte $d8, $e8, $24, $f8, $fc, $28, $2c
 
 Sprite0Data:
-      .db $18, $79, $23, $58
+      .byte $18, $79, $23, $58
 
 ;-------------------------------------------------------------------------------------
 
@@ -1640,8 +1639,8 @@ SkipByte:     dey
 ;-------------------------------------------------------------------------------------
 
 MusicSelectData:
-      .db WaterMusic, GroundMusic, UndergroundMusic, CastleMusic
-      .db CloudMusic, PipeIntroMusic
+      .byte WaterMusic, GroundMusic, UndergroundMusic, CastleMusic
+      .byte CloudMusic, PipeIntroMusic
 
 GetAreaMusic:
              lda OperMode           ;if in title screen mode, leave
@@ -1666,22 +1665,22 @@ ExitGetM:    rts
 ;-------------------------------------------------------------------------------------
 
 PlayerStarting_X_Pos:
-      .db $28, $18
-      .db $38, $28
+      .byte $28, $18
+      .byte $38, $28
 
 AltYPosOffset:
-      .db $08, $00
+      .byte $08, $00
 
 PlayerStarting_Y_Pos:
-      .db $00, $20, $b0, $50, $00, $00, $b0, $b0
-      .db $f0
+      .byte $00, $20, $b0, $50, $00, $00, $b0, $b0
+      .byte $f0
 
 PlayerBGPriorityData:
-      .db $00, $20, $00, $00, $00, $00, $00, $00
+      .byte $00, $20, $00, $00, $00, $00, $00, $00
 
 GameTimerData:
-      .db $20 ;dummy byte, used as part of bg priority data
-      .db $04, $03, $02
+      .byte $20 ;dummy byte, used as part of bg priority data
+      .byte $04, $03, $02
 
 Entrance_GameTimerSetup:
           lda ScreenLeft_PageLoc      ;set current page for area objects
@@ -1789,9 +1788,9 @@ GameOverMode:
       lda OperMode_Task
       jsr JumpEngine
 
-      .dw SetupGameOver
-      .dw ScreenRoutines
-      .dw RunGameOver
+      .word SetupGameOver
+      .word ScreenRoutines
+      .word RunGameOver
 
 ;-------------------------------------------------------------------------------------
 
@@ -1890,14 +1889,14 @@ SkipATRender: rts
 AreaParserTasks:
       jsr JumpEngine
 
-      .dw IncrementColumnPos
-      .dw RenderAreaGraphics
-      .dw RenderAreaGraphics
-      .dw AreaParserCore
-      .dw IncrementColumnPos
-      .dw RenderAreaGraphics
-      .dw RenderAreaGraphics
-      .dw AreaParserCore
+      .word IncrementColumnPos
+      .word RenderAreaGraphics
+      .word RenderAreaGraphics
+      .word AreaParserCore
+      .word IncrementColumnPos
+      .word RenderAreaGraphics
+      .word RenderAreaGraphics
+      .word AreaParserCore
 
 ;-------------------------------------------------------------------------------------
 
@@ -1921,77 +1920,77 @@ NoColWrap: inc BlockBufferColumnPos ;increment column offset where we're at
 ;$06-$07 - used to store block buffer address
 
 BSceneDataOffsets:
-      .db $00, $30, $60
+      .byte $00, $30, $60
 
 BackSceneryData:
-   .db $93, $00, $00, $11, $12, $12, $13, $00 ;clouds
-   .db $00, $51, $52, $53, $00, $00, $00, $00
-   .db $00, $00, $01, $02, $02, $03, $00, $00
-   .db $00, $00, $00, $00, $91, $92, $93, $00
-   .db $00, $00, $00, $51, $52, $53, $41, $42
-   .db $43, $00, $00, $00, $00, $00, $91, $92
+   .byte $93, $00, $00, $11, $12, $12, $13, $00 ;clouds
+   .byte $00, $51, $52, $53, $00, $00, $00, $00
+   .byte $00, $00, $01, $02, $02, $03, $00, $00
+   .byte $00, $00, $00, $00, $91, $92, $93, $00
+   .byte $00, $00, $00, $51, $52, $53, $41, $42
+   .byte $43, $00, $00, $00, $00, $00, $91, $92
 
-   .db $97, $87, $88, $89, $99, $00, $00, $00 ;mountains and bushes
-   .db $11, $12, $13, $a4, $a5, $a5, $a5, $a6
-   .db $97, $98, $99, $01, $02, $03, $00, $a4
-   .db $a5, $a6, $00, $11, $12, $12, $12, $13
-   .db $00, $00, $00, $00, $01, $02, $02, $03
-   .db $00, $a4, $a5, $a5, $a6, $00, $00, $00
+   .byte $97, $87, $88, $89, $99, $00, $00, $00 ;mountains and bushes
+   .byte $11, $12, $13, $a4, $a5, $a5, $a5, $a6
+   .byte $97, $98, $99, $01, $02, $03, $00, $a4
+   .byte $a5, $a6, $00, $11, $12, $12, $12, $13
+   .byte $00, $00, $00, $00, $01, $02, $02, $03
+   .byte $00, $a4, $a5, $a5, $a6, $00, $00, $00
 
-   .db $11, $12, $12, $13, $00, $00, $00, $00 ;trees and fences
-   .db $00, $00, $00, $9c, $00, $8b, $aa, $aa
-   .db $aa, $aa, $11, $12, $13, $8b, $00, $9c
-   .db $9c, $00, $00, $01, $02, $03, $11, $12
-   .db $12, $13, $00, $00, $00, $00, $aa, $aa
-   .db $9c, $aa, $00, $8b, $00, $01, $02, $03
+   .byte $11, $12, $12, $13, $00, $00, $00, $00 ;trees and fences
+   .byte $00, $00, $00, $9c, $00, $8b, $aa, $aa
+   .byte $aa, $aa, $11, $12, $13, $8b, $00, $9c
+   .byte $9c, $00, $00, $01, $02, $03, $11, $12
+   .byte $12, $13, $00, $00, $00, $00, $aa, $aa
+   .byte $9c, $aa, $00, $8b, $00, $01, $02, $03
 
 BackSceneryMetatiles:
-   .db $80, $83, $00 ;cloud left
-   .db $81, $84, $00 ;cloud middle
-   .db $82, $85, $00 ;cloud right
-   .db $02, $00, $00 ;bush left
-   .db $03, $00, $00 ;bush middle
-   .db $04, $00, $00 ;bush right
-   .db $00, $05, $06 ;mountain left
-   .db $07, $06, $0a ;mountain middle
-   .db $00, $08, $09 ;mountain right
-   .db $4d, $00, $00 ;fence
-   .db $0d, $0f, $4e ;tall tree
-   .db $0e, $4e, $4e ;short tree
+   .byte $80, $83, $00 ;cloud left
+   .byte $81, $84, $00 ;cloud middle
+   .byte $82, $85, $00 ;cloud right
+   .byte $02, $00, $00 ;bush left
+   .byte $03, $00, $00 ;bush middle
+   .byte $04, $00, $00 ;bush right
+   .byte $00, $05, $06 ;mountain left
+   .byte $07, $06, $0a ;mountain middle
+   .byte $00, $08, $09 ;mountain right
+   .byte $4d, $00, $00 ;fence
+   .byte $0d, $0f, $4e ;tall tree
+   .byte $0e, $4e, $4e ;short tree
 
 FSceneDataOffsets:
-      .db $00, $0d, $1a
+      .byte $00, $0d, $1a
 
 ForeSceneryData:
-   .db $86, $87, $87, $87, $87, $87, $87   ;in water
-   .db $87, $87, $87, $87, $69, $69
+   .byte $86, $87, $87, $87, $87, $87, $87   ;in water
+   .byte $87, $87, $87, $87, $69, $69
 
-   .db $00, $00, $00, $00, $00, $45, $47   ;wall
-   .db $47, $47, $47, $47, $00, $00
+   .byte $00, $00, $00, $00, $00, $45, $47   ;wall
+   .byte $47, $47, $47, $47, $00, $00
 
-   .db $00, $00, $00, $00, $00, $00, $00   ;over water
-   .db $00, $00, $00, $00, $86, $87
+   .byte $00, $00, $00, $00, $00, $00, $00   ;over water
+   .byte $00, $00, $00, $00, $86, $87
 
 TerrainMetatiles:
-      .db $69, $54, $52, $62
+      .byte $69, $54, $52, $62
 
 TerrainRenderBits:
-      .db %00000000, %00000000 ;no ceiling or floor
-      .db %00000000, %00011000 ;no ceiling, floor 2
-      .db %00000001, %00011000 ;ceiling 1, floor 2
-      .db %00000111, %00011000 ;ceiling 3, floor 2
-      .db %00001111, %00011000 ;ceiling 4, floor 2
-      .db %11111111, %00011000 ;ceiling 8, floor 2
-      .db %00000001, %00011111 ;ceiling 1, floor 5
-      .db %00000111, %00011111 ;ceiling 3, floor 5
-      .db %00001111, %00011111 ;ceiling 4, floor 5
-      .db %10000001, %00011111 ;ceiling 1, floor 6
-      .db %00000001, %00000000 ;ceiling 1, no floor
-      .db %10001111, %00011111 ;ceiling 4, floor 6
-      .db %11110001, %00011111 ;ceiling 1, floor 9
-      .db %11111001, %00011000 ;ceiling 1, middle 5, floor 2
-      .db %11110001, %00011000 ;ceiling 1, middle 4, floor 2
-      .db %11111111, %00011111 ;completely solid top to bottom
+      .byte %00000000, %00000000 ;no ceiling or floor
+      .byte %00000000, %00011000 ;no ceiling, floor 2
+      .byte %00000001, %00011000 ;ceiling 1, floor 2
+      .byte %00000111, %00011000 ;ceiling 3, floor 2
+      .byte %00001111, %00011000 ;ceiling 4, floor 2
+      .byte %11111111, %00011000 ;ceiling 8, floor 2
+      .byte %00000001, %00011111 ;ceiling 1, floor 5
+      .byte %00000111, %00011111 ;ceiling 3, floor 5
+      .byte %00001111, %00011111 ;ceiling 4, floor 5
+      .byte %10000001, %00011111 ;ceiling 1, floor 6
+      .byte %00000001, %00000000 ;ceiling 1, no floor
+      .byte %10001111, %00011111 ;ceiling 4, floor 6
+      .byte %11110001, %00011111 ;ceiling 1, floor 9
+      .byte %11111001, %00011000 ;ceiling 1, middle 5, floor 2
+      .byte %11110001, %00011000 ;ceiling 1, middle 4, floor 2
+      .byte %11111111, %00011111 ;completely solid top to bottom
 
 AreaParserCore:
       lda BackloadingFlag       ;check to see if we are starting right of start
@@ -2134,7 +2133,7 @@ StrBlock: ldy $00                    ;get offset for block buffer
 ;numbers lower than these with the same attribute bits
 ;will not be stored in the block buffer
 BlockBuffLowBounds:
-      .db $10, $51, $88, $c0
+      .byte $10, $51, $88, $c0
 
 ;-------------------------------------------------------------------------------------
 ;$00 - used to store area object identifier
@@ -2143,7 +2142,7 @@ BlockBuffLowBounds:
 ;-------------------------------------------------------------------------------------
 
 ;unused space
-      .db $ff
+      .byte $ff
 
 ;-------------------------------------------------------------------------------------
 
@@ -2153,10 +2152,10 @@ GameMode:
       lda OperMode_Task
       jsr JumpEngine
 
-      .dw InitializeArea
-      .dw ScreenRoutines
-      .dw SecondaryGameSetup
-      .dw GameCoreRoutine
+      .word InitializeArea
+      .word ScreenRoutines
+      .word SecondaryGameSetup
+      .word GameCoreRoutine
 
 ;-------------------------------------------------------------------------------------
 
@@ -2171,9 +2170,9 @@ GameCoreRoutine:
       rts
 
 GameEngine:
-if CHR_Feature == CHR_Animated
+.if CHR_Feature = CHR_Animated
               jsr AnimateCHR
-endif
+.endif
               jsr ProcFireball_Bubble    ;process fireballs and air bubbles
               ldx #$00
 ProcELoop:    stx ObjectOffset           ;put incremented offset in X as enemy object offset
@@ -2317,10 +2316,10 @@ InitPlatScrl: lda #$00                    ;nullify platform force imposed on scr
               rts
 
 X_SubtracterData:
-      .db $00, $10
+      .byte $00, $10
 
 OffscrJoypadBitsData:
-      .db $01, $02
+      .byte $01, $02
 
 ;-------------------------------------------------------------------------------------
 
@@ -2340,19 +2339,19 @@ GameRoutines:
       lda GameEngineSubroutine  ;run routine based on number (a few of these routines are
       jsr JumpEngine            ;merely placeholders as conditions for other routines)
 
-      .dw Entrance_GameTimerSetup
-      .dw Vine_AutoClimb
-      .dw SideExitPipeEntry
-      .dw VerticalPipeEntry
-      .dw FlagpoleSlide
-      .dw PlayerEndLevel
-      .dw PlayerLoseLife
-      .dw PlayerEntrance
-      .dw PlayerCtrlRoutine
-      .dw PlayerChangeSize
-      .dw PlayerInjuryBlink
-      .dw PlayerDeath
-      .dw PlayerFireFlower
+      .word Entrance_GameTimerSetup
+      .word Vine_AutoClimb
+      .word SideExitPipeEntry
+      .word VerticalPipeEntry
+      .word FlagpoleSlide
+      .word PlayerEndLevel
+      .word PlayerLoseLife
+      .word PlayerEntrance
+      .word PlayerCtrlRoutine
+      .word PlayerChangeSize
+      .word PlayerInjuryBlink
+      .word PlayerDeath
+      .word PlayerFireFlower
 
 ;-------------------------------------------------------------------------------------
 
@@ -2691,7 +2690,7 @@ NoFPObj:     inc GameEngineSubroutine ;increment to next routine (this may
 ;-------------------------------------------------------------------------------------
 
 Hidden1UpCoinAmts:
-      .db $15, $23, $16, $1b, $17, $18, $23, $63
+      .byte $15, $23, $16, $1b, $17, $18, $23, $63
 
 PlayerEndLevel:
           lda #$01                  ;force player to walk to the right
@@ -2755,10 +2754,10 @@ ProcMove:  jsr PlayerPhysicsSub      ;run sub related to jumping and swimming
            sty ClimbSideTimer        ;otherwise reset timer now
 MoveSubs:  jsr JumpEngine
 
-      .dw OnGroundStateSub
-      .dw JumpSwimSub
-      .dw FallingSub
-      .dw ClimbingSub
+      .word OnGroundStateSub
+      .word JumpSwimSub
+      .word FallingSub
+      .word ClimbingSub
 
 NoMoveSub: rts
 
@@ -2824,9 +2823,9 @@ ExitMov1: jmp MovePlayerVertically   ;jump to move player vertically, then leave
 ;--------------------------------
 
 ClimbAdderLow:
-      .db $0e, $04, $fc, $f2
+      .byte $0e, $04, $fc, $f2
 ClimbAdderHigh:
-      .db $00, $00, $ff, $ff
+      .byte $00, $00, $ff, $ff
 
 ClimbingSub:
              lda Player_YMF_Dummy
@@ -2880,44 +2879,44 @@ InitCSTimer: sta ClimbSideTimer       ;initialize timer here
 ;----------------
 ;in SMB-R "Base Value"
 PlayerYSpdData:
-	  .db -4 ;Slow/Stopped
-	  .db -4 ;Walking
-	  .db -4 ;Slow run
-	  .db -5 ;Run
-	  .db -5 ;Fast run
-	  .db -2 ;Underwater
-	  .db -1 ;Underwater, in a whirlpool
+	  .byte -4 ;Slow/Stopped
+	  .byte -4 ;Walking
+	  .byte -4 ;Slow run
+	  .byte -5 ;Run
+	  .byte -5 ;Fast run
+	  .byte -2 ;Underwater
+	  .byte -1 ;Underwater, in a whirlpool
 
 ;in SMB-R "Correction"
 InitMForceData:
-	  .db 255 ^$ff ;Slow/Stopped
-	  .db 255 ^$ff ;Walking
-	  .db 255 ^$ff ;Slow run
-	  .db 255 ^$ff ;Run
-	  .db 255 ^$ff ;Fast run
-	  .db 127 ^$ff ;Underwater
-	  .db 255 ^$ff ;Underwater, in a whirlpool
+	  .byte 255 ^$ff ;Slow/Stopped
+	  .byte 255 ^$ff ;Walking
+	  .byte 255 ^$ff ;Slow run
+	  .byte 255 ^$ff ;Run
+	  .byte 255 ^$ff ;Fast run
+	  .byte 127 ^$ff ;Underwater
+	  .byte 255 ^$ff ;Underwater, in a whirlpool
 
 ;in SMB-R "Rise Rate"
 ;in SMB-R, the values are XOR'd with 255 (if SMB-R shows 200, you need to input 55 in this table)
 JumpMForceData:
-	  .db 32 ;Slow/Stopped
-	  .db 32 ;Walking
-	  .db 30 ;Slow run
-	  .db 40 ;Run
-	  .db 40 ;Fast run
-	  .db 13 ;Underwater
-	  .db 4  ;Underwater, in a whirlpool
+	  .byte 32 ;Slow/Stopped
+	  .byte 32 ;Walking
+	  .byte 30 ;Slow run
+	  .byte 40 ;Run
+	  .byte 40 ;Fast run
+	  .byte 13 ;Underwater
+	  .byte 4  ;Underwater, in a whirlpool
 
 ;in SMB-R "Fall Rate"
 FallMForceData:
-	  .db 112 ;Slow/Stopped
-	  .db 112 ;Walking
-	  .db 96  ;Slow run
-	  .db 144 ;Run
-	  .db 144 ;Fast run
-	  .db 10  ;Underwater
-	  .db 9   ;Underwater, in a whirlpool
+	  .byte 112 ;Slow/Stopped
+	  .byte 112 ;Walking
+	  .byte 96  ;Slow run
+	  .byte 144 ;Run
+	  .byte 144 ;Fast run
+	  .byte 10  ;Underwater
+	  .byte 9   ;Underwater, in a whirlpool
 
 ;-------------------------------------------------------------------------------------
 
@@ -2925,19 +2924,19 @@ FallMForceData:
 ;second: running
 ;third: underwater walking
 MaxLeftXSpdData:
-	  .db -40, -24, -16
+	  .byte -40, -24, -16
 MaxRightXSpdData:
-	  .db 40, 24, 16
-      .db 12 ;used for pipe intros
+	  .byte 40, 24, 16
+      .byte 12 ;used for pipe intros
 
 FrictionData:
-      .db $e4, $98, $d0
+      .byte $e4, $98, $d0
 
 Climb_Y_SpeedData:
-      .db $00, $ff, $01
+      .byte $00, $ff, $01
 
 Climb_Y_MForceData:
-      .db $00, $20, $ff
+      .byte $00, $20, $ff
 
 PlayerPhysicsSub:
            lda Player_State          ;check player state
@@ -3090,7 +3089,7 @@ ExitPhy:   rts                        ;and then leave
 ;-------------------------------------------------------------------------------------
 
 PlayerAnimTmrData:
-      .db $02, $04, $07
+      .byte $02, $04, $07
 
 GetPlayerAnimSpeed:
             ldy #$00                   ;initialize offset in Y
@@ -3222,8 +3221,8 @@ BublLoop: stx ObjectOffset            ;store offset
 BublExit: rts                         ;then leave
 
 FireballXSpdData:
-      .db fb_speed_right
-	  .db fb_speed_left
+      .byte fb_speed_right
+	  .byte fb_speed_left
 
 FireballObjCore:
          stx ObjectOffset             ;store offset as current object
@@ -3327,10 +3326,10 @@ Y_Bubl:   sta Bubble_Y_Position,x  ;store as new vertical coordinate for air bub
 ExitBubl: rts                      ;leave
 
 Bubble_MForceData:
-      .db $ff, $50
+      .byte $ff, $50
 
 BubbleTimerData:
-      .db $40, $20
+      .byte $40, $20
 
 ;-------------------------------------------------------------------------------------
 
@@ -3472,10 +3471,10 @@ WhPull: lda #$10
 ;-------------------------------------------------------------------------------------
 
 FlagpoleScoreMods:
-      .db $05, $02, $08, $04, $01
+      .byte $05, $02, $08, $04, $01
 
 FlagpoleScoreDigits:
-      .db $03, $03, $04, $04, $04
+      .byte $03, $03, $04, $04, $04
 
 FlagpoleRoutine:
            ldx #$05                  ;set enemy object offset
@@ -3524,7 +3523,7 @@ ExitFlagP: rts
 ;-------------------------------------------------------------------------------------
 
 Jumpspring_Y_PosData:
-      .db $08, $10, $08, $00
+      .byte $08, $10, $08, $00
 
 JumpspringHandler:
            jsr GetEnemyOffscreenBits   ;get offscreen information
@@ -3603,7 +3602,7 @@ ExJSpring: rts                         ;leave
 ;$02 - used as vertical high nybble of block buffer offset
 
 VineHeightData:
-      .db $30, $60
+      .byte $30, $60
 
 VineObjectHandler:
            cpx #$05                  ;check enemy offset for special use slot
@@ -3661,7 +3660,7 @@ ExitVH:    ldx ObjectOffset          ;get enemy object offset and leave
 ;-------------------------------------------------------------------------------------
 
 CannonBitmasks:
-      .db %00001111, %00000111
+      .byte %00001111, %00000111
 
 ProcessCannons:
            lda AreaType                ;get area type
@@ -3722,7 +3721,7 @@ ExCannon: rts                        ;then leave
 ;--------------------------------
 
 BulletBillXSpdData:
-      .db $18, $e8
+      .byte $18, $e8
 
 BulletBillHandler:
            lda TimerControl          ;if master timer control set,
@@ -3767,11 +3766,11 @@ KillBB:    jsr EraseEnemyObject      ;kill bullet bill and leave
 ;-------------------------------------------------------------------------------------
 
 HammerEnemyOfsData:
-      .db $04, $04, $04, $05, $05, $05
-      .db $06, $06, $06
+      .byte $04, $04, $04, $05, $05, $05
+      .byte $06, $06, $06
 
 HammerXSpdData:
-      .db $10, $f0
+      .byte $10, $f0
 
 SpawnHammerObj:
           lda PseudoRandomBitReg+1 ;get pseudorandom bits from
@@ -3976,13 +3975,13 @@ MiscLoopBack:
 ;-------------------------------------------------------------------------------------
 
 CoinTallyOffsets:
-      .db $17, $1d
+      .byte $17, $1d
 
 ScoreOffsets:
-      .db $0b, $11
+      .byte $0b, $11
 
 StatusBarNybbles:
-      .db $02, $13
+      .byte $02, $13
 
 GiveOneCoin:
       lda #$01               ;set digit modifier to add 1 coin
@@ -4117,7 +4116,7 @@ ExitPUp:   rts                        ;and we're done
 ;$06-$07 - used as block buffer address indirect
 
 BlockYPosAdderData:
-      .db $04, $12
+      .byte $04, $12
 
 PlayerHeadCollision:
            pha                      ;store metatile number to stack
@@ -4226,25 +4225,25 @@ BumpBlock:
            sbc #$05                ;otherwise subtract 5 for second set to get proper number
 BlockCode: jsr JumpEngine          ;run appropriate subroutine depending on block number
 
-      .dw MushFlowerBlock
-      .dw CoinBlock
-      .dw CoinBlock
-      .dw ExtraLifeMushBlock
-      .dw MushFlowerBlock
-      .dw VineBlock
-      .dw StarBlock
-      .dw CoinBlock
-      .dw ExtraLifeMushBlock
+      .word MushFlowerBlock
+      .word CoinBlock
+      .word CoinBlock
+      .word ExtraLifeMushBlock
+      .word MushFlowerBlock
+      .word VineBlock
+      .word StarBlock
+      .word CoinBlock
+      .word ExtraLifeMushBlock
 
 ;--------------------------------
 
 MushFlowerBlock:
       lda #$00       ;load mushroom/fire flower into power-up type
-      .db $2c        ;BIT instruction opcode
+      .byte $2c        ;BIT instruction opcode
 
 StarBlock:
       lda #$02       ;load star into power-up type
-      .db $2c        ;BIT instruction opcode
+      .byte $2c        ;BIT instruction opcode
 
 ExtraLifeMushBlock:
       lda #$03         ;load 1-up mushroom into power-up type
@@ -4547,11 +4546,11 @@ SetXMoveAmt: sty $00                 ;set movement amount here
 ;--------------------------------
 
 MaxSpdBlockData:
-      .db $06, $08
+      .byte $06, $08
 
 ResidualGravityCode:
       ldy #$00       ;this part appears to be residual,
-      .db $2c        ;no code branches or jumps to it...
+      .byte $2c        ;no code branches or jumps to it...
 
 ImposeGravityBlock:
       ldy #$01       ;set offset for maximum speed
@@ -4568,7 +4567,7 @@ ImposeGravitySprObj:
 
 MovePlatformDown:
       lda #$00    ;save value to stack (if branching here, execute next
-      .db $2c     ;part as BIT instruction)
+      .byte $2c     ;part as BIT instruction)
 
 MovePlatformUp:
            lda #$01        ;save value to stack
@@ -4791,8 +4790,8 @@ GetGfxOffsetAdder:
 SzOfs:  rts             ;go back
 
 ChangeSizeOffsetAdder:
-        .db $00, $01, $00, $01, $00, $01, $02, $00, $01, $02
-        .db $02, $00, $02, $00, $02, $00, $02, $00, $02, $00
+        .byte $00, $01, $00, $01, $00, $01, $02, $00, $01, $02
+        .byte $02, $00, $02, $00, $02, $00, $02, $00, $02, $00
 
 HandleChangeSize:
          ldy PlayerAnimCtrl           ;get animation frame control
@@ -4946,7 +4945,7 @@ GetMiscOffscreenBits:
         jmp GetOffScreenBitsSet  ;and get offscreen information about misc object
 
 ObjOffsetData:
-        .db $07, $16, $0d
+        .byte $07, $16, $0d
 
 GetProperObjOffset:
         txa                  ;move offset to A
@@ -5004,11 +5003,11 @@ RunOffscrBitsSubs:
 ;$07 - used to store difference between coordinates of object and screen edges
 
 XOffscreenBitsData:
-        .db $7f, $3f, $1f, $0f, $07, $03, $01, $00
-        .db $80, $c0, $e0, $f0, $f8, $fc, $fe, $ff
+        .byte $7f, $3f, $1f, $0f, $07, $03, $01, $00
+        .byte $80, $c0, $e0, $f0, $f8, $fc, $fe, $ff
 
 DefaultXOnscreenOfs:
-        .db $07, $0f, $07
+        .byte $07, $0f, $07
 
 GetXOffscreenBits:
           stx $04                     ;save position in buffer to here
@@ -5040,15 +5039,15 @@ ExXOfsBS: rts
 ;--------------------------------
 
 YOffscreenBitsData:
-        .db $00, $08, $0c, $0e
-        .db $0f, $07, $03, $01
-        .db $00
+        .byte $00, $08, $0c, $0e
+        .byte $0f, $07, $03, $01
+        .byte $00
 
 DefaultYOnscreenOfs:
-        .db $04, $00, $04
+        .byte $04, $00, $04
 
 HighPosUnitData:
-        .db $ff, $00
+        .byte $ff, $00
 
 GetYOffscreenBits:
           stx $04                      ;save position in buffer to here

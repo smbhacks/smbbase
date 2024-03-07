@@ -1,6 +1,6 @@
 
 CHRInitTable:
- .db default_chr, default_chr+2, default_chr+4, default_chr+5, default_chr+6, default_chr+7
+ .byte default_chr, default_chr+2, default_chr+4, default_chr+5, default_chr+6, default_chr+7
 Start:
              ;sei                          ;pretty standard 6502 type init here
              cld

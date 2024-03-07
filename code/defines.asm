@@ -670,10 +670,10 @@ VictoryModeValue      = 2
 GameOverModeValue     = 3
 
 ; Custom defines
-OriginalSMBMusic EQU 0
-FamistudioMusic EQU 1
-Famitone5Music EQU 2
-VanillaPlusMusic EQU 3
+OriginalSMBMusic = 0
+FamistudioMusic = 1
+Famitone5Music = 2
+VanillaPlusMusic = 3
 
-No_Feature EQU 0
-CHR_Animated EQU 1
+No_Feature = 0
+CHR_Animated = 1
