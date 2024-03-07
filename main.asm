@@ -61,33 +61,33 @@
 ;-------------------------------------------------------------------------------------
 .segment "MUSIC"
 .if CustomMusicDriver = Famitone5Music
-    CustomAudioInit 		EQU FamiToneInit
-    CustomAudioSfxInit 		EQU FamiToneSfxInit
-    CustomAudioSfxPlay 		EQU FamiToneSfxPlay
-    CustomAudioMusicPlay 	EQU FamiToneMusicPlay
-    CustomAudioMusicPause 	EQU FamiToneMusicPause
-    CustomAudioUpdate 		EQU FamiToneUpdate
-    music_data      		EQU music_music_data
-    SFX_CH0 EQU FT_SFX_CH0
-    SFX_CH1 EQU FT_SFX_CH1
-    SFX_CH2 EQU FT_SFX_CH2
-    SFX_CH3 EQU FT_SFX_CH3
-    .include "music/famitone/famitone5_asm6.asm"
-    .include "music/famitone/music.asm"
-    .include "music/famitone/sfx.asm"
+    CustomAudioInit 		= FamiToneInit
+    CustomAudioSfxInit 		= FamiToneSfxInit
+    CustomAudioSfxPlay 		= FamiToneSfxPlay
+    CustomAudioMusicPlay 	= FamiToneMusicPlay
+    CustomAudioMusicPause 	= FamiToneMusicPause
+    CustomAudioUpdate 		= FamiToneUpdate
+    music_data      		= music_music_data
+    SFX_CH0 = FT_SFX_CH0
+    SFX_CH1 = FT_SFX_CH1
+    SFX_CH2 = FT_SFX_CH2
+    SFX_CH3 = FT_SFX_CH3
+    .include "music/famitone/famitone5.asm"
+    .include "music/famitone/music.s"
+    .include "music/famitone/sfx.s"
 .endif
 .if CustomMusicDriver = FamistudioMusic
-    CustomAudioInit 		EQU famistudio_init
-    CustomAudioSfxInit 		EQU famistudio_sfx_init 
-    CustomAudioSfxPlay 		EQU famistudio_sfx_play 
-    CustomAudioMusicPlay 	EQU famistudio_music_play
-    CustomAudioMusicPause 	EQU famistudio_music_pause 
-    CustomAudioUpdate 		EQU famistudio_update 
-    music_data      		EQU music_data_
-    SFX_CH0 EQU FAMISTUDIO_SFX_CH0
-    SFX_CH1 EQU FAMISTUDIO_SFX_CH1
-    SFX_CH2 EQU FAMISTUDIO_SFX_CH2
-    SFX_CH3 EQU FAMISTUDIO_SFX_CH3
+    CustomAudioInit 		= famistudio_init
+    CustomAudioSfxInit 		= famistudio_sfx_init 
+    CustomAudioSfxPlay 		= famistudio_sfx_play 
+    CustomAudioMusicPlay 	= famistudio_music_play
+    CustomAudioMusicPause 	= famistudio_music_pause 
+    CustomAudioUpdate 		= famistudio_update 
+    music_data      		= music_data_
+    SFX_CH0 = FAMISTUDIO_SFX_CH0
+    SFX_CH1 = FAMISTUDIO_SFX_CH1
+    SFX_CH2 = FAMISTUDIO_SFX_CH2
+    SFX_CH3 = FAMISTUDIO_SFX_CH3
     .include "music/famistudio/famistudio_asm6.asm"
     .include "music/famistudio/music.asm"
     .include "music/famistudio/sfx.asm"
@@ -113,12 +113,12 @@ CustomMusicLoopCallback:
     sta songPlaying
     lda EventMusicBuffer
     cmp #$40
-    bne +
+    bne :+
     lda #0
     sta EventMusicBuffer
     lda AreaMusicBuffer
     sta AreaMusicQueue
-    +
+:
     rts
 .endif
 ;-------------------------------------------------------------------------------------

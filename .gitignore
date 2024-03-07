@@ -14,3 +14,5 @@ music/famistudio/sfx.asm
 map.txt
 *.dbg
 *.o
+music/famitone/sfx.s
+music/famitone/music.s

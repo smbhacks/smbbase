@@ -119,9 +119,9 @@ ChkStart:      lda SavedJoypad1Bits   ;check to see if start is pressed
 		   sta NoiseSoundQueue
 		   lda #0
 		   cpy #1
-		   bne +
+		   bne :+
 		   lda #1
-		   +
+:
 		   Switch_Bank 2
 		   jsr CustomAudioMusicPause
 		   Switch_Bank 0
@@ -206,27 +206,27 @@ CustomMusicEngine:
 	ora AreaMusicQueue
 	beq NoTrigger
 	lda AreaMusicQueue
-	beq +
+	beq :++
 	sta AreaMusicBuffer
 	ldx #-1
-	-
+:
 	inx
 	lsr
-	bcc -
+	bcc :-
 	ldy #0
 	sty AreaMusicQueue
-	+
+:
 	lda EventMusicQueue
-	beq +
+	beq :++
 	sta EventMusicBuffer
 	ldx #7
-	-
+:
 	inx
 	lsr
-	bcc -
+	bcc :-
 	ldy #0
 	sty EventMusicQueue
-	+
+:
 	lda MusicLUT,x
 	pha
 	ldx #<music_data
