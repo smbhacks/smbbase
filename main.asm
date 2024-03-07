@@ -34,37 +34,7 @@
 ;-------------------------------------------------------------------------------------
 ;MACROS
 
-macro Switch_Bank arg1
-	pha
-	lda #arg1
-	sta bank0
-	jsr switchBNK
-	pla
-endm
-
-macro Bank_NoSave arg1
-	pha
-	lda #arg1
-	jsr switchBNK
-	pla
-endm
-
-macro Original_Bank
-	pha
-	lda bank0
-	jsr switchBNK
-	pla
-endm
-
-macro jcc address
-	.db $b0, 3
-	jmp address
-endm
-
-macro jcs address
-	.db $90, 3
-	jmp address
-endm
+.include "code/macros.asm"
 
 ;-------------------------------------------------------------------------------------
 ;DEFINES
@@ -76,56 +46,55 @@ endm
 ;CODE
 
 .base $8000	;bank 0-1 mapped to $8000-$BFFF
-	.db "----------------"
-	.db "Studsbase v. 3.1"
-	.db "----------------"
-	.include "code/bank0.asm"
+    .db "----------------"
+    .db "Studsbase v. 3.2"
+    .db "----------------"
+    .include "code/bank0.asm"
 .pad $c000
 
 .base $8000	;bank 2-3 mapped to $8000-$BFFF
-
 if CustomMusicDriver == Famitone5Music
-	CustomAudioInit 		EQU FamiToneInit
-	CustomAudioSfxInit 		EQU FamiToneSfxInit
-	CustomAudioSfxPlay 		EQU FamiToneSfxPlay
-	CustomAudioMusicPlay 	EQU FamiToneMusicPlay
-	CustomAudioMusicPause 	EQU FamiToneMusicPause
-	CustomAudioUpdate 		EQU FamiToneUpdate
-	music_data      		EQU music_music_data
-	SFX_CH0 EQU FT_SFX_CH0
-	SFX_CH1 EQU FT_SFX_CH1
-	SFX_CH2 EQU FT_SFX_CH2
-	SFX_CH3 EQU FT_SFX_CH3
-	.include "music/famitone/famitone5_asm6.asm"
-	.include "music/famitone/music.asm"
-	.include "music/famitone/sfx.asm"
+    CustomAudioInit 		EQU FamiToneInit
+    CustomAudioSfxInit 		EQU FamiToneSfxInit
+    CustomAudioSfxPlay 		EQU FamiToneSfxPlay
+    CustomAudioMusicPlay 	EQU FamiToneMusicPlay
+    CustomAudioMusicPause 	EQU FamiToneMusicPause
+    CustomAudioUpdate 		EQU FamiToneUpdate
+    music_data      		EQU music_music_data
+    SFX_CH0 EQU FT_SFX_CH0
+    SFX_CH1 EQU FT_SFX_CH1
+    SFX_CH2 EQU FT_SFX_CH2
+    SFX_CH3 EQU FT_SFX_CH3
+    .include "music/famitone/famitone5_asm6.asm"
+    .include "music/famitone/music.asm"
+    .include "music/famitone/sfx.asm"
 endif
 if CustomMusicDriver == FamistudioMusic
-	CustomAudioInit 		EQU famistudio_init
-	CustomAudioSfxInit 		EQU famistudio_sfx_init 
-	CustomAudioSfxPlay 		EQU famistudio_sfx_play 
-	CustomAudioMusicPlay 	EQU famistudio_music_play
-	CustomAudioMusicPause 	EQU famistudio_music_pause 
-	CustomAudioUpdate 		EQU famistudio_update 
-	music_data      		EQU music_data_
-	SFX_CH0 EQU FAMISTUDIO_SFX_CH0
-	SFX_CH1 EQU FAMISTUDIO_SFX_CH1
-	SFX_CH2 EQU FAMISTUDIO_SFX_CH2
-	SFX_CH3 EQU FAMISTUDIO_SFX_CH3
-	.include "music/famistudio/famistudio_asm6.asm"
-	.include "music/famistudio/music.asm"
-	.include "music/famistudio/sfx.asm"
+    CustomAudioInit 		EQU famistudio_init
+    CustomAudioSfxInit 		EQU famistudio_sfx_init 
+    CustomAudioSfxPlay 		EQU famistudio_sfx_play 
+    CustomAudioMusicPlay 	EQU famistudio_music_play
+    CustomAudioMusicPause 	EQU famistudio_music_pause 
+    CustomAudioUpdate 		EQU famistudio_update 
+    music_data      		EQU music_data_
+    SFX_CH0 EQU FAMISTUDIO_SFX_CH0
+    SFX_CH1 EQU FAMISTUDIO_SFX_CH1
+    SFX_CH2 EQU FAMISTUDIO_SFX_CH2
+    SFX_CH3 EQU FAMISTUDIO_SFX_CH3
+    .include "music/famistudio/famistudio_asm6.asm"
+    .include "music/famistudio/music.asm"
+    .include "music/famistudio/sfx.asm"
 endif
 if CustomMusicDriver == OriginalSMBMusic
-	MusicHeaderOffsetData = MusicHeaderData - 1
-	MHD = MusicHeaderData
-	.include "music/vanilla/smb1music.asm"
+    MusicHeaderOffsetData = MusicHeaderData - 1
+    MHD = MusicHeaderData
+    .include "music/vanilla/smb1music.asm"
 endif
 
 if CustomMusicDriver == VanillaPlusMusic
-	MusicHeaderOffsetData = MusicHeaderData - 1
-	MHD = MusicHeaderData
-	.include "music/vanilla_plus/smb1music.asm"
+    MusicHeaderOffsetData = MusicHeaderData - 1
+    MHD = MusicHeaderData
+    .include "music/vanilla_plus/smb1music.asm"
 endif
 
 if CustomMusicDriver == Famitone5Music || CustomMusicDriver == FamistudioMusic
@@ -133,32 +102,31 @@ if CustomMusicDriver == Famitone5Music || CustomMusicDriver == FamistudioMusic
 ; we create a custom callback that will run to clear out the queue
 ; and set song playing to 0
 CustomMusicLoopCallback:
-	lda #0
-	sta songPlaying
-	lda EventMusicBuffer
-	cmp #$40
-	bne +
-	lda #0
-	sta EventMusicBuffer
-	lda AreaMusicBuffer
-	sta AreaMusicQueue
-	+
-	rts
+    lda #0
+    sta songPlaying
+    lda EventMusicBuffer
+    cmp #$40
+    bne +
+    lda #0
+    sta EventMusicBuffer
+    lda AreaMusicBuffer
+    sta AreaMusicQueue
+    +
+    rts
 endif
-
 .pad $c000
 
 
 .base $8000 ;bank 4-5 mapped to $8000-$BFFF
-	.include "levels/output.asm"
+    .include "levels/output.asm"
 .pad $c000
 
 
 .pad $c000 ;fixed bank at $c000-$ffff
-	.include "code/fixed.asm"
-	.include "code/text.asm"
+    .include "code/fixed.asm"
+    .include "code/text.asm"
 .pad $ff50
-	.include "code/startup.asm"
+    .include "code/startup.asm"
 .pad $fffa
 ;-------------------------------------------------------------------------------------
 ;INTERRUPT VECTORS
@@ -180,4 +148,3 @@ default_chr_start:
 .incbin "graphics/chr/default.chr"
 endif
 .pad CHR_SIZE*$2000
-

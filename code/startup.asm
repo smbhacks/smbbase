@@ -6,10 +6,10 @@ Start:
              cld
              lda #%00010000               ;init PPU control register 1 
              sta PPU_CTRL_REG1
-		   cli
+             cli
              lda #$40
              sta $4017
-		   ldx #$ff                     ;reset stack pointer
+             ldx #$ff                     ;reset stack pointer
              txs
 VBlank1:     lda PPU_STATUS               ;wait two frames
              bpl VBlank1
@@ -47,7 +47,7 @@ ColdBoot:    jsr InitializeMemory         ;clear memory using pointer in Y
              ; Clear the sleeping flag to allow NMI to start
              lda #0
              sta sleeping
-		     sta $a000
+             sta $a000
              ldx #$1f
              lda #$60
              sta $01
