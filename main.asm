@@ -89,9 +89,9 @@
     SFX_CH1 = FAMISTUDIO_SFX_CH1
     SFX_CH2 = FAMISTUDIO_SFX_CH2
     SFX_CH3 = FAMISTUDIO_SFX_CH3
-    .include "music/famistudio/famistudio_asm6.asm"
-    .include "music/famistudio/music.asm"
-    .include "music/famistudio/sfx.asm"
+    .include "music/famistudio/famistudio.asm"
+    .include "music/famistudio/music.s"
+    .include "music/famistudio/sfx.s"
 .endif
 .if CustomMusicDriver = OriginalSMBMusic
     MusicHeaderOffsetData = MusicHeaderData - 1

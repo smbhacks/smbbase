@@ -1646,6 +1646,7 @@ read_byte:
 	jmp read_byte ;bra
 
 @set_loop:
+	jsr CustomMusicLoopCallback
 	lda (FT_TEMP_PTR),y
 	sta <FT_TEMP_VAR1
 	iny

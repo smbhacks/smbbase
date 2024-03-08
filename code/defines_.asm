@@ -91,20 +91,21 @@ Local_ec:               .res 1
 Local_ed:               .res 1
 Local_ee:               .res 1 ;unused?
 Local_ef:               .res 1
-NoteLenLookupTblOfs:    .res 1
 Square1SoundBuffer:     .res 1
 Square2SoundBuffer:     .res 1
 NoiseSoundBuffer:       .res 1
 AreaMusicBuffer:        .res 1
-MusicDataLow           = MusicData
-MusicDataHigh          = MusicData + 1
-MusicData:              .res 2
 EventMusicQueue:        .res 1
 NoiseSoundQueue:        .res 1
 Square2SoundQueue:      .res 1
 Square1SoundQueue:      .res 1
 
 .if CustomMusicDriver = VanillaPlusMusic
+NoteLenLookupTblOfs:    .res 1
+MusicDataLow           = MusicData
+MusicDataHigh          = MusicData + 1
+MusicData:              .res 2
+
 SQ2_PatternLow         = SQ2_Pattern
 SQ2_PatternHigh        = SQ2_Pattern + 1
 SQ2_Pattern:            .res 2
@@ -115,6 +116,11 @@ SQ2_Offset:             .res 1
 .endif
 
 .if CustomMusicDriver = OriginalSMBMusic
+NoteLenLookupTblOfs:    .res 1
+MusicDataLow           = MusicData
+MusicDataHigh          = MusicData + 1
+MusicData:              .res 2
+
 MusicOffset_Square2:    .res 1
 MusicOffset_Square1:    .res 1
 MusicOffset_Triangle:   .res 1

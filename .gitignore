@@ -8,8 +8,8 @@ music/famitone/music.txt
 music/famitone/music.asm
 music/famitone/sfx.asm
 music/famitone/sfx.nsf
-music/famistudio/music.asm
-music/famistudio/sfx.asm
+music/famistudio/music.s
+music/famistudio/sfx.s
 .vscode/tasks.json
 map.txt
 *.dbg
