@@ -74,20 +74,7 @@ FAMISTUDIO_USE_ARPEGGIO          = 1
 ; FAMISTUDIO_USE_PHASE_RESET = 1
 
 ;======================================================================================================================
-; 2) SEGMENT CONFIGURATION
-;
-; You need to tell where you want to allocate the zeropage, RAM and code. This section will be slightly different for
-; each assembler.
-;
-; For ASM6, you need to specify the .enum location for zeroage and RAM/BSS as well as the .org for the engine code.
-;======================================================================================================================
-
-FAMISTUDIO_ASM6_ZP_ENUM   = $00f5
-FAMISTUDIO_ASM6_BSS_ENUM  = $6000
-FAMISTUDIO_ASM6_CODE_BASE = $8000
-
-;======================================================================================================================
-; 3) GLOBAL ENGINE CONFIGURATION
+; 2) GLOBAL ENGINE CONFIGURATION
 ;
 ; These are parameters that configures the engine, but are independent of the data you will be importing, such as
 ; which platform (PAL/NTSC) you want to support playback for, whether SFX are enabled or not, etc. They all have the
@@ -115,7 +102,7 @@ FAMISTUDIO_CFG_SMOOTH_VIBRATO = 1
 ; FAMISTUDIO_CFG_C_BINDINGS   = 1
 
 ;======================================================================================================================
-; 4) AUDIO EXPANSION CONFIGURATION
+; 3) AUDIO EXPANSION CONFIGURATION
 ;
 ; (SMBBASE: By default the base uses the mapper MMC3 which doesn't support any expansion audio.
 ; If you wish to use expansion audio, you need to change the mapper of this base completely, which will probably

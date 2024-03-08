@@ -16,7 +16,7 @@ from copy import deepcopy
 
 # can change this to prefered data directive
 # (including just removing the . if supported)
-db = '.db'
+db = '.byte'
 
 def Error(txt="(Unspecified error)"):
     print("{1}\nError: {0}\n{1}".format(txt,'='*35))

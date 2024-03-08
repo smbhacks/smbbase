@@ -13,171 +13,171 @@ exclamation = $2b
 period = $2c
 t = $37
 ;Example text: 5 TIMES 5 EQUALS 25
-;What you need to input: .db 5, space, "TIMES"-t, space, 5, space, "EQUALS"-t, space, 2, 5
+;What you need to input: .byte 5, space, "TIMES", space, 5, space, "EQUALS", space, 2, 5
 
 ;--END OF CASTLE--
 MarioThanksMessage:
 ;"THANK YOU MARIO!"
-    .db $25, $48, @e-@s
-@s
-    .db "THANK"-t, space, "YOU"-t, space, "MARIO"-t, exclamation
-@e
-    .db $00 ;eod
+    .byte $25, $48, @e-@s
+@s:
+    .byte "THANK", space, "YOU", space, "MARIO", exclamation
+@e:
+    .byte $00 ;eod
 
 LuigiThanksMessage:
 ;"THANK YOU LUIGI!"
-    .db $25, $48, @e-@s
-@s
-    .db "THANK"-t, space, "YOU"-t, space, "LUIGI"-t, exclamation
-@e
-    .db $00 ;eod
+    .byte $25, $48, @e-@s
+@s:
+    .byte "THANK", space, "YOU", space, "LUIGI", exclamation
+@e:
+    .byte $00 ;eod
 
 MushroomRetainerSaved:
 ;"BUT OUR PRINCESS IS IN"
-    .db $25, $c5, @e-@s
-@s
-    .db "BUT"-t, space, "OUR"-t, space, "PRINCESS"-t, space, "IS"-t, space, "IN"-t
-@e
+    .byte $25, $c5, @e-@s
+@s:
+    .byte "BUT", space, "OUR", space, "PRINCESS", space, "IS", space, "IN"
+@e:
 
 ;"ANOTHER CASTLE!"
-    .db $26, $05, @e2-@s2
-@s2
-    .db "ANOTHER"-t, space, "CASTLE"-t, exclamation
-@e2
-    .db $00 ;eod
+    .byte $26, $05, @e2-@s2
+@s2:
+    .byte "ANOTHER", space, "CASTLE", exclamation
+@e2:
+    .byte $00 ;eod
 
 PrincessSaved1:
 ;"YOUR QUEST IS OVER."
-    .db $25, $a7, @e-@s
-@s
-    .db "YOUR"-t, space, "QUEST"-t, space, "IS"-t, space, "OVER"-t, period
-@e
-    .db $00 ;eod
+    .byte $25, $a7, @e-@s
+@s:
+    .byte "YOUR", space, "QUEST", space, "IS", space, "OVER", period
+@e:
+    .byte $00 ;eod
     
 PrincessSaved2:
 ;"WE PRESENT YOU A NEW QUEST."
-    .db $25, $e3, @e-@s
-@s
-    .db "WE"-t, space, "PRESENT"-t, space, "YOU"-t, space, "A"-t, space, "NEW"-t, space, "QUEST"-t, period
-@e
-    .db $00 ;eod
+    .byte $25, $e3, @e-@s
+@s:
+    .byte "WE", space, "PRESENT", space, "YOU", space, "A", space, "NEW", space, "QUEST", period
+@e:
+    .byte $00 ;eod
 
 WorldSelectMessage1:
 ;"PUSH BUTTON B"
-    .db $26, $4a, @e-@s
-@s
-    .db "PUSH"-t, space, "BUTTON"-t, space, "B"-t
-@e
-    .db $00 ;eod
+    .byte $26, $4a, @e-@s
+@s:
+    .byte "PUSH", space, "BUTTON", space, "B"
+@e:
+    .byte $00 ;eod
     
 WorldSelectMessage2:
 ;"TO SELECT A WORLD"
-    .db $26, $88, @e-@s
-@s
-    .db "TO"-t, space, "SELECT"-t, space, "A"-t, space, "WORLD"-t
-@e
-    .db $00 ;eod
+    .byte $26, $88, @e-@s
+@s:
+    .byte "TO", space, "SELECT", space, "A", space, "WORLD"
+@e:
+    .byte $00 ;eod
 
 ;--STATUSBAR--
 TopStatusBarLine:
 ;Mario
-    .db $20, $43, @e-@s
-@s
-    .db "MARIO"-t
-@e
+    .byte $20, $43, @e-@s
+@s:
+    .byte "MARIO"
+@e:
 
 ;World & Time
-    .db $20, $52, @e2-@s2
-@s2
-    .db "WORLD"-t, space, space, "TIME"-t
-@e2
+    .byte $20, $52, @e2-@s2
+@s2:
+    .byte "WORLD", space, space, "TIME"
+@e2:
 
 ;Score trail (0) and coin indicator (coin icon and the x)
-    .db $20, $68, @e3-@s3
-@s3
-    .db 0, space, space, coin, cross
-@e3
+    .byte $20, $68, @e3-@s3
+@s3:
+    .byte 0, space, space, coin, cross
+@e3:
     
 ;Misc. attributes
-    .db $23, $c0, $7f, $aa ;attribute table data, clears name table 0 to palette 2
-    .db $23, $c2, $01, $ea ;attribute table data, used for coin icon in status bar
-    .db $ff ;eod
+    .byte $23, $c0, $7f, $aa ;attribute table data, clears name table 0 to palette 2
+    .byte $23, $c2, $01, $ea ;attribute table data, used for coin icon in status bar
+    .byte $ff ;eod
 
-;--TRANSITION SCREEN--
+;-RANSITION SCREEN--
 WorldLivesDisplay:
 ;Cross, clear lives display
-    .db $21, $cd, @e-@s
-@s
-    .db space, space, cross, space, space, space, space
-@e
+    .byte $21, $cd, @e-@s
+@s:
+    .byte space, space, cross, space, space, space, space
+@e:
 
 ;World and the dash
-    .db $21, $4b, @e2-@s2
-@s2
-    .db "WORLD"-t, space, space, dash, space
-@e2
+    .byte $21, $4b, @e2-@s2
+@s2:
+    .byte "WORLD", space, space, dash, space
+@e2:
 
 ;Misc. attributes
-    .db $22, $0c, $47, $24 ;possibly used to clear time up
-    .db $23, $dc, $01, $ba ;attribute table data for crown if more than 9 lives
-    .db $ff ;eod
+    .byte $22, $0c, $47, $24 ;possibly used to clear time up
+    .byte $23, $dc, $01, $ba ;attribute table data for crown if more than 9 lives
+    .byte $ff ;eod
 
 LuigiName:
 ;<!!!>
-  .db "LUIGI"-t
+  .byte "LUIGI"
 
-;--TIME UP--
+;-IME UP--
 TwoPlayerTimeUp:
 ;<!!!>
 ;2 players, Mario event 
-    .db $21, $cd, @e-@s
-@s
-    .db "MARIO"-t
-@e
+    .byte $21, $cd, @e-@s
+@s:
+    .byte "MARIO"
+@e:
     
 OnePlayerTimeUp:
 ;Time up display
-    .db $22, $0c, txt_timeup_end - txt_timeup_start
-txt_timeup_start
-    .db "TIME"-t, space, "UP"-t
-txt_timeup_end
-    .db $ff ;eod
+    .byte $22, $0c, txt_timeup_end - txt_timeup_start
+txt_timeup_start:
+    .byte "TIME", space, "UP"
+txt_timeup_end:
+    .byte $ff ;eod
 
 ;--GAME OVER--
 TwoPlayerGameOver:
 ;<!!!>
 ;2 players, Mario event 
-    .db $21, $cd, @e-@s
-@s
-    .db "MARIO"-t
-@e
+    .byte $21, $cd, @e-@s
+@s:
+    .byte "MARIO"
+@e:
 
 OnePlayerGameOver:
 ;Game Over display
-    .db $22, $0b, @e-@s
-@s
-    .db "GAME"-t, space, "OVER"-t
-@e
-    .db $ff ;eod
+    .byte $22, $0b, @e-@s
+@s:
+    .byte "GAME", space, "OVER"
+@e:
+    .byte $ff ;eod
 
 ;--WARP ZONE--
 WarpZoneWelcome:
 ;Welcome to Warp Zone!
-    .db $25, $84, @e-@s
-@s
-    .db "WELCOME"-t, space, "TO"-t, space, "WARP"-t, space, "ZONE"-t, exclamation
-@e
+    .byte $25, $84, @e-@s
+@s:
+    .byte "WELCOME", space, "TO", space, "WARP", space, "ZONE", exclamation
+@e:
 ;Misc.
-    .db $26, $25, $01, $24 ;placeholder for left pipe
-    .db $26, $2d, $01, $24 ;placeholder for middle pipe
-    .db $26, $35, $01, $24 ;placeholder for right pipe
-    .db $27, $d9, $46, $aa ;attribute data
-    .db $27, $e1, $45, $aa
-    .db $ff ;eod
+    .byte $26, $25, $01, $24 ;placeholder for left pipe
+    .byte $26, $2d, $01, $24 ;placeholder for middle pipe
+    .byte $26, $35, $01, $24 ;placeholder for right pipe
+    .byte $27, $d9, $46, $aa ;attribute data
+    .byte $27, $e1, $45, $aa
+    .byte $ff ;eod
 
 GameTextOffsets:
-  .db TopStatusBarLine-TopStatusBarLine, TopStatusBarLine-TopStatusBarLine
-  .db WorldLivesDisplay-TopStatusBarLine, WorldLivesDisplay-TopStatusBarLine
-  .db TwoPlayerTimeUp-TopStatusBarLine, OnePlayerTimeUp-TopStatusBarLine
-  .db TwoPlayerGameOver-TopStatusBarLine, OnePlayerGameOver-TopStatusBarLine
-  .db WarpZoneWelcome-TopStatusBarLine, WarpZoneWelcome-TopStatusBarLine
+  .byte TopStatusBarLine-TopStatusBarLine, TopStatusBarLine-TopStatusBarLine
+  .byte WorldLivesDisplay-TopStatusBarLine, WorldLivesDisplay-TopStatusBarLine
+  .byte TwoPlayerTimeUp-TopStatusBarLine, OnePlayerTimeUp-TopStatusBarLine
+  .byte TwoPlayerGameOver-TopStatusBarLine, OnePlayerGameOver-TopStatusBarLine
+  .byte WarpZoneWelcome-TopStatusBarLine, WarpZoneWelcome-TopStatusBarLine

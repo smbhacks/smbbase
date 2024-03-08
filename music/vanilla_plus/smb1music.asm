@@ -112,8 +112,8 @@ SetFreq_Tri:
 ;--------------------------------
 
 SwimStompEnvelopeData:
-      .db $9f, $9b, $98, $96, $95, $94, $92, $90
-      .db $90, $9a, $97, $95, $93, $92
+      .byte $9f, $9b, $98, $96, $95, $94, $92, $90
+      .byte $90, $9a, $97, $95, $93, $92
 
 PlayFlagpoleSlide:
        lda #$40               ;store length of flagpole sound
@@ -259,7 +259,7 @@ DecrementSfx1Length:
 
 StopSquare1Sfx:
         ldx #$00                ;if end of sfx reached, clear buffer
-        stx $f1                 ;and stop making the sfx
+        stx Square1SoundBuffer  ;and stop making the sfx
         ldx #$0e
         stx SND_MASTERCTRL_REG
         ldx #$0f
@@ -287,21 +287,21 @@ NoPDwnL: jmp DecrementSfx1Length
 ;--------------------------------
 
 ExtraLifeFreqData:
-      .db $58, $02, $54, $56, $4e, $44
+      .byte $58, $02, $54, $56, $4e, $44
 
 PowerUpGrabFreqData:
-      .db $4c, $52, $4c, $48, $3e, $36, $3e, $36, $30
-      .db $28, $4a, $50, $4a, $64, $3c, $32, $3c, $32
-      .db $2c, $24, $3a, $64, $3a, $34, $2c, $22, $2c
+      .byte $4c, $52, $4c, $48, $3e, $36, $3e, $36, $30
+      .byte $28, $4a, $50, $4a, $64, $3c, $32, $3c, $32
+      .byte $2c, $24, $3a, $64, $3a, $34, $2c, $22, $2c
 
 ;residual frequency data
-      .db $22, $1c, $14
+      .byte $22, $1c, $14
 
 PUp_VGrow_FreqData:
-      .db $14, $04, $22, $24, $16, $04, $24, $26 ;used by both
-      .db $18, $04, $26, $28, $1a, $04, $28, $2a
-      .db $1c, $04, $2a, $2c, $1e, $04, $2c, $2e ;used by vinegrow
-      .db $20, $04, $2e, $30, $22, $04, $30, $32
+      .byte $14, $04, $22, $24, $16, $04, $24, $26 ;used by both
+      .byte $18, $04, $26, $28, $1a, $04, $28, $2a
+      .byte $1c, $04, $2a, $2c, $1e, $04, $2c, $2e ;used by vinegrow
+      .byte $20, $04, $2e, $30, $22, $04, $30, $32
 
 PlayCoinGrab:
         lda #$35             ;load length of coin grab sound
@@ -487,8 +487,8 @@ StopGrowItems:
 ;--------------------------------
 
 BrickShatterFreqData:
-        .db $01, $0e, $0e, $0d, $0b, $06, $0c, $0f
-        .db $0a, $09, $03, $0d, $08, $0d, $06, $0c
+        .byte $01, $0e, $0e, $0d, $0b, $06, $0c, $0f
+        .byte $0a, $09, $03, $0d, $08, $0d, $06, $0c
 
 PlayBrickShatter:
         lda #$20                 ;load length of brick shatter sound
@@ -555,12 +555,12 @@ ContinueMusic:
 MusicHandler:
         lda EventMusicQueue
         ora AreaMusicQueue
-        beq +
+        beq :+
         lda #0
         sta CurPattern
         lda #1
         sta songPlaying
-        +
+:
         lda EventMusicQueue     ;check event music queue
         bne LoadEventMusic
         lda AreaMusicQueue      ;check area music queue
@@ -588,7 +588,7 @@ LoadAreaMusic:
         ldy #$00                  ;clear event music buffer
         sty EventMusicBuffer
         sta AreaMusicBuffer       ;copy area music queue contents to buffer
-        .db $2c
+        .byte $2c
 
 FindEventMusicHeader:
         ldy #$08                   ;load Y for offset of area music
@@ -629,17 +629,19 @@ LoadHeader:
         asl
         tay
         lda (pns_hi),y
-        bne ++
+        bne @is_pattern_address
+        ;0 -> restart song
         sta CurPattern
         ldx EventMusicBuffer
-        beq +
+        beq @loop
         cpx #VictoryMusic
-        beq +
+        beq @loop
+        ;dont loop music
         jmp StopMusic
-        +
+@loop:
         tay
         lda (pns_hi),y
-        ++
+@is_pattern_address:
         sta SQ1_PatternHigh
         lda (pns_lo),y
         sta SQ1_PatternLow
@@ -721,7 +723,7 @@ MusicLoopBack:
         ldy #0
         sty EventMusicBuffer
         sta AreaMusicBuffer
-        .db $2c
+        .byte $2c
 EventMusicPtn:
         ldy #8
         jmp FindAreaMusicHeader
@@ -825,10 +827,10 @@ TriNoteHandler:
         lda TriangleMode
         bne LongTriangle
         lda #$1f
-        .db $2c
+        .byte $2c
 LongTriangle:
         lda #$ff
-        .db $2c
+        .byte $2c
 TriangleCutOff:
         lda #$00
 LoadTriCtrlReg:           
@@ -903,7 +905,7 @@ AlternateLengthHandler:
 ProcessLengthData:
         and #%00000111              ;clear all but the three LSBs
         clc
-        adc $f0                     ;add offset loaded from first header byte
+        adc NoteLenLookupTblOfs     ;add offset loaded from first header byte
         adc NoteLengthTblAdder      ;add extra if time running out music
         tay
         lda MusicLengthLookupTbl,y  ;load length
@@ -934,24 +936,24 @@ FreqTbl:
 .include "music/vanilla_plus/pitch_table.asm"
 
 EndOfCastleMusicEnvData:
-      .db $98, $99, $9a, $9b
+      .byte $98, $99, $9a, $9b
 
 AreaMusicEnvData:
-      .db $90, $94, $94, $95, $95, $96, $97, $98
+      .byte $90, $94, $94, $95, $95, $96, $97, $98
 
 WaterEventMusEnvData:
-      .db $90, $91, $92, $92, $93, $93, $93, $94
-      .db $94, $94, $94, $94, $94, $95, $95, $95
-      .db $95, $95, $95, $96, $96, $96, $96, $96
-      .db $96, $96, $96, $96, $96, $96, $96, $96
-      .db $96, $96, $96, $96, $95, $95, $94, $93
+      .byte $90, $91, $92, $92, $93, $93, $93, $94
+      .byte $94, $94, $94, $94, $94, $95, $95, $95
+      .byte $95, $95, $95, $96, $96, $96, $96, $96
+      .byte $96, $96, $96, $96, $96, $96, $96, $96
+      .byte $96, $96, $96, $96, $95, $95, $94, $93
 
 BowserFlameEnvData:
-      .db $15, $16, $16, $17, $17, $18, $19, $19
-      .db $1a, $1a, $1c, $1d, $1d, $1e, $1e, $1f
-      .db $1f, $1f, $1f, $1e, $1d, $1c, $1e, $1f
-      .db $1f, $1e, $1d, $1c, $1a, $18, $16, $14
+      .byte $15, $16, $16, $17, $17, $18, $19, $19
+      .byte $1a, $1a, $1c, $1d, $1d, $1e, $1e, $1f
+      .byte $1f, $1f, $1f, $1e, $1d, $1c, $1e, $1f
+      .byte $1f, $1e, $1d, $1c, $1a, $18, $16, $14
 
 BrickShatterEnvData:
-      .db $15, $16, $16, $17, $17, $18, $19, $19
-      .db $1a, $1a, $1c, $1d, $1d, $1e, $1e, $1f
+      .byte $15, $16, $16, $17, $17, $18, $19, $19
+      .byte $1a, $1a, $1c, $1d, $1d, $1e, $1e, $1f

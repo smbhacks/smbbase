@@ -1,2 +1,2 @@
-nsf2data5 sfx.nsf -asm6 -ntsc
+nsf2data5 sfx.nsf -ca65 -ntsc
 pause
