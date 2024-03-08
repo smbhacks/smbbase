@@ -49,7 +49,7 @@
 
 .include "code/constants.asm"
 .include "code/settings.asm"
-.include "code/defines_.asm"
+.include "code/defines.asm"
 
 ;-------------------------------------------------------------------------------------
 ;CODE
