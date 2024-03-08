@@ -1,24 +1,12 @@
 IRQ:
       sta MMC3_IRQ_DISABLE
       pha
-      txa
-      pha
-      tya
-      pha
-
-      lda #0
-      sta ChangeForHUD
       bit PPU_STATUS
       lda ScrollH
       sta PPU_SCROLL_REG
       sta PPU_SCROLL_REG
       lda ScrollBit
       sta PPU_CTRL_REG1
-
-      pla
-      tay
-      pla
-      tax
       pla
       rti
 
@@ -282,13 +270,7 @@ countBITS_asl:
 	rts
 .endif
 
-LagFrameTasks:
-	;pha
-	txa
-	pha
-	tya
-	pha
-
+SetHUDScroll:
 	lda Sprite0HitDetectFlag
 	beq @skipIRQ
 	lda #$1f
@@ -297,6 +279,20 @@ LagFrameTasks:
 	sta MMC3_IRQ_ENABLE
 	cli
 @skipIRQ:
+	lda Mirror_PPU_CTRL_REG1
+	and #%11111110
+	sta PPU_CTRL_REG1
+	lda #0
+	sta PPU_SCROLL_REG
+	sta PPU_SCROLL_REG
+      rts
+
+LagFrameTasks:
+	;pha
+	txa
+	pha
+	tya
+	pha
 
 	lda $00
 	pha
@@ -315,14 +311,7 @@ LagFrameTasks:
 	lda $07
 	pha
 
-	lda #1
-	sta ChangeForHUD
-	lda Mirror_PPU_CTRL_REG1
-	and #%11111110
-	sta PPU_CTRL_REG1
-	lda #0
-	sta PPU_SCROLL_REG
-	sta PPU_SCROLL_REG
+      jsr SetHUDScroll
 
       Bank_NoSave 2
 .if CustomMusicDriver = OriginalSMBMusic || CustomMusicDriver = VanillaPlusMusic
@@ -358,13 +347,15 @@ LagFrameTasks:
 
 NonMaskableInterrupt:
       pha
-      lda sleeping
+      lda processinggame
       bne LagFrameTasks
-      lda processingmusic
+      lda processingnmi
       beq :+
+      jsr SetHUDScroll
       pla
       rti
 :
+      inc processingnmi
       pla
       lda Mirror_PPU_CTRL_REG1  ;disable NMIs in mirror reg
       ;and #%01111111            ;save all other bits
@@ -431,8 +422,6 @@ InitBuffer:
 	lda Mirror_PPU_CTRL_REG1
 	sta ScrollBit
 
-      lda #1
-      sta processingmusic
 	Switch_Bank 2
 .if CustomMusicDriver = OriginalSMBMusic || CustomMusicDriver = VanillaPlusMusic
       jsr SoundEngine           ;play sound
@@ -440,8 +429,6 @@ InitBuffer:
 	jsr CustomMusicEngine
 .endif
 	Switch_Bank 0
-      lda #0
-      sta processingmusic
 
       jsr ReadJoypads           ;read joypads
       jsr PauseRoutine          ;handle pause
@@ -516,29 +503,13 @@ SkipSprite0:
 
       lda GamePauseStatus       ;if in pause mode, do not perform operation mode stuff
       lsr
-      bcs SkipMainOperPaused
-	lda #1
-	sta sleeping
+      bcs DoneNMI
+	inc processinggame
       jsr OperModeExecutionTree ;otherwise do one of many, many possible subroutines
-	lda #0
-	sta sleeping
-SkipMainOper:  
-      lda PPU_STATUS            ;reset flip-flop
-      ;pla
-	lda ChangeForHUD
-	bne @hud_drawn
-	lda ScrollBit
-      ora #%10000000            ;reactivate NMIs
-      sta PPU_CTRL_REG1
-      rti                       ;we are done until the next frame!
-@hud_drawn:
-	lda #$00
-	sta ChangeForHUD
-	lda ScrollBit
-      ora #%10000000            ;reactivate NMIs
-	and #%11111110
-      sta PPU_CTRL_REG1
-SkipMainOperPaused:
+	dec processinggame
+
+DoneNMI:
+      dec processingnmi
       rti                       ;we are done until the next frame!
 
 WriteGameText:

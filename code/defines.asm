@@ -134,7 +134,6 @@ songPlaying:           .res 1 ;$0101
 ScrollH:               .res 1 ;$0102
 ScrollBit:	           .res 1 ;$0103
 bank0:		           .res 1 ;$0104
-ChangeForHUD:	       .res 1 ;$0105
 PauseSoundQueue:       .res 1 ;$0106
 AreaMusicQueue:        .res 2 ;$0107
 VerticalFlipFlag:      .res 4 ;$0109
@@ -505,5 +504,5 @@ CHR4:                  .res 1 ;$7ffb
 CHR5:                  .res 1 ;$7ffc
 CHR6:                  .res 1 ;$7ffd
 CHR7:                  .res 1 ;$7ffe
-sleeping:              .res 1 ;$7fff
-processingmusic:       .res 1
+processinggame:        .res 1 ;$7fff
+processingnmi:         .res 1

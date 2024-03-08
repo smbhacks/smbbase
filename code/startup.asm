@@ -45,14 +45,12 @@ ColdBoot:    jsr InitializeMemory         ;clear memory using pointer in Y
              lda #$80
              sta MMC3_RAM_PROTECT
              ; Clear the sleeping flag to allow NMI to start
-             lda #0
-             sta sleeping
-             sta MMC3_MIRRORING
              ldx #$1f
              lda #$60
              sta $01
              ldy #$00
              sty $00
+             sty MMC3_MIRRORING
              tya
 @clear_wram:
              sta ($00),y
