@@ -3,10 +3,10 @@
 ;To enable/disable a setting, delete/add the semicolon (;) before the definition
 
 ;If you don't know which one to use, I recommend reading music/!README.txt
-CustomMusicDriver = OriginalSMBMusic		;Use the original SMB audio engine
+;CustomMusicDriver = OriginalSMBMusic		;Use the original SMB audio engine
 ;CustomMusicDriver = VanillaPlusMusic		;Use a slightly better version of the SMB audio engine
 ;CustomMusicDriver = Famitone5Music		    ;Replace SMB's music driver with Famitone5 (compatible with famitracker)
-;CustomMusicDriver = FamistudioMusic		;Replace SMB's music driver with Famistudio (compatible with famistudio)
+CustomMusicDriver = FamistudioMusic		;Replace SMB's music driver with Famistudio (compatible with famistudio)
 
 ;CHR settings, more information at graphics/chr/!README.txt
 CHR_Feature = No_Feature

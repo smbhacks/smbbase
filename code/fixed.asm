@@ -360,6 +360,11 @@ NonMaskableInterrupt:
       pha
       lda sleeping
       bne LagFrameTasks
+      lda processingmusic
+      beq :+
+      pla
+      rti
+:
       pla
       lda Mirror_PPU_CTRL_REG1  ;disable NMIs in mirror reg
       ;and #%01111111            ;save all other bits
@@ -426,6 +431,8 @@ InitBuffer:
 	lda Mirror_PPU_CTRL_REG1
 	sta ScrollBit
 
+      lda #1
+      sta processingmusic
 	Switch_Bank 2
 .if CustomMusicDriver = OriginalSMBMusic || CustomMusicDriver = VanillaPlusMusic
       jsr SoundEngine           ;play sound
@@ -433,6 +440,8 @@ InitBuffer:
 	jsr CustomMusicEngine
 .endif
 	Switch_Bank 0
+      lda #0
+      sta processingmusic
 
       jsr ReadJoypads           ;read joypads
       jsr PauseRoutine          ;handle pause

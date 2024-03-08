@@ -501,3 +501,4 @@ CHR5:                  .res 1 ;$7ffc
 CHR6:                  .res 1 ;$7ffd
 CHR7:                  .res 1 ;$7ffe
 sleeping:              .res 1 ;$7fff
+processingmusic:       .res 1
