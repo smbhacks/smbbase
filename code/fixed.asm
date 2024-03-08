@@ -1,5 +1,5 @@
 IRQ:
-      sta $e000
+      sta MMC3_IRQ_DISABLE
       pha
       txa
       pha
@@ -8,12 +8,12 @@ IRQ:
 
       lda #0
       sta ChangeForHUD
-      bit $2002
+      bit PPU_STATUS
       lda ScrollH
-      sta $2005
-      sta $2005
+      sta PPU_SCROLL_REG
+      sta PPU_SCROLL_REG
       lda ScrollBit
-      sta $2000
+      sta PPU_CTRL_REG1
 
       pla
       tay
@@ -292,9 +292,9 @@ LagFrameTasks:
 	lda Sprite0HitDetectFlag
 	beq @skipIRQ
 	lda #$1f
-	sta $c000
-	sta $c001
-	sta $e001
+	sta MMC3_IRQ_LATCH
+	sta MMC3_IRQ_RELOAD
+	sta MMC3_IRQ_ENABLE
 	cli
 @skipIRQ:
 
@@ -321,8 +321,8 @@ LagFrameTasks:
 	and #%11111110
 	sta PPU_CTRL_REG1
 	lda #0
-	sta $2005
-	sta $2005
+	sta PPU_SCROLL_REG
+	sta PPU_SCROLL_REG
 
       Bank_NoSave 2
 .if CustomMusicDriver = OriginalSMBMusic || CustomMusicDriver = VanillaPlusMusic
@@ -405,9 +405,9 @@ InitBuffer:
 .if CHR_Feature <> No_Feature
       ldx #5
 @update_chr:
-      stx $8000
+      stx MMC3_BANK_SELECT
       lda CHR0,x
-      sta $8001
+      sta MMC3_BANK_DATA
       dex
       bpl @update_chr
 .endif
@@ -415,9 +415,9 @@ InitBuffer:
 	lda Sprite0HitDetectFlag
 	beq @skipIRQ
 	lda #$1f
-	sta $c000
-	sta $c001
-	sta $e001
+	sta MMC3_IRQ_LATCH
+	sta MMC3_IRQ_RELOAD
+	sta MMC3_IRQ_ENABLE
 	cli
 @skipIRQ:
 
@@ -8655,11 +8655,11 @@ switchBNK:
 		stx temp
 		tax
 		lda #%00000110
-		sta $8000
-		stx $8001
+		sta MMC3_BANK_SELECT
+		stx MMC3_BANK_DATA
 		lda #%00000111
-		sta $8000
+		sta MMC3_BANK_SELECT
 		inx
-		stx $8001
+		stx MMC3_BANK_DATA
 		ldx temp
 		rts

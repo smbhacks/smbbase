@@ -8,7 +8,7 @@ Start:
              sta PPU_CTRL_REG1
              cli
              lda #$40
-             sta $4017
+             sta SND_FRAME_COUNTER
              ldx #$ff                     ;reset stack pointer
              txs
 VBlank1:     lda PPU_STATUS               ;wait two frames
@@ -43,11 +43,11 @@ ColdBoot:    jsr InitializeMemory         ;clear memory using pointer in Y
              inc DisableScreenFlag        ;set flag to disable screen output
              ; Enable PRG ram with write protect disabled
              lda #$80
-             sta $a001
+             sta MMC3_RAM_PROTECT
              ; Clear the sleeping flag to allow NMI to start
              lda #0
              sta sleeping
-             sta $a000
+             sta MMC3_MIRRORING
              ldx #$1f
              lda #$60
              sta $01
@@ -64,10 +64,10 @@ ColdBoot:    jsr InitializeMemory         ;clear memory using pointer in Y
              ; Setup the CHR rom banks
              ldx #5
 CHRBankInitLoop:
-             stx $8000
+             stx MMC3_BANK_SELECT
              lda CHRInitTable,x
              sta CHR0,x
-             sta $8001
+             sta MMC3_BANK_DATA
              dex
              bpl CHRBankInitLoop
              lda Mirror_PPU_CTRL_REG1

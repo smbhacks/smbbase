@@ -17,11 +17,21 @@ SND_TRIANGLE_REG      = $4008
 SND_NOISE_REG         = $400c
 SND_DELTA_REG         = $4010
 SND_MASTERCTRL_REG    = $4015
+SND_FRAME_COUNTER     = $4017
 
 SPR_DMA               = $4014
 JOYPAD_PORT           = $4016
 JOYPAD_PORT1          = $4016
 JOYPAD_PORT2          = $4017
+
+MMC3_BANK_SELECT      = $8000
+MMC3_BANK_DATA        = $8001
+MMC3_MIRRORING        = $a000
+MMC3_RAM_PROTECT      = $a001
+MMC3_IRQ_LATCH        = $c000
+MMC3_IRQ_RELOAD       = $c001
+MMC3_IRQ_DISABLE      = $e000
+MMC3_IRQ_ENABLE       = $e001
 
 ;sound effects constants
 Sfx_SmallJump         = %10000000

@@ -89,6 +89,7 @@ EnemyData:              .res 2
 Local_eb:               .res 1
 Local_ec:               .res 1
 Local_ed:               .res 1
+Local_ee:               .res 1 ;unused?
 Local_ef:               .res 1
 NoteLenLookupTblOfs:    .res 1
 Square1SoundBuffer:     .res 1

@@ -857,22 +857,22 @@ RenderAreaGraphics:
 DrawMTLoop: stx $01                      ;store init value of 0 or incremented offset for buffer
             lda MetatileBuffer,x         ;get first metatile number, and mask out all but 2 MSB
             and #%11000000
-			pha
-			asl
-			rol
-			rol
-			tay
-			lda AttributesLo,y
-			sta $06
-			lda AttributesHi,y
-			sta $07
-			lda MetatileBuffer,x
-			and #%00111111
-			tay
-			lda ($06),y
-			and #%11000000
+		pha
+		asl
+		rol
+		rol
+		tay
+		lda AttributesLo,y
+		sta $06
+		lda AttributesHi,y
+		sta $07
+		lda MetatileBuffer,x
+		and #%00111111
+		tay
+		lda ($06),y
+		and #%11000000
             sta $03                      ;store attribute table bits here
-			pla
+		pla
             asl                          ;note that metatile format is:
             rol                          ;%xx000000 - attribute table bits,
             rol                          ;%00xxxxxx - metatile number
@@ -1608,8 +1608,6 @@ ISpr0Loop:   lda Sprite0Data,y
              sta Sprite_Data,y
              dey
              bpl ISpr0Loop
-             jsr DoNothing2            ;these jsrs doesn't do anything useful
-             jsr DoNothing1
              inc Sprite0HitDetectFlag  ;set sprite #0 check flag
              inc OperMode_Task         ;increment to next task
              rts
@@ -1862,14 +1860,6 @@ TransLoop: lda OnscreenPlayerInfo,x    ;transpose the information
            bpl TransLoop
            clc            ;clear carry flag to get game going
 ExTrans:   rts
-
-;-------------------------------------------------------------------------------------
-
-DoNothing1:
-      lda #$ff       ;this is residual code, this value is
-      sta $06c9      ;not used anywhere in the program
-DoNothing2:
-      rts
 
 ;-------------------------------------------------------------------------------------
 
@@ -4247,7 +4237,7 @@ StarBlock:
 
 ExtraLifeMushBlock:
       lda #$03         ;load 1-up mushroom into power-up type
-      sta $39          ;store correct power-up type
+      sta PowerUpType  ;store correct power-up type
       jmp SetupPowerUp
 
 VineBlock:

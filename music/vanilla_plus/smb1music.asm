@@ -259,7 +259,7 @@ DecrementSfx1Length:
 
 StopSquare1Sfx:
         ldx #$00                ;if end of sfx reached, clear buffer
-        stx $f1                 ;and stop making the sfx
+        stx Square1SoundBuffer  ;and stop making the sfx
         ldx #$0e
         stx SND_MASTERCTRL_REG
         ldx #$0f
@@ -903,7 +903,7 @@ AlternateLengthHandler:
 ProcessLengthData:
         and #%00000111              ;clear all but the three LSBs
         clc
-        adc $f0                     ;add offset loaded from first header byte
+        adc NoteLenLookupTblOfs     ;add offset loaded from first header byte
         adc NoteLengthTblAdder      ;add extra if time running out music
         tay
         lda MusicLengthLookupTbl,y  ;load length
