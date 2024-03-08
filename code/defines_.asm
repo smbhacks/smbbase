@@ -308,6 +308,10 @@ SavedJoypad1Bits      = SavedJoypadBits ;$06fc
 SavedJoypad2Bits      = SavedJoypadBits + 1 ;$06fd
 SavedJoypadBits:       .res 3 ;$06fc
 Player_X_Scroll:       .res 1 ;$06ff
+;----------------------------------------------------------------
+.segment "BSS_0700" ;Certain ram values might be immune to RAM initialisation in this segment
+                    ;Because of this, declaration order matters here!
+
 Player_XSpeedAbsolute: .res 1 ;$0700
 FrictionAdderHigh:     .res 1 ;$0701
 FrictionAdderLow:      .res 1 ;$0702
@@ -377,6 +381,7 @@ TimerControl:          .res 1 ;$0747
 CoinTallyFor1Ups:      .res 1 ;$0748
 SecondaryMsgCounter:   .res 1 ;$0749
 JoypadBitMask:         .res 4 ;$074a
+InitializeMemoryOffset = * - 1
 AreaType:              .res 1 ;$074e
 AreaAddrsLOffset:      .res 1 ;$074f
 AreaPointer:           .res 1 ;$0750
@@ -409,6 +414,7 @@ ScrollFractional:      .res 1 ;$0768
 DisableIntermediate:   .res 1 ;$0769
 PrimaryHardMode:       .res 1 ;$076a
 WorldSelectNumber:     .res 5 ;$076b
+InitializeGameOffset = * - 1
 OperMode:              .res 2 ;$0770
 OperMode_Task:         .res 1 ;$0772
 VRAM_Buffer_AddrCtrl:  .res 1 ;$0773
@@ -466,6 +472,7 @@ AreaMusicBuffer_Alt:   .res 1 ;$07c5
 PauseModeFlag:         .res 1 ;$07c6
 GroundMusicHeaderOfs:  .res 3 ;$07c7
 AltRegContentFlag:     .res 13 ;$07ca
+WarmBootOffset = * - 1 ;-------------------------------- WARM BOOT
 DisplayDigits         = TopScoreDisplay ;$07d7
 TopScoreDisplay:       .res 6 ;$07d7
 ScoreAndCoinDisplay   = PlayerScoreDisplay ;$07dd
@@ -473,6 +480,7 @@ PlayerScoreDisplay:    .res 27 ;$07dd
 GameTimerDisplay:      .res 4 ;$07f8
 WorldSelectEnableFlag: .res 1 ;$07fc
 ContinueWorld:         .res 2 ;$07fd
+ColdBootOffset = * - 1 ;-------------------------------- COLD BOOT
 WarmBootValidation:    .res 1 ;$07ff
 
 ;----------------------------------------------------------------

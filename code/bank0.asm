@@ -1499,18 +1499,14 @@ Sprite0Data:
 ;-------------------------------------------------------------------------------------
 
 InitializeGame:
-             ldy #$6f              ;clear all memory as in initialization procedure,
-             jsr InitializeMemory  ;but this time, clear only as far as $076f
-             ldy #$1f
-ClrSndLoop:  sta SoundMemory,y     ;clear out memory used
-             dey                   ;by the sound engines
-             bpl ClrSndLoop
+             ldy #InitializeGameOffset
+             jsr InitializeMemory
              lda #$18              ;set demo timer
              sta DemoTimer
              jsr LoadAreaPointer
 
 InitializeArea:
-               ldy #$4b                 ;clear all memory again, only as far as $074b
+               ldy #InitializeMemoryOffset
                jsr InitializeMemory     ;this is only necessary if branching from
                ldx #$21
                lda #$00
@@ -1624,7 +1620,7 @@ InitializeMemory:
 InitPageLoop: stx $07
 InitByteLoop: cpx #$01          ;check to see if we're on the stack ($0100-$01ff)
               bne InitByte      ;if not, go ahead anyway
-              cpy #$60          ;otherwise, check to see if we're at $0160-$01ff
+              cpy #$c0          ;otherwise, check to see if we're at $0160-$01ff
               bcs SkipByte      ;if so, skip write
 InitByte:     sta ($06),y       ;otherwise, initialize byte with current low byte in Y
 SkipByte:     dey

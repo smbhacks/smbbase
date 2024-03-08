@@ -121,10 +121,6 @@ Level2 = 1
 Level3 = 2
 Level4 = 3
 
-WarmBootOffset        = <$07d6
-ColdBootOffset        = <$07fe
-TitleScreenDataOffset = $0ec0
-SoundMemory           = $07b0
 SwimTileRepOffset     = PlayerGraphicsTable + $9e
 
 A_Button              = %10000000
