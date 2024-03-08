@@ -17,9 +17,10 @@
 
 
 
-;.segment "ZEROPAGE"
-;
-;FT_TEMP:	.res 3
+.pushseg
+.segment "ZEROPAGE"
+FT_TEMP:	.res 3
+.popseg
 
 ;variables moved below
 

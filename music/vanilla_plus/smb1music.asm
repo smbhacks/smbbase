@@ -555,12 +555,12 @@ ContinueMusic:
 MusicHandler:
         lda EventMusicQueue
         ora AreaMusicQueue
-        beq +
+        beq :+
         lda #0
         sta CurPattern
         lda #1
         sta songPlaying
-        +
+:
         lda EventMusicQueue     ;check event music queue
         bne LoadEventMusic
         lda AreaMusicQueue      ;check area music queue
@@ -629,17 +629,19 @@ LoadHeader:
         asl
         tay
         lda (pns_hi),y
-        bne ++
+        bne @is_pattern_address
+        ;0 -> restart song
         sta CurPattern
         ldx EventMusicBuffer
-        beq +
+        beq @loop
         cpx #VictoryMusic
-        beq +
+        beq @loop
+        ;dont loop music
         jmp StopMusic
-        +
+@loop:
         tay
         lda (pns_hi),y
-        ++
+@is_pattern_address:
         sta SQ1_PatternHigh
         lda (pns_lo),y
         sta SQ1_PatternLow

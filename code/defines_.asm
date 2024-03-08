@@ -99,13 +99,26 @@ AreaMusicBuffer:        .res 1
 MusicDataLow           = MusicData
 MusicDataHigh          = MusicData + 1
 MusicData:              .res 2
-MusicOffset_Square2:    .res 1
-MusicOffset_Square1:    .res 1
-MusicOffset_Triangle:   .res 1
 EventMusicQueue:        .res 1
 NoiseSoundQueue:        .res 1
 Square2SoundQueue:      .res 1
 Square1SoundQueue:      .res 1
+
+.if CustomMusicDriver = VanillaPlusMusic
+SQ2_PatternLow         = SQ2_Pattern
+SQ2_PatternHigh        = SQ2_Pattern + 1
+SQ2_Pattern:            .res 2
+SQ1_PatternLow         = SQ1_Pattern
+SQ1_PatternHigh        = SQ1_Pattern + 1
+SQ1_Pattern:            .res 2
+SQ2_Offset:             .res 1
+.endif
+
+.if CustomMusicDriver = OriginalSMBMusic
+MusicOffset_Square2:    .res 1
+MusicOffset_Square1:    .res 1
+MusicOffset_Triangle:   .res 1
+.endif
 
 ;----------------------------------------------------------------
 .segment "SHORTRAM"
@@ -128,6 +141,21 @@ FloateyNum_Y_Pos:      .res 7 ;$011e
 ShellChainCounter:     .res 7 ;$0125
 FloateyNum_Timer:      .res 8 ;$012c
 DigitModifier:         .res 6 ;$0134
+
+.if CustomMusicDriver = VanillaPlusMusic
+NOI_Offset:            .res 1
+CurPattern:            .res 1    
+Instrument_High:       .res 1
+Instrument_Low:        .res 1
+TriangleMode:          .res 1
+Instrument_Length:     .res 1
+TRI_PatternHigh:       .res 1
+TRI_PatternLow:        .res 1      
+NOI_PatternHigh:       .res 1         
+NOI_PatternLow:        .res 1      
+SQ1_Offset:            .res 1      
+TRI_Offset:            .res 1
+.endif
 
 ;----------------------------------------------------------------
 .segment "OAM"
@@ -447,7 +475,9 @@ WorldSelectEnableFlag: .res 1 ;$07fc
 ContinueWorld:         .res 2 ;$07fd
 WarmBootValidation:    .res 1 ;$07ff
 
-.segment "WRAM"
+;----------------------------------------------------------------
+.segment "WRAM" ;$7f00+ could be occupied by Famitone/Famistudio if you have these enabled
+
 CHRAnimWait:           .res 1 ;$7ff7
 CHRAnimCounter:        .res 1 ;$7ff8
 CHR0:                  .res 1 ;$7ff9
@@ -457,23 +487,3 @@ CHR5:                  .res 1 ;$7ffc
 CHR6:                  .res 1 ;$7ffd
 CHR7:                  .res 1 ;$7ffe
 sleeping:              .res 1 ;$7fff
-
-
-
-SQ2_PatternHigh = $f6
-SQ2_PatternLow  = $f5
-SQ1_PatternHigh = $f8
-SQ1_PatternLow  = $f7
-TRI_PatternHigh = $07c0
-TRI_PatternLow  = $07c1
-NOI_PatternHigh = $07c7
-NOI_PatternLow  = $07c8
-SQ2_Offset      = $f9
-SQ1_Offset      = $07c9
-TRI_Offset      = $07b0
-NOI_Offset      = $0108
-CurPattern      = $010a
-Instrument_High = $0150
-Instrument_Low  = $0151
-TriangleMode    = $0152
-Instrument_Length = $0153
