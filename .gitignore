@@ -16,3 +16,4 @@ map.txt
 *.o
 music/famitone/sfx.s
 music/famitone/music.s
+\!local/*

@@ -313,6 +313,9 @@ LagFrameTasks:
 
       jsr SetHUDScroll
 
+      lda temp
+      pha
+
       Bank_NoSave 2
 .if CustomMusicDriver = OriginalSMBMusic || CustomMusicDriver = VanillaPlusMusic
       jsr SoundEngine
@@ -320,6 +323,9 @@ LagFrameTasks:
       jsr CustomMusicEngine
 .endif
       Original_Bank
+
+      pla
+      sta temp
 
       pla
       sta $07
