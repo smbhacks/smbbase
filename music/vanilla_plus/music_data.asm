@@ -572,19 +572,18 @@ VictoryMus_PatternsLow:
 	.lobytes VictoryMus_SQ1_CH_p0, VictoryMus_SQ2_CH_p0, VictoryMus_TRI_CH_p0, VictoryMus_NOI_CH_p0
 
 VictoryMus_SQ1_CH_p0:
-	.byte $E2, $E0, $E2, $DD, $5F, $61, $E3, $6D, $35, $84, $B4, $71, $75, $77, $6B, $F1
-	.byte $6D
+	.byte $62, $60, $62, $5D, $DE, $E0, $63, $EC, $B4, $74, $F0, $F4, $F6, $EA, $71, $EC
 
 VictoryMus_SQ2_CH_p0:
-	.byte $85, $04, $87, $0C, $85, $62, $10, $87, $12, $85, $1C, $84, $22, $82, $04, $22
-	.byte $85, $1E, $22, $26, $18, $1E, $04, $1C, $00, $FF
+	.byte $83, $04, $85, $0C, $83, $62, $10, $85, $12, $83, $1C, $82, $22, $81, $22, $83
+	.byte $1E, $22, $26, $18, $1E, $04, $1C, $00, $FF
 
 VictoryMus_TRI_CH_p0:
-	.byte $85, $12, $87, $14, $85, $18, $1A, $1C, $14, $26, $84, $22, $82, $04, $22, $85
-	.byte $1E, $1C, $18, $1E, $22, $0C, $14
+	.byte $83, $12, $85, $14, $83, $18, $1A, $1C, $14, $26, $82, $22, $81, $22, $83, $1E
+	.byte $1C, $18, $1E, $22, $0C, $14
 
 VictoryMus_NOI_CH_p0:
-	.byte $C5, $00
+	.byte $C5, $C5, $C5, $00
 
 WinCastleMus_PatternsHigh:
 	.hibytes WinCastleMus_SQ1_CH_p0, WinCastleMus_SQ2_CH_p0, WinCastleMus_TRI_CH_p0, WinCastleMus_NOI_CH_p0
@@ -596,22 +595,22 @@ WinCastleMus_PatternsLow:
 WinCastleMus_SQ1_CH_p0:
 	.byte $5C, $54, $4C, $5C, $54, $4C, $5C, $1C, $1C, $5C, $5C, $5C, $5C, $5E, $56, $4E
 	.byte $5E, $56, $4E, $5E, $1E, $1E, $5E, $5E, $5E, $5E, $62, $5A, $50, $62, $5A, $50
-	.byte $62, $22, $22, $62, $66, $04, $66, $04, $66, $04, $AB, $84, $04
+	.byte $62, $22, $22, $62, $66, $04, $66, $04, $66, $04, $6B, $44, $04
 
 WinCastleMus_SQ2_CH_p0:
 	.byte $81, $2C, $22, $1C, $2C, $22, $1C, $85, $2C, $81, $2E, $24, $1E, $2E, $24, $1E
 	.byte $85, $2E, $81, $32, $28, $22, $32, $28, $22, $83, $32, $81, $36, $80, $04, $81
-	.byte $36, $80, $04, $81, $36, $80, $04, $86, $3A, $82, $04, $80, $04, $00, $FF
+	.byte $36, $80, $04, $81, $36, $80, $04, $85, $3A, $81, $04, $80, $04, $00, $FF
 
 WinCastleMus_TRI_CH_p0:
 	.byte $85, $14, $80, $04, $00, $81, $14, $80, $04, $00, $14, $00, $14, $00, $14, $00
 	.byte $85, $16, $80, $04, $00, $81, $16, $80, $04, $00, $16, $00, $16, $00, $16, $00
 	.byte $28, $00, $22, $00, $1A, $00, $28, $00, $22, $00, $1A, $00, $28, $00, $81, $28
-	.byte $80, $04, $00, $2C, $81, $00, $80, $2C, $81, $00, $80, $2C, $81, $00, $86, $30
-	.byte $82, $00, $80, $04
+	.byte $80, $04, $00, $2C, $81, $00, $80, $2C, $81, $00, $80, $2C, $81, $00, $85, $30
+	.byte $81, $04, $80, $04
 
 WinCastleMus_NOI_CH_p0:
-	.byte $C5, $C5, $C5, $00
+	.byte $C5, $C5, $85, $05, $44, $00
 
 UnusedSlot_PatternsHigh:
 	.hibytes UnusedSlot_SQ1_CH_p0, UnusedSlot_SQ2_CH_p0, UnusedSlot_TRI_CH_p0, UnusedSlot_NOI_CH_p0
@@ -724,8 +723,8 @@ StarMusHdr: .byte $40, <StarMus_PatternsHigh, >StarMus_PatternsHigh, <StarMus_Pa
 ASilenceHdr: .byte $28, <ASilence_PatternsHigh, >ASilence_PatternsHigh, <ASilence_PatternsLow, >ASilence_PatternsLow, FadeOutSquare_id, LONGTRI
 DeathMusHdr: .byte $48, <DeathMus_PatternsHigh, >DeathMus_PatternsHigh, <DeathMus_PatternsLow, >DeathMus_PatternsLow, FadeOutSquare_id, SHORTTRI
 GameOverMusHdr: .byte $48, <GameOverMus_PatternsHigh, >GameOverMus_PatternsHigh, <GameOverMus_PatternsLow, >GameOverMus_PatternsLow, LongSquare_id, LONGTRI
-VictoryMusHdr: .byte $40, <VictoryMus_PatternsHigh, >VictoryMus_PatternsHigh, <VictoryMus_PatternsLow, >VictoryMus_PatternsLow, LongSquare_id, LONGTRI
-WinCastleMusHdr: .byte $18, <WinCastleMus_PatternsHigh, >WinCastleMus_PatternsHigh, <WinCastleMus_PatternsLow, >WinCastleMus_PatternsLow, __NOT_EXISTING_INSTRUMENT_id, LONGTRI
+VictoryMusHdr: .byte $18, <VictoryMus_PatternsHigh, >VictoryMus_PatternsHigh, <VictoryMus_PatternsLow, >VictoryMus_PatternsLow, LongSquare_id, LONGTRI
+WinCastleMusHdr: .byte $18, <WinCastleMus_PatternsHigh, >WinCastleMus_PatternsHigh, <WinCastleMus_PatternsLow, >WinCastleMus_PatternsLow, InfSquare_id, LONGTRI
 UnusedSlotHdr: .byte $28, <UnusedSlot_PatternsHigh, >UnusedSlot_PatternsHigh, <UnusedSlot_PatternsLow, >UnusedSlot_PatternsLow, FadeOutSquare_id, LONGTRI
 EndOfLevelMusHdr: .byte $18, <EndOfLevelMus_PatternsHigh, >EndOfLevelMus_PatternsHigh, <EndOfLevelMus_PatternsLow, >EndOfLevelMus_PatternsLow, LongSquare_id, LONGTRI
 TimeRunningOutHdr: .byte $10, <TimeRunningOut_PatternsHigh, >TimeRunningOut_PatternsHigh, <TimeRunningOut_PatternsLow, >TimeRunningOut_PatternsLow, LongSquare_id, LONGTRI

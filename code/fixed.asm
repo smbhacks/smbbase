@@ -294,6 +294,7 @@ LagFrameTasks:
 	tya
 	pha
 
+.if CustomMusicDriver = VanillaPlusMusic
 	lda $00
 	pha
 	lda $01
@@ -302,14 +303,7 @@ LagFrameTasks:
 	pha
 	lda $03
 	pha
-	lda $04
-	pha
-	lda $05
-	pha
-	lda $06
-	pha
-	lda $07
-	pha
+.endif
 
       jsr SetHUDScroll
 
@@ -327,14 +321,7 @@ LagFrameTasks:
       pla
       sta temp
 
-      pla
-      sta $07
-      pla
-      sta $06
-      pla
-      sta $05
-      pla
-      sta $04
+.if CustomMusicDriver = VanillaPlusMusic
       pla
       sta $03
       pla
@@ -343,6 +330,7 @@ LagFrameTasks:
       sta $01
       pla
       sta $00
+.endif
 
       pla
       tay

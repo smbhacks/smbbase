@@ -100,12 +100,14 @@ NoiseSoundQueue:        .res 1
 Square2SoundQueue:      .res 1
 Square1SoundQueue:      .res 1
 
-.if CustomMusicDriver = VanillaPlusMusic
+.if CustomMusicDriver = VanillaPlusMusic || CustomMusicDriver = OriginalSMBMusic
 NoteLenLookupTblOfs:    .res 1
 MusicDataLow           = MusicData
 MusicDataHigh          = MusicData + 1
 MusicData:              .res 2
+.endif
 
+.if CustomMusicDriver = VanillaPlusMusic
 SQ2_PatternLow         = SQ2_Pattern
 SQ2_PatternHigh        = SQ2_Pattern + 1
 SQ2_Pattern:            .res 2
@@ -116,11 +118,6 @@ SQ2_Offset:             .res 1
 .endif
 
 .if CustomMusicDriver = OriginalSMBMusic
-NoteLenLookupTblOfs:    .res 1
-MusicDataLow           = MusicData
-MusicDataHigh          = MusicData + 1
-MusicData:              .res 2
-
 MusicOffset_Square2:    .res 1
 MusicOffset_Square1:    .res 1
 MusicOffset_Triangle:   .res 1
