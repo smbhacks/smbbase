@@ -139,6 +139,11 @@ CustomMusicLoopCallback:
 .word Start
 .word IRQ
 ;-------------------------------------------------------------------------------------
+;MISC
+
+.out .sprintf("Banking macros placed down: %d", num_of_bank_macros)
+
+;-------------------------------------------------------------------------------------
 .segment "CHR"
 default_chr = default_chr_start / $400
 .if CHR_Feature = CHR_Animated

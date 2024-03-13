@@ -25,7 +25,7 @@ FAMISTUDIO_USE_RELEASE_NOTES = 1
 ; Must be enabled if any song uses the volume track. The volume track allows manipulating the volume at the track level
 ; independently from instruments.
 ; More information at: https://famistudio.org/doc/pianoroll/#editing-volume-tracks-effects
-FAMISTUDIO_USE_VOLUME_TRACK      = 1
+; FAMISTUDIO_USE_VOLUME_TRACK      = 1
 
 ; Must be enabled if any song uses slides on the volume track. Volume track must be enabled too.
 ; More information at: https://famistudio.org/doc/pianoroll/#editing-volume-tracks-effects
@@ -34,11 +34,11 @@ FAMISTUDIO_USE_VOLUME_TRACK      = 1
 ; Must be enabled if any song uses the pitch track. The pitch track allows manipulating the pitch at the track level
 ; independently from instruments.
 ; More information at: https://famistudio.org/doc/pianoroll/#pitch
-FAMISTUDIO_USE_PITCH_TRACK       = 1
+; FAMISTUDIO_USE_PITCH_TRACK       = 1
 
 ; Must be enabled if any song uses slide notes. Slide notes allows portamento and slide effects.
 ; More information at: https://famistudio.org/doc/pianoroll/#slide-notes
-FAMISTUDIO_USE_SLIDE_NOTES       = 1
+; FAMISTUDIO_USE_SLIDE_NOTES       = 1
 
 ; Must be enabled if any song uses slide notes on the noise channel too. 
 ; More information at: https://famistudio.org/doc/pianoroll/#slide-notes
@@ -46,12 +46,12 @@ FAMISTUDIO_USE_SLIDE_NOTES       = 1
 
 ; Must be enabled if any song uses the vibrato speed/depth effect track. 
 ; More information at: https://famistudio.org/doc/pianoroll/#vibrato-depth-speed
-FAMISTUDIO_USE_VIBRATO           = 1
+; FAMISTUDIO_USE_VIBRATO           = 1
 
 ; Must be enabled if any song uses arpeggios (not to be confused with instrument arpeggio envelopes, those are always
 ; supported).
 ; More information at: (TODO)
-FAMISTUDIO_USE_ARPEGGIO          = 1
+; FAMISTUDIO_USE_ARPEGGIO          = 1
 
 ; Must be enabled if any song uses the "Duty Cycle" effect (equivalent of FamiTracker Vxx, also called "Timbre").  
 ; FAMISTUDIO_USE_DUTYCYCLE_EFFECT  = 1
@@ -133,4 +133,4 @@ FAMISTUDIO_CFG_SMOOTH_VIBRATO = 1
 ; FAMISTUDIO_EXP_N163_CHN_CNT  = 4
 
 ; EPSM (Expansion Port Sound Module)
-; FAMISTUDIO_EXP_EPSM          = 1
+ FAMISTUDIO_EXP_EPSM          = 1

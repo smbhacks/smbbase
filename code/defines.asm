@@ -506,3 +506,8 @@ ShadowSelect:          .res 1
 bnkTMP:                .res 1 ;for holding the X reg
 bnkSP:                 .res 1 ;stack pointer for banks
 bankStack:             .res 8
+
+;----------------------------------------------------------------
+;MISC
+
+num_of_bank_macros .set 0
