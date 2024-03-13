@@ -125,6 +125,17 @@ CustomMusicLoopCallback:
 ;-------------------------------------------------------------------------------------
 .segment "LEVELS"
     .include "levels/output.asm"
+
+GetScreenPosition:
+    lda ScreenLeft_X_Pos    ;get coordinate of screen's left boundary
+    clc
+    adc #$ff                ;add 255 pixels
+    sta ScreenRight_X_Pos   ;store as coordinate of screen's right boundary
+    lda ScreenLeft_PageLoc  ;get page number where left boundary is
+    adc #$00                ;add carry from before
+    sta ScreenRight_PageLoc ;store as page number where right boundary is
+    rts
+
 ;-------------------------------------------------------------------------------------
 .segment "CODE"
     .include "code/fixed.asm"

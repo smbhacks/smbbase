@@ -492,6 +492,9 @@ WarmBootValidation:    .res 1 ;$07ff
 ;----------------------------------------------------------------
 .segment "WRAM" ;$7f00+ could be occupied by Famitone/Famistudio if you have these enabled
 
+ShadowSelect:          .res 1
+bnkTMP:                .res 1 ;for holding the X reg
+bnkSP:                 .res 1 ;stack pointer for banks
 CHRAnimWait:           .res 1 ;$7ff7
 CHRAnimCounter:        .res 1 ;$7ff8
 CHR0:                  .res 1 ;$7ff9
@@ -502,10 +505,6 @@ CHR6:                  .res 1 ;$7ffd
 CHR7:                  .res 1 ;$7ffe
 processinggame:        .res 1 ;$7fff
 processingnmi:         .res 1
-ShadowSelect:          .res 1
-bnkTMP:                .res 1 ;for holding the X reg
-bnkSP:                 .res 1 ;stack pointer for banks
-bankStack:             .res 8
 
 ;----------------------------------------------------------------
 ;MISC

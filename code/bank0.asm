@@ -1520,7 +1520,7 @@ ClrTimersLoop: sta Timers,x             ;clear out memory between
 StartPage:     sta ScreenLeft_PageLoc   ;set as value here
                sta CurrentPageLoc       ;also set as current page
                sta BackloadingFlag      ;set flag here if halfway page or saved entry page number found
-               jsr GetScreenPosition    ;get pixel coordinates for screen borders
+               farcall GetScreenPosition    ;get pixel coordinates for screen borders
                ldy #$20                 ;if on odd numbered page, use $2480 as start of rendering
                and #%00000001           ;otherwise use $2080, this address used later as name table
                beq SetInitNTHigh        ;address for rendering of game area
@@ -2269,7 +2269,7 @@ ScrollScreen:
               and #%11111110            ;save all bits except d0
               ora $00                   ;get saved bit here and save in PPU register 1
               sta Mirror_PPU_CTRL_REG1  ;mirror to be used to set name table later
-              jsr GetScreenPosition     ;figure out where the right side is
+              farcall GetScreenPosition     ;figure out where the right side is
               lda #$08
               sta ScrollIntervalTimer   ;set scroll timer (residual, not used elsewhere)
               jmp ChkPOffscr            ;skip this part
@@ -2306,18 +2306,6 @@ X_SubtracterData:
 
 OffscrJoypadBitsData:
       .byte $01, $02
-
-;-------------------------------------------------------------------------------------
-
-GetScreenPosition:
-      lda ScreenLeft_X_Pos    ;get coordinate of screen's left boundary
-      clc
-      adc #$ff                ;add 255 pixels
-      sta ScreenRight_X_Pos   ;store as coordinate of screen's right boundary
-      lda ScreenLeft_PageLoc  ;get page number where left boundary is
-      adc #$00                ;add carry from before
-      sta ScreenRight_PageLoc ;store as page number where right boundary is
-      rts
 
 ;-------------------------------------------------------------------------------------
 

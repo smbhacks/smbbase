@@ -35,6 +35,22 @@
     jsr mmc3_bankswitch_secondary
 .endmacro
 
+.macro farcall address
+    jsr .ident (.concat("FCALL_", .string(address)))
+    .ifndef .ident (.concat("FCALL_", .string(address)))
+        .pushseg
+        .segment "CODE"
+        .ident (.concat("FCALL_", .string(address))):
+        pha
+        NEW_BANK #<.bank(address)
+        jsr address
+        RESTORE_BANK
+        pla
+        rts
+        .popseg
+    .endif
+.endmacro
+
 ;Long branch .macros---------------------------------------------------------------------
 .macro jcc address
     .byte $b0, 3
