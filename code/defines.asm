@@ -94,9 +94,6 @@ Square1SoundBuffer:     .res 1
 Square2SoundBuffer:     .res 1
 NoiseSoundBuffer:       .res 1
 AreaMusicBuffer:        .res 1
-ShadowSelect:           .res 1
-bnkTMP:                 .res 1 ;for holding the X reg
-bnkSP:                  .res 1 ;stack pointer for banks
 
 .if CustomMusicDriver = VanillaPlusMusic || CustomMusicDriver = OriginalSMBMusic
 NoteLenLookupTblOfs:    .res 1
@@ -124,7 +121,6 @@ MusicOffset_Triangle:   .res 1
 ;----------------------------------------------------------------
 .segment "SHORTRAM"
 
-bankStack:             .res 8
 temp:                  .res 1 ;$0100
 songPlaying:           .res 1 ;$0101
 ScrollH:               .res 1 ;$0102
@@ -506,3 +502,7 @@ CHR6:                  .res 1 ;$7ffd
 CHR7:                  .res 1 ;$7ffe
 processinggame:        .res 1 ;$7fff
 processingnmi:         .res 1
+ShadowSelect:          .res 1
+bnkTMP:                .res 1 ;for holding the X reg
+bnkSP:                 .res 1 ;stack pointer for banks
+bankStack:             .res 8

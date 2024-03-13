@@ -10,8 +10,17 @@ newBNK:
 
 restoreBNK:
     stx bnkTMP
-    ldx bnkSP
     dec bnkSP
+    ldx bnkSP
+    lda bankStack-1,x
+    tax 
+    jsr mmc3_bankswitch_primary
+    ldx bnkTMP
+    rts
+
+latestBNK:
+    stx bnkTMP
+    ldx bnkSP
     lda bankStack-1,x
     tax 
     jsr mmc3_bankswitch_primary

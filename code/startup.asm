@@ -16,7 +16,7 @@ VBlank1:     lda PPU_STATUS               ;wait two frames
 VBlank2:     lda PPU_STATUS
              bpl VBlank2
              ; make sure to initialize the 8000 and a000 banks before calling code in them!
-             Bank_NoSave 0
+             MMC3_SECONDARY_BANKSWITCH #0
              ldy #ColdBootOffset          ;load default cold boot pointer
              ldx #$05                     ;this is where we check for a warm boot
 WBootCheck:  lda TopScoreDisplay,x        ;check each score digit in the top score
@@ -68,6 +68,7 @@ CHRBankInitLoop:
              sta MMC3_BANK_DATA
              dex
              bpl CHRBankInitLoop
+             NEW_BANK #0
              lda Mirror_PPU_CTRL_REG1
              ora #%10000000               ;enable NMIs
              jsr WritePPUReg1

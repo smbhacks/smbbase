@@ -1,24 +1,32 @@
 ;Bankswitching .macros---------------------------------------------------------------------
-.macro Switch_Bank arg1
-    pha
-    lda #arg1
-    sta bank0
-    jsr switchBNK
-    pla
+;These preserve X, but not the A register!
+.macro NEW_BANK bankval
+    lda bankval
+    jsr newBNK
 .endmacro
 
-.macro Bank_NoSave arg1
-    pha
-    lda #arg1
-    jsr switchBNK
-    pla
+.macro RESTORE_BANK
+    jsr restoreBNK
 .endmacro
 
-.macro Original_Bank
-    pha
-    lda bank0
+.macro SWITCH_BANK bankval
+    lda bankval
     jsr switchBNK
-    pla
+.endmacro
+
+.macro LATEST_BANK
+    jsr latestBNK
+.endmacro
+
+;These macros dont preserve X!
+.macro MMC3_PRIMARY_BANKSWITCH bankval
+    ldx bankval
+    jsr mmc3_bankswitch_primary
+.endmacro
+
+.macro MMC3_SECONDARY_BANKSWITCH bankval
+    ldx bankval
+    jsr mmc3_bankswitch_secondary
 .endmacro
 
 ;Long branch .macros---------------------------------------------------------------------
