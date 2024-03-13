@@ -89,16 +89,14 @@ EnemyData:              .res 2
 Local_eb:               .res 1
 Local_ec:               .res 1
 Local_ed:               .res 1
-Local_ee:               .res 1 ;unused?
 Local_ef:               .res 1
 Square1SoundBuffer:     .res 1
 Square2SoundBuffer:     .res 1
 NoiseSoundBuffer:       .res 1
 AreaMusicBuffer:        .res 1
-EventMusicQueue:        .res 1
-NoiseSoundQueue:        .res 1
-Square2SoundQueue:      .res 1
-Square1SoundQueue:      .res 1
+ShadowSelect:           .res 1
+bnkTMP:                 .res 1 ;for holding the X reg
+bnkSP:                  .res 1 ;stack pointer for banks
 
 .if CustomMusicDriver = VanillaPlusMusic || CustomMusicDriver = OriginalSMBMusic
 NoteLenLookupTblOfs:    .res 1
@@ -126,6 +124,7 @@ MusicOffset_Triangle:   .res 1
 ;----------------------------------------------------------------
 .segment "SHORTRAM"
 
+bankStack:             .res 8
 temp:                  .res 1 ;$0100
 songPlaying:           .res 1 ;$0101
 ScrollH:               .res 1 ;$0102
@@ -143,6 +142,10 @@ FloateyNum_Y_Pos:      .res 7 ;$011e
 ShellChainCounter:     .res 7 ;$0125
 FloateyNum_Timer:      .res 8 ;$012c
 DigitModifier:         .res 6 ;$0134
+EventMusicQueue:        .res 1
+NoiseSoundQueue:        .res 1
+Square2SoundQueue:      .res 1
+Square1SoundQueue:      .res 1
 
 .if CustomMusicDriver = VanillaPlusMusic
 NOI_Offset:            .res 1

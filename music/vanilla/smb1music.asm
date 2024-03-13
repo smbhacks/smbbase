@@ -198,11 +198,11 @@ Square1SfxHandler:
        lsr Square1SoundQueue
        bcs PlaySmackEnemy      ;smack enemy
        lsr Square1SoundQueue
-       bcs PlayPipeDownInj     ;pipedown/injury
+       jcs PlayPipeDownInj     ;pipedown/injury
        lsr Square1SoundQueue
        bcs PlayFireballThrow   ;fireball throw
        lsr Square1SoundQueue
-       bcs PlayFlagpoleSlide   ;slide flagpole
+       jcs PlayFlagpoleSlide   ;slide flagpole
 
 CheckSfx1Buffer:
        lda Square1SoundBuffer   ;check for sfx in buffer 
@@ -350,7 +350,7 @@ ContinueBlast:
         bne DecrementSfx2Length
         ldy #$93                ;load second part reg contents then
         lda #$18
-SBlasJ: bne BlstSJp             ;unconditional branch to load rest of reg contents
+SBlasJ: jne BlstSJp             ;unconditional branch to load rest of reg contents
 
 PlayPowerUpGrab:
         lda #$36                    ;load length of power-up grab sound
@@ -400,7 +400,7 @@ Square2SfxHandler:
         lsr Square2SoundQueue
         bcs PlayBlast          ;fireworks/gunfire
         lsr Square2SoundQueue
-        bcs PlayTimerTick      ;timer tick
+        jcs PlayTimerTick      ;timer tick
         lsr Square2SoundQueue
         bcs PlayPowerUpGrab    ;power-up grab
         lsr Square2SoundQueue
@@ -417,7 +417,7 @@ CheckSfx2Buffer:
         lsr
         bcs ContinueGrowItems    ;vine grow
         lsr
-        bcs ContinueBlast        ;fireworks/gunfire
+        jcs ContinueBlast        ;fireworks/gunfire
         lsr
         bcs Cont_CGrab_TTick     ;timer tick
         lsr
@@ -446,7 +446,7 @@ ContinueBowserFall:
           ldy #$a4                 ;if so, load the rest of reg contents for bowser defeat sound
           lda #$5a
 PBFRegs:  ldx #$9f                 ;the fireworks/gunfire sound shares part of reg contents here
-EL_LRegs: bne LoadSqu2Regs         ;this is an unconditional branch outta here
+EL_LRegs: jne LoadSqu2Regs         ;this is an unconditional branch outta here
 
 PlayExtraLife:
         lda #$30                  ;load length of 1-up sound

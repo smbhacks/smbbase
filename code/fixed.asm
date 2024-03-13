@@ -307,7 +307,7 @@ LagFrameTasks:
 
       jsr SetHUDScroll
 
-      lda temp
+      lda bnkTMP
       pha
 
       Bank_NoSave 2
@@ -319,7 +319,7 @@ LagFrameTasks:
       Original_Bank
 
       pla
-      sta temp
+      sta bnkTMP
 
 .if CustomMusicDriver = VanillaPlusMusic
       pla
@@ -8623,17 +8623,3 @@ PIntLoop: lda IntermediatePlayerData,x   ;load data to display player as he alwa
           ora #%01000000                 ;set horizontal flip bit for bottom-right sprite
           sta Sprite_Attributes+32       ;store and leave
           rts
-
-;-------------------------------------------------------------------------------------
-switchBNK:
-		stx temp
-		tax
-		lda #%00000110
-		sta MMC3_BANK_SELECT
-		stx MMC3_BANK_DATA
-		lda #%00000111
-		sta MMC3_BANK_SELECT
-		inx
-		stx MMC3_BANK_DATA
-		ldx temp
-		rts

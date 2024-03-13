@@ -132,6 +132,7 @@ CustomMusicLoopCallback:
 ;-------------------------------------------------------------------------------------
 .segment "INIT"
     .include "code/startup.asm"
+    .include "code/bankswitch.asm"
 ;-------------------------------------------------------------------------------------
 .segment "Vectors"
 .word NonMaskableInterrupt
