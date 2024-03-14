@@ -36,19 +36,13 @@
 .endmacro
 
 .macro farcall address
-    jsr .ident (.concat("FCALL_", .string(address)))
-    .ifndef .ident (.concat("FCALL_", .string(address)))
-        .pushseg
-        .segment "CODE"
-        .ident (.concat("FCALL_", .string(address))):
-        pha
-        NEW_BANK #<.bank(address)
-        jsr address
-        RESTORE_BANK
-        pla
-        rts
-        .popseg
-    .endif
+    .assert .bank(address) <> .bank(*), warning, "Make this a jsr instead (its in the same bank)"
+    .assert .bank(address) <> .bank(Start), warning, "Make this a jsr instead (its in fixed)"
+    num_of_farcalls .set num_of_farcalls + 1
+    jsr FarCallRoutine
+    .byte .hibyte(address-1)
+    .byte .lobyte(address-1)
+    .byte .bank(address)
 .endmacro
 
 ;Long branch .macros---------------------------------------------------------------------

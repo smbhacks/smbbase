@@ -153,6 +153,7 @@ GetScreenPosition:
 ;MISC
 
 .out .sprintf("Banking macros placed down: %d", num_of_bank_macros)
+.out .sprintf("Farcalls placed down: %d", num_of_farcalls)
 
 ;-------------------------------------------------------------------------------------
 .segment "CHR"

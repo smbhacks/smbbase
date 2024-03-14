@@ -94,6 +94,8 @@ Square1SoundBuffer:     .res 1
 Square2SoundBuffer:     .res 1
 NoiseSoundBuffer:       .res 1
 AreaMusicBuffer:        .res 1
+call_ptr:               .res 2
+farcall_regs:           .res 3
 
 .if CustomMusicDriver = VanillaPlusMusic || CustomMusicDriver = OriginalSMBMusic
 NoteLenLookupTblOfs:    .res 1
@@ -492,6 +494,7 @@ WarmBootValidation:    .res 1 ;$07ff
 ;----------------------------------------------------------------
 .segment "WRAM" ;$7f00+ could be occupied by Famitone/Famistudio if you have these enabled
 
+bankStack:             .res 8
 ShadowSelect:          .res 1
 bnkTMP:                .res 1 ;for holding the X reg
 bnkSP:                 .res 1 ;stack pointer for banks
@@ -510,3 +513,4 @@ processingnmi:         .res 1
 ;MISC
 
 num_of_bank_macros .set 0
+num_of_farcalls    .set 0
