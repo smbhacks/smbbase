@@ -36,25 +36,13 @@
 .endmacro
 
 .macro far_call address
-    .assert .bank(address) <> .bank(*), warning, "Make this a near_call!"
-    .assert .bank(address) <> .bank(Start), warning, "Make this a fixed_call!"
+    .assert .bank(address) <> .bank(*), warning, "Make this a jsr instead (its in the same bank)"
+    .assert .bank(address) <> .bank(Start), warning, "Make this a jsr instead (its in fixed)"
     num_of_farcalls .set num_of_farcalls + 1
     jsr FarCallRoutine
     .byte .hibyte(address-1)
     .byte .lobyte(address-1)
     .byte .bank(address)
-.endmacro
-
-.macro near_call address
-    .assert .bank(address) = .bank(Start) || .bank(address) = .bank(*), warning, "Make this a far_call!"
-    .assert .bank(address) <> .bank(Start), warning, "Make this a fixed_call!"
-    jsr address
-.endmacro
-
-.macro fixed_call address
-    .assert .bank(address) <> .bank(*) || .bank(address) = .bank(Start), warning, "Make this a near_call!"
-    .assert .bank(address) = .bank(*) || .bank(address) = .bank(Start), warning, "Make this a far_call!"
-    jsr address
 .endmacro
 
 ;Long branch .macros---------------------------------------------------------------------
