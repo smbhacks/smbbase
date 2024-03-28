@@ -21,7 +21,6 @@
 ;Assembles with x816.
 ;-------------------------------------------------------------------------------------
 ;HEADER
-
 .segment "INESHDR"
   .byte $4E,$45,$53,$1A                           ;  magic signature
   .byte 4                                         ;  PRG ROM size in 16384 byte units
@@ -35,28 +34,24 @@
 
 ;-------------------------------------------------------------------------------------
 ;MISC
-
 .include "misc/charmap.inc"
 .feature force_range
 
 ;-------------------------------------------------------------------------------------
 ;MACROS
-
 .include "code/macros.asm"
 
 ;-------------------------------------------------------------------------------------
 ;DEFINES
-
 .include "code/constants.asm"
 .include "code/settings.asm"
 .include "code/defines.asm"
 
 ;-------------------------------------------------------------------------------------
 ;CODE
-
 .segment "GAME"
     .byte "----------------"
-    .byte "Studsbase v. 3.4"
+    .byte "Studsbase v. 3.5"
     .byte "----------------"
     .include "code/bank0.asm"
 ;-------------------------------------------------------------------------------------
@@ -126,16 +121,6 @@ CustomMusicLoopCallback:
 .segment "LEVELS"
     .include "levels/output.asm"
 
-GetScreenPosition:
-    lda ScreenLeft_X_Pos    ;get coordinate of screen's left boundary
-    clc
-    adc #$ff                ;add 255 pixels
-    sta ScreenRight_X_Pos   ;store as coordinate of screen's right boundary
-    lda ScreenLeft_PageLoc  ;get page number where left boundary is
-    adc #$00                ;add carry from before
-    sta ScreenRight_PageLoc ;store as page number where right boundary is
-    rts
-
 ;-------------------------------------------------------------------------------------
 .segment "CODE"
     .include "code/fixed.asm"
@@ -151,7 +136,6 @@ GetScreenPosition:
 .word IRQ
 ;-------------------------------------------------------------------------------------
 ;MISC
-
 .out .sprintf("Banking macros placed down: %d", num_of_bank_macros)
 .out .sprintf("Farcalls placed down: %d", num_of_farcalls)
 
