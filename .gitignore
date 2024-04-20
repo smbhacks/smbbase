@@ -3,7 +3,6 @@
 *.mlb
 *.nes
 *.deb
-levels/output.asm
 music/famitone/music.txt
 music/famitone/music.asm
 music/famitone/sfx.asm
