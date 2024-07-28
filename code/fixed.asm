@@ -176,7 +176,11 @@ sq2_sfx_table:
       .byte BLAST      ,SFX_CH1
       .byte TIMER      ,SFX_CH1
       .byte GROW       ,SFX_CH1
+.if CustomMusicDriver = FamistudioMusic
+      .byte EXTRALIFE  ,SFX_CH1
+.else
       .byte EXTRALIFE  ,SFX_CH3
+.endif
       .byte BOWS_FALL  ,SFX_CH1
 
 sq1_sfx_table:

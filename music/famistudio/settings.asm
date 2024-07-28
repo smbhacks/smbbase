@@ -70,8 +70,16 @@ FAMISTUDIO_USE_ARPEGGIO          = 1
 ; assigned to a note, with a specific pitch/loop, etc.). Implied when using FAMISTUDIO_USE_DPCM_BANKSWITCHING.
 ; FAMISTUDIO_USE_DPCM_EXTENDED_RANGE = 1
 
+; Allows having up to 256 instrument at the cost of slightly higher CPU usage when switching instrument.
+; When this is off, the limit is 64 for regular instruments and 32 for expansion instrumnets.
+; FAMISTUDIO_USE_INSTRUMENT_EXTENDED_RANGE = 1
+
 ; Must be enabled if your project uses the "Phase Reset" effect.
 ; FAMISTUDIO_USE_PHASE_RESET = 1
+
+; Must be enabled if your project uses the FDS expansion and at least one instrument with FDS Auto-Mod enabled.
+; FAMISTUDIO_USE_FDS_AUTOMOD  = 1
+
 
 ;======================================================================================================================
 ; 2) GLOBAL ENGINE CONFIGURATION
@@ -114,7 +122,10 @@ FAMISTUDIO_CFG_SMOOTH_VIBRATO = 1
 ;======================================================================================================================
 
 ; Konami VRC6 (2 extra square + saw)
-; FAMISTUDIO_EXP_VRC6          = 1 
+; FAMISTUDIO_EXP_VRC6          = 1
+
+; Rainbow-Net (homebrew clone of VRC6)
+; FAMISTUDIO_EXP_RAINBOW       = 1
 
 ; Konami VRC7 (6 FM channels)
 ; FAMISTUDIO_EXP_VRC7          = 1 
@@ -134,3 +145,13 @@ FAMISTUDIO_CFG_SMOOTH_VIBRATO = 1
 
 ; EPSM (Expansion Port Sound Module)
 ; FAMISTUDIO_EXP_EPSM          = 1
+; Fine-tune control for enabling specific channels
+; Default values for the channels are to enable all channels.
+; FAMISTUDIO_EXP_EPSM_SSG_CHN_CNT     = 3
+; FAMISTUDIO_EXP_EPSM_FM_CHN_CNT      = 6
+; FAMISTUDIO_EXP_EPSM_RHYTHM_CHN1_ENABLE = 1
+; FAMISTUDIO_EXP_EPSM_RHYTHM_CHN2_ENABLE = 1
+; FAMISTUDIO_EXP_EPSM_RHYTHM_CHN3_ENABLE = 1
+; FAMISTUDIO_EXP_EPSM_RHYTHM_CHN4_ENABLE = 1
+; FAMISTUDIO_EXP_EPSM_RHYTHM_CHN5_ENABLE = 1
+; FAMISTUDIO_EXP_EPSM_RHYTHM_CHN6_ENABLE = 1
