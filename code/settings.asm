@@ -33,6 +33,9 @@ CHR_SIZE = 1
 ;Palette data
     ;---> in bank0.asm: "PALETTE DATA"
 
+;Return to big mario after getting hurt with flower power
+flower_to_big_injury = false
+
 ;Bounce off of enemies
 y_bounce = -4
 y_stomp = -3

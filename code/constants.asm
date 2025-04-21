@@ -144,3 +144,6 @@ VanillaPlusMusic = 3
 
 No_Feature = 0
 CHR_Animated = 1
+
+false = 0
+true = 1

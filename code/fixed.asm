@@ -5532,12 +5532,26 @@ InjurePlayer:
 ForceInjury:
           ldx PlayerStatus          ;check player's status
           beq KillPlayer            ;branch if small
+.if flower_to_big_injury
+          lda PlayerStatus
+          pha
+          dec PlayerStatus          ;set player's status 1 back
+.else
           sta PlayerStatus          ;otherwise set player's status to small
+.endif
           lda #invincibility_time
           sta InjuryTimer           ;set injured invincibility timer
           asl
           sta Square1SoundQueue     ;play pipedown/injury sound
           jsr GetPlayerColors       ;change player's palette if necessary
+.if flower_to_big_injury
+          pla
+          cmp #2
+          bne NormalInjury
+          lda #$0d
+          .byte $2c
+NormalInjury:
+.endif
           lda #$0a                  ;set subroutine to run on next frame
 SetKRout: ldy #$01                  ;set new player state
 SetPRout: sta GameEngineSubroutine  ;load new value to run subroutine on next frame

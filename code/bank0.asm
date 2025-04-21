@@ -2339,6 +2339,8 @@ GameRoutines:
       .word PlayerDeath
       .word PlayerFireFlower
 
+      .word PlayerInjuryBlinkFromFire
+
 ;-------------------------------------------------------------------------------------
 
 PlayerEntrance:
@@ -2590,6 +2592,17 @@ EndChgSize:  cmp #$c4            ;check again for another specific moment
 ExitChgSize: rts                 ;and then leave
 
 ;-------------------------------------------------------------------------------------
+
+PlayerInjuryBlinkFromFire:
+.if flower_to_big_injury
+           lda TimerControl       ;check master timer control
+           cmp #$f0               ;for specific moment in time
+           bcs ExitFInjury        ;branch if before that point
+           cmp #$c8               ;check again for another specific point
+           beq DonePlayerTask     ;branch if at that point, and not before or after
+ExitFInjury: 
+           rts
+.endif
 
 PlayerInjuryBlink:
            lda TimerControl       ;check master timer control
