@@ -16,7 +16,7 @@ VBlank1:     lda PPU_STATUS               ;wait two frames
 VBlank2:     lda PPU_STATUS
              bpl VBlank2
              ; make sure to initialize the 8000 and a000 banks before calling code in them!
-             Bank_NoSave 0
+             Bank_NoSave #0
              ldy #ColdBootOffset          ;load default cold boot pointer
              ldx #$05                     ;this is where we check for a warm boot
 WBootCheck:  lda TopScoreDisplay,x        ;check each score digit in the top score

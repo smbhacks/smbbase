@@ -11,9 +11,9 @@ IRQ:
       rti
 
 GetHalfwayPageNumber:
-      Switch_Bank 4
+      Switch_Bank #<.bank(LevelData)
       ldy HalfwayPageNybbles,x
-      Switch_Bank 0
+      Switch_Bank #0
       rts
 
 .if CHR_Feature = CHR_Animated
@@ -110,9 +110,9 @@ ChkStart:      lda SavedJoypad1Bits   ;check to see if start is pressed
 		   bne :+
 		   lda #1
 :
-		   Switch_Bank 2
+		   Switch_Bank #<.bank(CustomAudioMusicPause)
 		   jsr CustomAudioMusicPause
-		   Switch_Bank 0
+		   Switch_Bank #0
 		   pla
 .endif
                eor #%00000001         ;invert d0 and set d7
@@ -314,10 +314,11 @@ LagFrameTasks:
       lda temp
       pha
 
-      Bank_NoSave 2
 .if CustomMusicDriver = OriginalSMBMusic || CustomMusicDriver = VanillaPlusMusic
+      Bank_NoSave #<.bank(SoundEngine)
       jsr SoundEngine
 .else
+      Bank_NoSave #<.bank(CustomMusicEngine)
       jsr CustomMusicEngine
 .endif
       Original_Bank
@@ -420,13 +421,14 @@ InitBuffer:
 	lda Mirror_PPU_CTRL_REG1
 	sta ScrollBit
 
-	Switch_Bank 2
 .if CustomMusicDriver = OriginalSMBMusic || CustomMusicDriver = VanillaPlusMusic
+	Switch_Bank #<.bank(SoundEngine)
       jsr SoundEngine           ;play sound
 .else
+	Switch_Bank #<.bank(CustomMusicEngine)
 	jsr CustomMusicEngine
 .endif
-	Switch_Bank 0
+	Switch_Bank #0
 
       jsr ReadJoypads           ;read joypads
       jsr PauseRoutine          ;handle pause
@@ -598,9 +600,9 @@ WarpNumLoop: lda WarpZoneNumbers,x  ;print warp zone numbers into the
 ;-------------------------------------------------------------------------------------
 
 ProcessEnemyData_:
-		Switch_Bank 4
+		Switch_Bank #<.bank(LevelData)
 		jsr ProcessEnemyData
-		Switch_Bank 0
+		Switch_Bank #0
 		rts
 ;--------------------------------
 ;$06 - used to hold page location of extended right boundary
@@ -1769,10 +1771,10 @@ JumpEngine:
 
 ;-------------------------------------------------------------------------------------
 ProcessAreaData_:
-			Switch_Bank 4
-			jsr ProcessAreaData
-			Switch_Bank 0
-			rts
+      Switch_Bank #<.bank(LevelData)
+      jsr ProcessAreaData
+      Switch_Bank #0
+      rts
 
 ;-------------------------------------------------------------------------------------
 
@@ -2848,7 +2850,7 @@ WarpZoneNumbers:
   .byte $08, $07, $06, $00         ; the minus world
 
 HandlePipeEntry:
-		 Switch_Bank 4
+         Switch_Bank #<.bank(LevelData)
          lda Up_Down_Buttons       ;check saved controller bits from earlier
          and #%00000100            ;for pressing down
          beq ExPipeE               ;if not pressing down, branch to leave
@@ -2894,7 +2896,7 @@ GetWNum: ldy WarpZoneNumbers,x     ;get warp zone numbers
          sta AltEntranceControl    ;initialize mode of entry
          inc Hidden1UpFlag         ;set flag for hidden 1-up blocks
          inc FetchNewGameTimerFlag ;set flag to load new game timer
-ExPipeE: Switch_Bank 0
+ExPipeE: Switch_Bank #0
 		 rts                       ;leave!!!
 
 ;-------------------------------------------------------------------------------------
@@ -2911,19 +2913,19 @@ GetAreaType: and #%01100000       ;mask out all but d6 and d5
              rts
 
 FindAreaPointer:
-	  Switch_Bank 4
+      Switch_Bank #<.bank(LevelData)
       ldy WorldNumber        ;load offset from world variable
       lda WorldAddrOffsets,y
       clc                    ;add area number used to find data
       adc AreaNumber
       tay
       lda AreaAddrOffsets,y  ;from there we have our area pointer
-	  Switch_Bank 0
+	Switch_Bank #0
       rts
 
 
 GetAreaDataAddrs:
-			Switch_Bank 4
+            Switch_Bank #<.bank(LevelData)
             lda AreaPointer          ;use 2 MSB for Y
             jsr GetAreaType
             tay
@@ -3001,7 +3003,7 @@ StoreStyle: sta AreaStyle
             lda AreaDataHigh
             adc #$00
             sta AreaDataHigh
-			Switch_Bank 0
+			Switch_Bank #0
             rts
 
 ;-------------------------------------------------------------------------------------

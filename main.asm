@@ -24,7 +24,7 @@
 
 .segment "INESHDR"
   .byte $4E,$45,$53,$1A                           ;  magic signature
-  .byte 4                                         ;  PRG ROM size in 16384 byte units
+  .byte 8                                         ;  PRG ROM size in 16384 byte units
   .byte CHR_SIZE                                  ;  CHR (CHR_SIZE is defined in settings.asm)
   .byte $41                                       ;  mirroring type and mapper number lower nibble
   .byte %00001000                                 ;  mapper number upper nibble and nes 2.0 id
@@ -36,7 +36,6 @@
 ;-------------------------------------------------------------------------------------
 ;MISC
 
-.include "misc/charmap.inc"
 .feature force_range
 
 ;-------------------------------------------------------------------------------------
@@ -56,8 +55,9 @@
 
 .segment "GAME"
     .byte "----------------"
-    .byte "Studsbase v. 3.4"
+    .byte "Studsbase v.a4.0"
     .byte "----------------"
+    .include "misc/charmap.inc"
     .include "code/bank0.asm"
 ;-------------------------------------------------------------------------------------
 .segment "MUSIC"
@@ -123,8 +123,11 @@ CustomMusicLoopCallback:
     rts
 .endif
 ;-------------------------------------------------------------------------------------
-.segment "LEVELS"
-    .include "levels/output.asm"
+.if LevelEngine = OriginalLevelEngine
+    .include "code/levels/original_engine/segments.asm"
+.else
+    .include "code/levels/tiled_engine/segments.asm"
+.endif
 ;-------------------------------------------------------------------------------------
 .segment "CODE"
     .include "code/fixed.asm"

@@ -1,7 +1,7 @@
 ;Bankswitching .macros---------------------------------------------------------------------
 .macro Switch_Bank arg1
     pha
-    lda #arg1
+    lda arg1
     sta bank0
     jsr switchBNK
     pla
@@ -9,7 +9,7 @@
 
 .macro Bank_NoSave arg1
     pha
-    lda #arg1
+    lda arg1
     jsr switchBNK
     pla
 .endmacro
