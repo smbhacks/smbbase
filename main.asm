@@ -37,6 +37,7 @@
 ;MISC
 
 .feature force_range
+.linecont on
 
 ;-------------------------------------------------------------------------------------
 ;MACROS
@@ -130,6 +131,7 @@ CustomMusicLoopCallback:
 .endif
 ;-------------------------------------------------------------------------------------
 .segment "CODE"
+    .include "graphics/metatiles.asm"
     .include "code/fixed.asm"
     .include "code/text.asm"
 ;-------------------------------------------------------------------------------------

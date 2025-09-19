@@ -1,5 +1,3 @@
-.include "graphics/metatiles.asm"
-
 ;-------------------------------------------------------------------------------------
 ;$00 - used for preset value
 
@@ -842,9 +840,9 @@ NoReset: rts
 RenderAreaGraphics:
             lda CurrentColumnPos         ;store LSB of where we're at
             and #$01
-            sta $05
+            sta $05 
             ldy VRAM_Buffer2_Offset      ;store vram buffer offset
-            sty $00
+            sty $00 
             lda CurrentNTAddr_Low        ;get current name table address we're supposed to render
             sta VRAM_Buffer2+1,y
             lda CurrentNTAddr_High
@@ -852,82 +850,72 @@ RenderAreaGraphics:
             lda #$9a                     ;store length byte of 26 here with d7 set
             sta VRAM_Buffer2+2,y         ;to increment by 32 (in columns)
             lda #$00                     ;init attribute row
-            sta $04
+            sta $04 
             tax
-DrawMTLoop: stx $01                      ;store init value of 0 or incremented offset for buffer
+DrawMTLoop: stx $01                       ;store init value of 0 or incremented offset for buffer
             lda MetatileBuffer,x         ;get first metatile number, and mask out all but 2 MSB
+            sta $02 ;store metatile in $02 temporarily
+            tay
+            lda Metatile_Attributes,y
             and #%11000000
-		pha
-		asl
-		rol
-		rol
-		tay
-		lda AttributesLo,y
-		sta $06
-		lda AttributesHi,y
-		sta $07
-		lda MetatileBuffer,x
-		and #%00111111
-		tay
-		lda ($06),y
-		and #%11000000
-            sta $03                      ;store attribute table bits here
-		pla
-            asl                          ;note that metatile format is:
-            rol                          ;%xx000000 - attribute table bits,
-            rol                          ;%00xxxxxx - metatile number
-            tay                          ;rotate bits to d1-d0 and use as offset here
-            lda MetatileGraphics_Low,y   ;get address to graphics table from here
-            sta $06
-            lda MetatileGraphics_High,y
+            sta $03                       ;store attribute table bits here
+            lda $02 
+            asl
+            rol
+            rol
+            and #%00000011
+            clc
+            adc #>Metatile_Definitions
             sta $07
-            lda MetatileBuffer,x         ;get metatile number again
+            lda #<Metatile_Definitions
+            sta $06
+            lda $02                       ;get metatile number again
             asl                          ;multiply by 4 and use as tile offset
             asl
-            sta $02
+            sta $02 
             lda AreaParserTaskNum        ;get current task number for level processing and
             and #%00000001               ;mask out all but LSB, then invert LSB, multiply by 2
             eor #%00000001               ;to get the correct column position in the metatile,
             asl                          ;then add to the tile offset so we can draw either side
-            adc $02                      ;of the metatiles
+            adc $02                       ;of the metatiles
             tay
-            ldx $00                      ;use vram buffer offset from before as X
+            ldx $00                       ;use vram buffer offset from before as X
             lda ($06),y
             sta VRAM_Buffer2+3,x         ;get first tile number (top left or top right) and store
             iny
             lda ($06),y                  ;now get the second (bottom left or bottom right) and store
             sta VRAM_Buffer2+4,x
-            ldy $04                      ;get current attribute row
-            lda $05                      ;get LSB of current column where we're at, and
+            ldy $04                       ;get current attribute row
+            lda $05                       ;get LSB of current column where we're at, and
             bne RightCheck               ;branch if set (clear = left attrib, set = right)
-            lda $01                      ;get current row we're rendering
+            lda $01                       ;get current row we're rendering
             lsr                          ;branch if LSB set (clear = top left, set = bottom left)
             bcs LLeft
-            rol $03                      ;rotate attribute bits 3 to the left
-            rol $03                      ;thus in d1-d0, for upper left square
-            rol $03
+            rol $03                       ;rotate attribute bits 3 to the left
+            rol $03                       ;thus in d1-d0, for upper left square
+            rol $03 
             jmp SetAttrib
-RightCheck: lda $01                      ;get LSB of current row we're rendering
+RightCheck: lda $01                       ;get LSB of current row we're rendering
             lsr                          ;branch if set (clear = top right, set = bottom right)
             bcs NextMTRow
-            lsr $03                      ;shift attribute bits 4 to the right
-            lsr $03                      ;thus in d3-d2, for upper right square
-            lsr $03
-            lsr $03
+            lsr $03                       ;shift attribute bits 4 to the right
+            lsr $03                       ;thus in d3-d2, for upper right square
+            lsr $03 
+            lsr $03 
             jmp SetAttrib
-LLeft:      lsr $03                      ;shift attribute bits 2 to the right
-            lsr $03                      ;thus in d5-d4 for lower left square
-NextMTRow:  inc $04                      ;move onto next attribute row
+LLeft:      lsr $03                       ;shift attribute bits 2 to the right
+            lsr $03                       ;thus in d5-d4 for lower left square
+NextMTRow:  inc $04                       ;move onto next attribute row  
 SetAttrib:  lda AttributeBuffer,y        ;get previously saved bits from before
-            ora $03                      ;if any, and put new bits, if any, onto
+            ora $03                       ;if any, and put new bits, if any, onto
             sta AttributeBuffer,y        ;the old, and store
-            inc $00                      ;increment vram buffer offset by 2
-            inc $00
-            ldx $01                      ;get current gfx buffer row, and check for
+            inc $00                       ;increment vram buffer offset by 2
+            inc $00 
+            ldx $01                       ;get current gfx buffer row, and check for
             inx                          ;the bottom of the screen
             cpx #$0d
-            jcc DrawMTLoop               ;if not there yet, loop back
-            ldy $00                      ;get current vram buffer offset, increment by 3
+            bcc DrawMTLoop               ;if not there yet, loop back
+            ldy $00                       ;get current vram buffer offset, increment by 3
             iny                          ;(for name table address and length bytes)
             iny
             iny
@@ -1088,14 +1076,14 @@ WriteBlockMetatile:
              cmp #$00                ;check contents of A for blank metatile
              beq UseBOffset          ;branch if found (unconditional if branched from 8a6b)
              ldy #$00                ;load offset for brick metatile w/ line
-             cmp #$58
+             cmp #MT_BRICK_WITH_LINE_COINS
              beq UseBOffset          ;use offset if metatile is brick with coins (w/ line)
-             cmp #$51
+             cmp #MT_BREAKABLE_BRICK_WITH_LINE
              beq UseBOffset          ;use offset if metatile is breakable brick w/ line
              iny                     ;increment offset for brick metatile w/o line
-             cmp #$5d
+             cmp #MT_BRICK_COINS
              beq UseBOffset          ;use offset if metatile is brick with coins (w/o line)
-             cmp #$52
+             cmp #MT_BREAKABLE_BRICK
              beq UseBOffset          ;use offset if metatile is breakable brick w/o line
              iny                     ;if any other metatile, increment offset for empty block
 UseBOffset:  tya                     ;put Y in A
@@ -1170,50 +1158,22 @@ RemBridge:  lda BlockGfxData,x    ;write top left and top right
 
 WaterPaletteData:
   .byte $3f, $00, $20
-  .byte $0f, $15, $12, $25
-  .byte $0f, $3a, $1a, $0f
-  .byte $0f, $30, $12, $0f
-  .byte $0f, $27, $12, $0f
-  .byte $22, $16, $27, $18
-  .byte $0f, $10, $30, $27
-  .byte $0f, $16, $30, $27
-  .byte $0f, $0f, $30, $10
+  .incbin "graphics/palettes/water.pal"
   .byte $00
 
 GroundPaletteData:
   .byte $3f, $00, $20
-  .byte $0f, $29, $1a, $0f
-  .byte $0f, $36, $17, $0f
-  .byte $0f, $30, $21, $0f
-  .byte $0f, $27, $17, $0f
-  .byte $0f, $16, $27, $18
-  .byte $0f, $1a, $30, $27
-  .byte $0f, $16, $30, $27
-  .byte $0f, $0f, $36, $17
+  .incbin "graphics/palettes/ground.pal"
   .byte $00
 
 UndergroundPaletteData:
   .byte $3f, $00, $20
-  .byte $0f, $29, $1a, $09
-  .byte $0f, $3c, $1c, $0f
-  .byte $0f, $30, $21, $1c
-  .byte $0f, $27, $17, $1c
-  .byte $0f, $16, $27, $18
-  .byte $0f, $1c, $36, $17
-  .byte $0f, $16, $30, $27
-  .byte $0f, $0c, $3c, $1c
+  .incbin "graphics/palettes/underground.pal"
   .byte $00
 
 CastlePaletteData:
   .byte $3f, $00, $20
-  .byte $0f, $30, $10, $00
-  .byte $0f, $30, $10, $00
-  .byte $0f, $30, $16, $00
-  .byte $0f, $27, $17, $00
-  .byte $0f, $16, $27, $18
-  .byte $0f, $1c, $36, $17
-  .byte $0f, $16, $30, $27
-  .byte $0f, $00, $30, $10
+  .incbin "graphics/palettes/castle.pal"
   .byte $00
 
 DaySnowPaletteData:
@@ -1906,77 +1866,116 @@ NoColWrap: inc BlockBufferColumnPos ;increment column offset where we're at
 ;$06-$07 - used to store block buffer address
 
 BSceneDataOffsets:
-      .byte $00, $30, $60
+  .byte $00, $30, $60
 
 BackSceneryData:
-   .byte $93, $00, $00, $11, $12, $12, $13, $00 ;clouds
-   .byte $00, $51, $52, $53, $00, $00, $00, $00
-   .byte $00, $00, $01, $02, $02, $03, $00, $00
-   .byte $00, $00, $00, $00, $91, $92, $93, $00
-   .byte $00, $00, $00, $51, $52, $53, $41, $42
-   .byte $43, $00, $00, $00, $00, $00, $91, $92
+  .byte $93, $00, $00, $11, $12, $12, $13, $00 ;clouds
+  .byte $00, $51, $52, $53, $00, $00, $00, $00
+  .byte $00, $00, $01, $02, $02, $03, $00, $00
+  .byte $00, $00, $00, $00, $91, $92, $93, $00
+  .byte $00, $00, $00, $51, $52, $53, $41, $42
+  .byte $43, $00, $00, $00, $00, $00, $91, $92
 
-   .byte $97, $87, $88, $89, $99, $00, $00, $00 ;mountains and bushes
-   .byte $11, $12, $13, $a4, $a5, $a5, $a5, $a6
-   .byte $97, $98, $99, $01, $02, $03, $00, $a4
-   .byte $a5, $a6, $00, $11, $12, $12, $12, $13
-   .byte $00, $00, $00, $00, $01, $02, $02, $03
-   .byte $00, $a4, $a5, $a5, $a6, $00, $00, $00
+  .byte $97, $87, $88, $89, $99, $00, $00, $00 ;mountains and bushes
+  .byte $11, $12, $13, $a4, $a5, $a5, $a5, $a6
+  .byte $97, $98, $99, $01, $02, $03, $00, $a4
+  .byte $a5, $a6, $00, $11, $12, $12, $12, $13
+  .byte $00, $00, $00, $00, $01, $02, $02, $03
+  .byte $00, $a4, $a5, $a5, $a6, $00, $00, $00
 
-   .byte $11, $12, $12, $13, $00, $00, $00, $00 ;trees and fences
-   .byte $00, $00, $00, $9c, $00, $8b, $aa, $aa
-   .byte $aa, $aa, $11, $12, $13, $8b, $00, $9c
-   .byte $9c, $00, $00, $01, $02, $03, $11, $12
-   .byte $12, $13, $00, $00, $00, $00, $aa, $aa
-   .byte $9c, $aa, $00, $8b, $00, $01, $02, $03
+  .byte $11, $12, $12, $13, $00, $00, $00, $00 ;trees and fences
+  .byte $00, $00, $00, $9c, $00, $8b, $aa, $aa
+  .byte $aa, $aa, $11, $12, $13, $8b, $00, $9c
+  .byte $9c, $00, $00, $01, $02, $03, $11, $12
+  .byte $12, $13, $00, $00, $00, $00, $aa, $aa
+  .byte $9c, $aa, $00, $8b, $00, $01, $02, $03
 
 BackSceneryMetatiles:
-   .byte $80, $83, $00 ;cloud left
-   .byte $81, $84, $00 ;cloud middle
-   .byte $82, $85, $00 ;cloud right
-   .byte $02, $00, $00 ;bush left
-   .byte $03, $00, $00 ;bush middle
-   .byte $04, $00, $00 ;bush right
-   .byte $00, $05, $06 ;mountain left
-   .byte $07, $06, $0a ;mountain middle
-   .byte $00, $08, $09 ;mountain right
-   .byte $4d, $00, $00 ;fence
-   .byte $0d, $0f, $4e ;tall tree
-   .byte $0e, $4e, $4e ;short tree
+  .byte MT_CLOUD_LEFT, MT_CLOUD_BOTTOM_LEFT, $00 ;cloud left
+  .byte MT_CLOUD_MIDDLE, MT_CLOUD_BOTTOM_MIDDLE, $00 ;cloud middle
+  .byte MT_CLOUD_RIGHT, MT_CLOUD_BOTTOM_RIGHT, $00 ;cloud right
+  .byte MT_BUSH_LEFT, $00, $00 ;bush left
+  .byte MT_BUSH_MIDDLE, $00, $00 ;bush middle
+  .byte MT_BUSH_RIGHT, $00, $00 ;bush right
+  .byte $00, MT_MOUNTAIN_LEFT, MT_MOUNTAIN_LEFT_BOTTOM_MIDDLE_CENTER ;mountain left
+  .byte MT_MOUNTAIN_MIDDLE_TOP, MT_MOUNTAIN_LEFT_BOTTOM_MIDDLE_CENTER, MT_MOUNTAIN_MIDDLE_BOTTOM ;mountain middle
+  .byte $00, MT_MOUNTAIN_RIGHT, MT_MOUNTAIN_RIGHT_BOTTOM ;mountain right
+  .byte MT_FENCE, $00, $00 ;fence
+  .byte MT_TALL_TREE_TOP_AND_TOP_HALF, MT_TALL_TREE_TOP_AND_BOTTOM_HALF, MT_TREE_TRUNK ;tall tree
+  .byte MT_SHORT_TREE_TOP, MT_TREE_TRUNK, MT_TREE_TRUNK ;short tree
 
 FSceneDataOffsets:
-      .byte $00, $0d, $1a
+  .byte $00, $0d, $1a
 
 ForeSceneryData:
-   .byte $86, $87, $87, $87, $87, $87, $87   ;in water
-   .byte $87, $87, $87, $87, $69, $69
+;in water
+  .byte MT_WATER_OR_LAVA_TOP
+  .byte MT_WATER_OR_LAVA
+  .byte MT_WATER_OR_LAVA
+  .byte MT_WATER_OR_LAVA
+  .byte MT_WATER_OR_LAVA
+  .byte MT_WATER_OR_LAVA
+  .byte MT_WATER_OR_LAVA   
+  .byte MT_WATER_OR_LAVA
+  .byte MT_WATER_OR_LAVA
+  .byte MT_WATER_OR_LAVA
+  .byte MT_WATER_OR_LAVA
+  .byte MT_SOLID_BLOCK_WATER_LEVEL_GREEN_ROCK
+  .byte MT_SOLID_BLOCK_WATER_LEVEL_GREEN_ROCK
 
-   .byte $00, $00, $00, $00, $00, $45, $47   ;wall
-   .byte $47, $47, $47, $47, $00, $00
+;wall
+  .byte $00
+  .byte $00
+  .byte $00
+  .byte $00
+  .byte $00
+  .byte MT_CASTLE_TOP
+  .byte MT_CASTLE_BRICK_WALL   
+  .byte MT_CASTLE_BRICK_WALL
+  .byte MT_CASTLE_BRICK_WALL
+  .byte MT_CASTLE_BRICK_WALL
+  .byte MT_CASTLE_BRICK_WALL
+  .byte $00
+  .byte $00
 
-   .byte $00, $00, $00, $00, $00, $00, $00   ;over water
-   .byte $00, $00, $00, $00, $86, $87
+;over water
+  .byte $00
+  .byte $00
+  .byte $00
+  .byte $00
+  .byte $00
+  .byte $00
+  .byte $00   
+  .byte $00
+  .byte $00
+  .byte $00
+  .byte $00
+  .byte MT_WATER_OR_LAVA_TOP
+  .byte MT_WATER_OR_LAVA
 
 TerrainMetatiles:
-      .byte $69, $54, $52, $62
+  .byte MT_SOLID_BLOCK_WATER_LEVEL_GREEN_ROCK
+  .byte MT_CRACKED_ROCK_TERRAIN
+  .byte MT_BREAKABLE_BRICK
+  .byte MT_SOLID_BLOCK_WHITE_WALL
 
 TerrainRenderBits:
-      .byte %00000000, %00000000 ;no ceiling or floor
-      .byte %00000000, %00011000 ;no ceiling, floor 2
-      .byte %00000001, %00011000 ;ceiling 1, floor 2
-      .byte %00000111, %00011000 ;ceiling 3, floor 2
-      .byte %00001111, %00011000 ;ceiling 4, floor 2
-      .byte %11111111, %00011000 ;ceiling 8, floor 2
-      .byte %00000001, %00011111 ;ceiling 1, floor 5
-      .byte %00000111, %00011111 ;ceiling 3, floor 5
-      .byte %00001111, %00011111 ;ceiling 4, floor 5
-      .byte %10000001, %00011111 ;ceiling 1, floor 6
-      .byte %00000001, %00000000 ;ceiling 1, no floor
-      .byte %10001111, %00011111 ;ceiling 4, floor 6
-      .byte %11110001, %00011111 ;ceiling 1, floor 9
-      .byte %11111001, %00011000 ;ceiling 1, middle 5, floor 2
-      .byte %11110001, %00011000 ;ceiling 1, middle 4, floor 2
-      .byte %11111111, %00011111 ;completely solid top to bottom
+  .byte %00000000, %00000000 ;no ceiling or floor
+  .byte %00000000, %00011000 ;no ceiling, floor 2
+  .byte %00000001, %00011000 ;ceiling 1, floor 2
+  .byte %00000111, %00011000 ;ceiling 3, floor 2
+  .byte %00001111, %00011000 ;ceiling 4, floor 2
+  .byte %11111111, %00011000 ;ceiling 8, floor 2
+  .byte %00000001, %00011111 ;ceiling 1, floor 5
+  .byte %00000111, %00011111 ;ceiling 3, floor 5
+  .byte %00001111, %00011111 ;ceiling 4, floor 5
+  .byte %10000001, %00011111 ;ceiling 1, floor 6
+  .byte %00000001, %00000000 ;ceiling 1, no floor
+  .byte %10001111, %00011111 ;ceiling 4, floor 6
+  .byte %11110001, %00011111 ;ceiling 1, floor 9
+  .byte %11111001, %00011000 ;ceiling 1, middle 5, floor 2
+  .byte %11110001, %00011000 ;ceiling 1, middle 4, floor 2
+  .byte %11111111, %00011111 ;completely solid top to bottom
 
 AreaParserCore:
       lda BackloadingFlag       ;check to see if we are starting right of start
@@ -2046,12 +2045,12 @@ RendTerr: ldy AreaType               ;check world type for water level
           lda WorldNumber            ;check world number, if not world number eight
           cmp #World8                ;then skip this part
           bne TerMTile
-          lda #$62                   ;if set as water level and world number eight,
+          lda #MT_SOLID_BLOCK_WHITE_WALL ;if set as water level and world number eight,
           jmp StoreMT                ;use castle wall metatile as terrain type
 TerMTile: lda TerrainMetatiles,y     ;otherwise get appropriate metatile for area type
           ldy CloudTypeOverride      ;check for cloud type override
           beq StoreMT                ;if not set, keep value otherwise
-          lda #$88                   ;use cloud block terrain
+          lda #MT_CLOUD_LEVEL_TERRAIN ;use cloud block terrain
 StoreMT:  sta $07                    ;store value here
           ldx #$00                   ;initialize X, use as metatile buffer offset
           lda TerrainControl         ;use yet another value from the header
@@ -2082,7 +2081,7 @@ NextTBit: inx                        ;continue until end of buffer
           bne EndUChk                ;if not underground, skip this part
           cpx #$0b
           bne EndUChk                ;if we're at the bottom of the screen, override
-          lda #$54                   ;old terrain type with ground level terrain type
+          lda #MT_CRACKED_ROCK_TERRAIN ;old terrain type with ground level terrain type
           sta $07
 EndUChk:  iny                        ;increment bitmasks offset in Y
           cpy #$08
@@ -2096,13 +2095,11 @@ RendBBuf: jsr ProcessAreaData_       ;do the area data loading routine now
           ldy #$00                   ;init index regs and start at beginning of smaller buffer
 ChkMTLow: sty $00
           lda MetatileBuffer,x       ;load stored metatile number
-          and #%11000000             ;mask out all but 2 MSB
-          asl
-          rol                        ;make %xx000000 into %000000xx
-          rol
-          tay                        ;use as offset in Y
-          lda MetatileBuffer,x       ;reload original unmasked value here
-          cmp BlockBuffLowBounds,y   ;check for certain values depending on bits set
+          tay
+          lda Metatile_Attributes,y
+          and #8                     ;check if interactable
+          cmp #8
+          tya
           bcs StrBlock               ;if equal or greater, branch
           lda #$00                   ;if less, init value before storing
 StrBlock: ldy $00                    ;get offset for block buffer
@@ -2115,11 +2112,6 @@ StrBlock: ldy $00                    ;get offset for block buffer
           cpx #$0d
           bcc ChkMTLow               ;continue until we pass last row, then leave
           rts
-
-;numbers lower than these with the same attribute bits
-;will not be stored in the block buffer
-BlockBuffLowBounds:
-      .byte $10, $51, $88, $c0
 
 ;-------------------------------------------------------------------------------------
 ;$00 - used to store area object identifier
@@ -4141,11 +4133,11 @@ DBlockSte: sta Block_State,x        ;store into block object buffer
 ChkBrick:  bcc PutMTileB            ;if no match was found in previous sub, skip ahead
            ldy #$11                 ;otherwise load unbreakable state into block object buffer
            sty Block_State,x        ;note this applies to both player sizes
-           lda #$c4                 ;load empty block metatile into A for now
+           lda #MT_EMPTY_BLOCK      ;load empty block metatile into A for now
            ldy $00                  ;get metatile from before
-           cpy #$58                 ;is it brick with coins (with line)?
+           cpy #MT_BRICK_WITH_LINE_COINS ;is it brick with coins (with line)?
            beq StartBTmr            ;if so, branch
-           cpy #$5d                 ;is it brick with coins (without line)?
+           cpy #MT_BRICK_COINS      ;is it brick with coins (without line)?
            bne PutMTileB            ;if not, branch ahead to store empty block metatile
 StartBTmr: lda BrickCoinTimerFlag   ;check brick coin timer flag
            bne ContBTmr             ;if set, timer expired or counting down, thus branch
@@ -4154,12 +4146,12 @@ StartBTmr: lda BrickCoinTimerFlag   ;check brick coin timer flag
            inc BrickCoinTimerFlag   ;and set flag linked to it
 ContBTmr:  lda BrickCoinTimer       ;check brick coin timer
            bne PutOldMT             ;if not yet expired, branch to use current metatile
-           ldy #$c4                 ;otherwise use empty block metatile
+           ldy #MT_EMPTY_BLOCK      ;otherwise use empty block metatile
 PutOldMT:  tya                      ;put metatile into A
 PutMTileB: sta Block_Metatile,x     ;store whatever metatile be appropriate here
            jsr InitBlock_XY_Pos     ;get block object horizontal coordinates saved
            ldy $02                  ;get vertical high nybble offset
-           lda #$23
+           lda #MT_BLANK_USED_ON_BRICKS_OR_BLOCKS_THAT_ARE_HIT
            sta ($06),y              ;write blank metatile $23 to block buffer
            lda #$10
            sta BlockBounceTimer     ;set block bounce timer
@@ -4260,7 +4252,7 @@ ExitBlockChk:
 ;--------------------------------
 
 BlockBumpedChk:
-             ldy #$0d                    ;start at end of metatile data
+             ldy #SizeOfBrickQBlockMetatiles-1 ;start at end of metatile data
 BumpChkLoop: cmp BrickQBlockMetatiles,y  ;check to see if current metatile matches
              beq MatchBump               ;metatile found in block buffer, branch if so
              dey                         ;otherwise move onto next metatile
