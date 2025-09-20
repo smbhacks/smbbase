@@ -127,7 +127,7 @@ CustomMusicLoopCallback:
 .if LevelEngine = OriginalLevelEngine
     .include "code/levels/original_engine/segments.asm"
 .else
-    .include "code/levels/tiled_engine/segments.asm"
+    .include "code/levels/tiled_engine/level_files/generated/segments.asm"
 .endif
 ;-------------------------------------------------------------------------------------
 .segment "CODE"

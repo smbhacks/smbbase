@@ -4,7 +4,7 @@ var CHR = dialog.addFilePicker("Choose CHR:");
 dialog.addNewRow();
 var pal = dialog.addFilePicker("Choose palette (.pal):");
 dialog.addNewRow();
-var metatiles = dialog.addFilePicker("Choose metatiles.s file:");
+var metatiles = dialog.addFilePicker("Choose metatiles.asm file:");
 dialog.addNewRow();
 
 dialog.addButton("OK").clicked.connect(function(){

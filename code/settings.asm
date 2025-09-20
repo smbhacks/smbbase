@@ -13,8 +13,8 @@ CHR_Feature = No_Feature
 ;CHR_Feature = CHR_Animated
 
 ;Level engine settings
-LevelEngine = OriginalLevelEngine
-;LevelEngine = TiledLevelEngine
+;LevelEngine = OriginalLevelEngine
+LevelEngine = TiledLevelEngine
 
 ;CHR_SIZE = amount of chr pages * 2 (needs to be a power of 2!)
 .if CHR_Feature = CHR_Animated

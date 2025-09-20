@@ -5,9 +5,9 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 python scripts/makecfg.py
+python scripts/convert_tiled_levels.py
 ca65 -g --cpu 6502X main.asm -o output.o
 ld65 --dbgfile build/output.dbg -m build/output.txt -C generatedCfg.cfg output.o -o build/output.nes
 @del output.o
-@del generatedCfg.cfg
 echo If the build was successful, you will find your ROM in the 'build' folder.
 pause
