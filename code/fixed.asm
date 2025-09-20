@@ -1560,7 +1560,18 @@ InitPiranhaPlant:
       lsr
       sta Enemy_State,x            ;initialize enemy state and what would normally
       sta PiranhaPlant_MoveFlag,x  ;be used as vertical speed, but not in this case
+.if LevelEngine = TiledLevelEngine
+      lda Enemy_X_Position,x
+      clc
+      adc #7
+      sta Enemy_X_Position,x
       lda Enemy_Y_Position,x
+      clc
+      adc #40
+      sta Enemy_Y_Position,x
+.else 
+      lda Enemy_Y_Position,x
+.endif
       sta PiranhaPlantDownYPos,x   ;save original vertical coordinate here
       sec
       sbc #$18
