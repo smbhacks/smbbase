@@ -19,12 +19,13 @@ LoadAreaPointer:
     sta $00
     ldy #BACKGROUND_HM_WRAM_OFFS
     jsr LoadHuffmunchState
-    ldy #0 ;start at top row
+    ldx #0 ;start at top row
 BgLoop:
-    sty $01 ;unclobber 
+    stx $01 ;unclobber 
     jsr huffmunch_read
-    ldy $01 ;unclobber 
-    ;write code here to save to background buffer or something
+    ldx $01 ;unclobber 
+    sta MetatileBuffer,x ;ONLY draw it
+    inx
     dec $00 ;do 13 times
     bne BgLoop
     ldy #BACKGROUND_HM_WRAM_OFFS
@@ -45,8 +46,11 @@ FgLoop:
     jsr huffmunch_read
     ldy $01 ;unclobber 
     ldx $02
+    cmp #0 ;skip so that we dont overwrite bg mtiles
+    beq SkipFgMt
     sta MetatileBuffer,x
     sta ($06),y
+SkipFgMt:
     tya
     clc
     adc #$10 ;next row
@@ -69,9 +73,22 @@ FgLoop:
     sta hm_node
     lda LevelFgPtrsHi,y
     sta hm_node+1
+    lda LevelAreaTypes,y
+    sta AreaType
     lda LevelFgBanks,y
     sta fgBnk
     jsr switchBNK_save_fast
+    lda LevelTimersLo,y
+    sta bcdNum
+    lda LevelTimersHi,y
+    sta bcdNum+1
+    jsr bcdConvert
+    lda bcdResult+2
+    sta GameTimerDisplay+0
+    lda bcdResult+1
+    sta GameTimerDisplay+1
+    lda bcdResult+0
+    sta GameTimerDisplay+2
     ldy #0
     ldx #0
     jsr huffmunch_load
@@ -124,3 +141,4 @@ Loop:
     bcc Loop
     rts
 .endproc
+

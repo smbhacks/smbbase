@@ -145,6 +145,7 @@ CustomMusicLoopCallback:
     .include "code/levels/tiled_engine/asm_files/tiled_only_fixed.asm"
     .include "code/levels/tiled_engine/asm_files/generated/luts.asm"
     .include "code/levels/tiled_engine/asm_files/huffmunch.asm"
+    .include "code/levels/tiled_engine/asm_files/bcd.asm"
 .endif
 ;-------------------------------------------------------------------------------------
 .segment "INIT"

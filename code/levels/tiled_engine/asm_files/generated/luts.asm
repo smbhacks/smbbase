@@ -1,9 +1,9 @@
 LevelAreaTypes:
     .byte 1
 LevelTimersLo:
-    .lobytes 300
+    .lobytes 123
 LevelTimersHi:
-    .hibytes 300
+    .hibytes 123
 LevelFgPtrsLo:
     .lobytes _1_1_foreground
 LevelFgPtrsHi:
