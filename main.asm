@@ -60,6 +60,11 @@
     .byte "----------------"
     .include "misc/charmap.inc"
     .include "code/bank0.asm"
+.if LevelEngine = OriginalLevelEngine
+    .include "code/levels/original_engine/asm_files/original_only_bank0.asm"
+.else
+    .include "code/levels/tiled_engine/asm_files/tiled_only_bank0.asm"
+.endif
 ;-------------------------------------------------------------------------------------
 .segment "MUSIC"
 .if CustomMusicDriver = Famitone5Music
@@ -125,15 +130,20 @@ CustomMusicLoopCallback:
 .endif
 ;-------------------------------------------------------------------------------------
 .if LevelEngine = OriginalLevelEngine
-    .include "code/levels/original_engine/segments.asm"
+    .include "code/levels/original_engine/asm_files/segments.asm"
 .else
-    .include "code/levels/tiled_engine/level_files/generated/segments.asm"
+    .include "code/levels/tiled_engine/asm_files/generated/segments.asm"
 .endif
 ;-------------------------------------------------------------------------------------
 .segment "CODE"
     .include "graphics/metatiles.asm"
     .include "code/fixed.asm"
     .include "code/text.asm"
+.if LevelEngine = OriginalLevelEngine
+    .include "code/levels/original_engine/asm_files/original_only_fixed.asm"
+.else
+    .include "code/levels/tiled_engine/asm_files/tiled_only_fixed.asm"
+.endif
 ;-------------------------------------------------------------------------------------
 .segment "INIT"
     .include "code/startup.asm"

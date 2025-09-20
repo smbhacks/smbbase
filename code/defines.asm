@@ -493,13 +493,18 @@ WarmBootValidation:    .res 1 ;$07ff
 ;----------------------------------------------------------------
 .segment "WRAM" ;$7f00+ could be occupied by Famitone/Famistudio if you have these enabled
 
-CHRAnimWait:           .res 1 ;$7ff7
-CHRAnimCounter:        .res 1 ;$7ff8
-CHR0:                  .res 1 ;$7ff9
-CHR2:                  .res 1 ;$7ffa
-CHR4:                  .res 1 ;$7ffb
-CHR5:                  .res 1 ;$7ffc
-CHR6:                  .res 1 ;$7ffd
-CHR7:                  .res 1 ;$7ffe
-processinggame:        .res 1 ;$7fff
+CHRAnimWait:           .res 1
+CHRAnimCounter:        .res 1
+CHR0:                  .res 1
+CHR2:                  .res 1
+CHR4:                  .res 1
+CHR5:                  .res 1
+CHR6:                  .res 1
+CHR7:                  .res 1
+processinggame:        .res 1
 processingnmi:         .res 1
+
+.if LevelEngine = TiledLevelEngine
+levelBnk:              .res 1
+.else
+.endif
