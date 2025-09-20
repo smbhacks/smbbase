@@ -143,6 +143,8 @@ CustomMusicLoopCallback:
     .include "code/levels/original_engine/asm_files/original_only_fixed.asm"
 .else
     .include "code/levels/tiled_engine/asm_files/tiled_only_fixed.asm"
+    .include "code/levels/tiled_engine/asm_files/generated/luts.asm"
+    .include "code/levels/tiled_engine/asm_files/huffmunch.asm"
 .endif
 ;-------------------------------------------------------------------------------------
 .segment "INIT"

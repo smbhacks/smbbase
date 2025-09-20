@@ -17,3 +17,4 @@ music/famitone/sfx.s
 music/famitone/music.s
 \!local/*
 generatedCfg.cfg
+build/output.txt

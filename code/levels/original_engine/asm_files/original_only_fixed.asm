@@ -1,3 +1,4 @@
+SwitchToEnemyLvlBank:
 SwitchToLvlBank:
     lda #<.bank(LevelData)
     jmp switchBNK

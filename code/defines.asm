@@ -91,14 +91,6 @@ Local_ec:               .res 1
 Local_ed:               .res 1
 Local_ee:               .res 1 ;unused?
 Local_ef:               .res 1
-Square1SoundBuffer:     .res 1
-Square2SoundBuffer:     .res 1
-NoiseSoundBuffer:       .res 1
-AreaMusicBuffer:        .res 1
-EventMusicQueue:        .res 1
-NoiseSoundQueue:        .res 1
-Square2SoundQueue:      .res 1
-Square1SoundQueue:      .res 1
 
 .if CustomMusicDriver = VanillaPlusMusic || CustomMusicDriver = OriginalSMBMusic
 NoteLenLookupTblOfs:    .res 1
@@ -123,6 +115,16 @@ MusicOffset_Square1:    .res 1
 MusicOffset_Triangle:   .res 1
 .endif
 
+.if LevelEngine = TiledLevelEngine
+hm_values_zp:
+hm_node:                .res 2 ; pointer to current node of tree 
+hm_stream:              .res 2 ; pointer to bitstream
+hm_tree:                .res 2 ; pointer to tree base
+hm_byte:                .res 1 ; current byte of bitstream
+hm_status:              .res 1 ; bits 0-2 = bits left in hm_byte, bit 7 = string with suffix
+hm_length:              .res 1 ; bytes left in current string
+.endif
+
 ;----------------------------------------------------------------
 .segment "SHORTRAM"
 
@@ -143,6 +145,15 @@ FloateyNum_Y_Pos:      .res 7 ;$011e
 ShellChainCounter:     .res 7 ;$0125
 FloateyNum_Timer:      .res 8 ;$012c
 DigitModifier:         .res 6 ;$0134
+
+Square1SoundBuffer:     .res 1
+Square2SoundBuffer:     .res 1
+NoiseSoundBuffer:       .res 1
+AreaMusicBuffer:        .res 1
+EventMusicQueue:        .res 1
+NoiseSoundQueue:        .res 1
+Square2SoundQueue:      .res 1
+Square1SoundQueue:      .res 1
 
 .if CustomMusicDriver = VanillaPlusMusic
 NOI_Offset:            .res 1
@@ -505,6 +516,30 @@ processinggame:        .res 1
 processingnmi:         .res 1
 
 .if LevelEngine = TiledLevelEngine
-levelBnk:              .res 1
+fgBnk:              .res 1
+bgBnk:              .res 1
+
+hm_values_wram:
+FOREGROUND_HM_WRAM_OFFS = 0
+foreground_hm_values:
+foreground_hm_node:    .res 2
+foreground_hm_stream:  .res 2
+foreground_hm_tree:    .res 2
+foreground_hm_byte:    .res 1
+foreground_hm_status:  .res 1
+foreground_hm_length:  .res 1
+
+BACKGROUND_HM_WRAM_OFFS = 9
+background_hm_values:
+background_hm_node:    .res 2
+background_hm_stream:  .res 2
+background_hm_tree:    .res 2
+background_hm_byte:    .res 1
+background_hm_status:  .res 1
+background_hm_length:  .res 1
+
+foreground_bytesLeft:  .res 2
+background_bytesLeft:  .res 2
+
 .else
 .endif

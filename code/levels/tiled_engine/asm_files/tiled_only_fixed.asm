@@ -2,9 +2,125 @@
 GetAreaPointerFromWorld:
     rts
 
-SwitchToLvlBank:
-    lda levelBnk
-    jmp switchBNK
+SwitchToEnemyLvlBank:
+    rts
 
-AreaParserCore:
-    
+LoadAreaPointer:
+    rts
+
+.proc AreaParserCore
+	lda	BlockBufferColumnPos
+    jsr GetBlockBufferAddr
+
+    ;Handle background data
+    lda bgBnk
+    jsr switchBNK_save_fast
+    lda #13
+    sta $00
+    ldy #BACKGROUND_HM_WRAM_OFFS
+    jsr LoadHuffmunchState
+    ldy #0 ;start at top row
+BgLoop:
+    sty $01 ;unclobber 
+    jsr huffmunch_read
+    ldy $01 ;unclobber 
+    ;write code here to save to background buffer or something
+    dec $00 ;do 13 times
+    bne BgLoop
+    ldy #BACKGROUND_HM_WRAM_OFFS
+    jsr SaveHuffmunchState
+
+    ;Handle foreground data
+    lda fgBnk
+    jsr switchBNK_save_fast
+    lda #13
+    sta $00
+    ldy #FOREGROUND_HM_WRAM_OFFS
+    jsr LoadHuffmunchState
+    ldy #0 ;start at top row
+    ldx #0 ;for MetatileBuffer
+FgLoop:
+    sty $01 ;unclobber 
+    stx $02
+    jsr huffmunch_read
+    ldy $01 ;unclobber 
+    ldx $02
+    sta MetatileBuffer,x
+    sta ($06),y
+    tya
+    clc
+    adc #$10 ;next row
+    tay
+    inx
+    dec $00 ;do 13 times
+    bne FgLoop
+    ldy #FOREGROUND_HM_WRAM_OFFS
+    jsr SaveHuffmunchState
+
+    lda #0
+    jmp switchBNK_save_fast
+.endproc
+
+.proc GetAreaDataAddrs
+    ;Load foreground huffmunch state
+    ;ldy AreaPointer
+    ldy #0
+    lda LevelFgPtrsLo,y
+    sta hm_node
+    lda LevelFgPtrsHi,y
+    sta hm_node+1
+    lda LevelFgBanks,y
+    sta fgBnk
+    jsr switchBNK_save_fast
+    ldy #0
+    ldx #0
+    jsr huffmunch_load
+    stx foreground_bytesLeft
+    sty foreground_bytesLeft+1
+    ldy #FOREGROUND_HM_WRAM_OFFS
+    jsr SaveHuffmunchState
+    ;Load background huffmunch state
+    ;ldy AreaPointer
+    ldy #0
+    lda LevelBgPtrsLo,y
+    sta hm_node
+    lda LevelBgPtrsHi,y
+    sta hm_node+1
+    lda LevelBgBanks,y
+    sta bgBnk
+    jsr switchBNK_save_fast
+    ldy #0
+    ldx #0
+    jsr huffmunch_load
+    stx background_bytesLeft
+    sty background_bytesLeft+1   
+    ldy #BACKGROUND_HM_WRAM_OFFS
+    jsr SaveHuffmunchState
+Done:
+    lda #0
+    jmp switchBNK_save_fast
+.endproc
+
+.proc SaveHuffmunchState
+    ldx #0
+Loop:
+    lda hm_values_zp,x
+    sta hm_values_wram,y
+    iny
+    inx
+    cpx #9
+    bcc Loop
+    rts
+.endproc
+
+.proc LoadHuffmunchState
+    ldx #0
+Loop:
+    lda hm_values_wram,y
+    sta hm_values_zp,x
+    iny
+    inx
+    cpx #9
+    bcc Loop
+    rts
+.endproc

@@ -594,10 +594,11 @@ WarpNumLoop: lda WarpZoneNumbers,x  ;print warp zone numbers into the
 ;-------------------------------------------------------------------------------------
 
 ProcessEnemyData_:
-      jsr SwitchToLvlBank
+rts
+      jsr SwitchToEnemyLvlBank
       jsr ProcessEnemyData
-      Switch_Bank #0
-      rts
+      lda #0
+      jmp switchBNK_save_fast
 
 ;--------------------------------
 ;$06 - used to hold page location of extended right boundary
@@ -1867,53 +1868,60 @@ WarpZoneNumbers:
   .byte $08, $07, $06, $00         ; the minus world
 
 HandlePipeEntry:
-         jsr SwitchToLvlBank
-         lda Up_Down_Buttons       ;check saved controller bits from earlier
-         and #%00000100            ;for pressing down
-         beq ExPipeE               ;if not pressing down, branch to leave
-         lda $00
-         cmp #$11                  ;check right foot metatile for warp pipe right metatile
-         bne ExPipeE               ;branch to leave if not found
-         lda $01
-         cmp #$10                  ;check left foot metatile for warp pipe left metatile
-         bne ExPipeE               ;branch to leave if not found
-         lda #$30
-         sta ChangeAreaTimer       ;set timer for change of area
-         lda #$03
-         sta GameEngineSubroutine  ;set to run vertical pipe entry routine on next frame
-         lda #Sfx_PipeDown_Injury
-         sta Square1SoundQueue     ;load pipedown/injury sound
-         lda #%00100000
-         sta Player_SprAttrib      ;set background priority bit in player's attributes
-         lda WarpZoneControl       ;check warp zone control
-         beq ExPipeE               ;branch to leave if none found
-         and #%00000011            ;mask out all but 2 LSB
-         asl
-         asl                       ;multiply by four
-         tax                       ;save as offset to warp zone numbers (starts at left pipe)
-         lda Player_X_Position     ;get player's horizontal position
-         cmp #$60
-         bcc GetWNum               ;if player at left, not near middle, use offset and skip ahead
-         inx                       ;otherwise increment for middle pipe
-         cmp #$a0
-         bcc GetWNum               ;if player at middle, but not too far right, use offset and skip
-         inx                       ;otherwise increment for last pipe
-GetWNum: ldy WarpZoneNumbers,x     ;get warp zone numbers
-         dey                       ;decrement for use as world number
-         sty WorldNumber           ;store as world number and offset
-         jsr GetAreaPointerFromWorld
-         lda #Silence
-         sta EventMusicQueue       ;silence music
-         lda #$00
-         sta EntrancePage          ;initialize starting page number
-         sta AreaNumber            ;initialize area number used for area address offset
-         sta LevelNumber           ;initialize level number used for world display
-         sta AltEntranceControl    ;initialize mode of entry
-         inc Hidden1UpFlag         ;set flag for hidden 1-up blocks
-         inc FetchNewGameTimerFlag ;set flag to load new game timer
-ExPipeE: Switch_Bank #0
-	   rts                       ;leave!!!
-
+.if LevelEngine = OriginalLevelEngine
+      jsr SwitchToLvlBank
+.endif
+      lda Up_Down_Buttons       ;check saved controller bits from earlier
+      and #%00000100            ;for pressing down
+      beq ExPipeE               ;if not pressing down, branch to leave
+      lda $00
+      cmp #$11                  ;check right foot metatile for warp pipe right metatile
+      bne ExPipeE               ;branch to leave if not found
+      lda $01
+      cmp #$10                  ;check left foot metatile for warp pipe left metatile
+      bne ExPipeE               ;branch to leave if not found
+      lda #$30
+      sta ChangeAreaTimer       ;set timer for change of area
+      lda #$03
+      sta GameEngineSubroutine  ;set to run vertical pipe entry routine on next frame
+      lda #Sfx_PipeDown_Injury
+      sta Square1SoundQueue     ;load pipedown/injury sound
+      lda #%00100000
+      sta Player_SprAttrib      ;set background priority bit in player's attributes
+      lda WarpZoneControl       ;check warp zone control
+      beq ExPipeE               ;branch to leave if none found
+      and #%00000011            ;mask out all but 2 LSB
+      asl
+      asl                       ;multiply by four
+      tax                       ;save as offset to warp zone numbers (starts at left pipe)
+      lda Player_X_Position     ;get player's horizontal position
+      cmp #$60
+      bcc GetWNum               ;if player at left, not near middle, use offset and skip ahead
+      inx                       ;otherwise increment for middle pipe
+      cmp #$a0
+      bcc GetWNum               ;if player at middle, but not too far right, use offset and skip
+      inx                       ;otherwise increment for last pipe
+GetWNum: 
+      ldy WarpZoneNumbers,x     ;get warp zone numbers
+      dey                       ;decrement for use as world number
+      sty WorldNumber           ;store as world number and offset
+      jsr GetAreaPointerFromWorld
+      lda #Silence
+      sta EventMusicQueue       ;silence music
+      lda #$00
+      sta EntrancePage          ;initialize starting page number
+      sta AreaNumber            ;initialize area number used for area address offset
+      sta LevelNumber           ;initialize level number used for world display
+      sta AltEntranceControl    ;initialize mode of entry
+      inc Hidden1UpFlag         ;set flag for hidden 1-up blocks
+      inc FetchNewGameTimerFlag ;set flag to load new game timer
+ExPipeE:
+.if LevelEngine = OriginalLevelEngine
+      lda #0
+      jmp switchBNK_save_fast
+.else
+      rts
+.endif
 ;-------------------------------------------------------------------------------------
 
 EnemiesAndLoopsCore:
@@ -7548,15 +7556,30 @@ PIntLoop: lda IntermediatePlayerData,x   ;load data to display player as he alwa
           rts
 
 ;-------------------------------------------------------------------------------------
+switchBNK_save:
+      sta bank0
 switchBNK:
-		stx temp
-		tax
-		lda #%00000110
-		sta MMC3_BANK_SELECT
-		stx MMC3_BANK_DATA
-		lda #%00000111
-		sta MMC3_BANK_SELECT
-		inx
-		stx MMC3_BANK_DATA
-		ldx temp
-		rts
+      stx temp
+      tax
+      lda #%00000110
+      sta MMC3_BANK_SELECT
+      stx MMC3_BANK_DATA
+      lda #%00000111
+      sta MMC3_BANK_SELECT
+      inx
+      stx MMC3_BANK_DATA
+      ldx temp
+      rts
+
+switchBNK_save_fast:
+      sta bank0
+switchBNK_fast:
+      tax
+      lda #%00000110
+      sta MMC3_BANK_SELECT
+      stx MMC3_BANK_DATA
+      lda #%00000111
+      sta MMC3_BANK_SELECT
+      inx
+      stx MMC3_BANK_DATA
+      rts

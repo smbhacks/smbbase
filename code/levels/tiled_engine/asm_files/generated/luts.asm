@@ -1,7 +1,3 @@
-LevelWidthsLo:
-    .lobytes 50
-LevelWidthsHi:
-    .hibytes 50
 LevelAreaTypes:
     .byte 1
 LevelTimersLo:
@@ -16,3 +12,7 @@ LevelBgPtrsLo:
     .lobytes _1_1_background
 LevelBgPtrsHi:
     .hibytes _1_1_background
+LevelFgBanks:
+    .byte <.bank(_1_1_foreground)
+LevelBgBanks:
+    .byte <.bank(_1_1_background)

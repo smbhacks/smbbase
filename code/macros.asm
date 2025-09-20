@@ -2,8 +2,7 @@
 .macro Switch_Bank arg1
     pha
     lda arg1
-    sta bank0
-    jsr switchBNK
+    jsr switchBNK_save
     pla
 .endmacro
 

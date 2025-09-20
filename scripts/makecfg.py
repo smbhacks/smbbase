@@ -1,6 +1,8 @@
 import sys
 
-args = ["code/levels/tiled_engine/level_files/generated/segments.asm"]
+args = ["code/levels/tiled_engine/asm_files/generated/segments.asm"]
+#args = ["code/levels/original_engine/asm_files/segments.asm"]
+
 templateCfgPath = "scripts/template.cfg"
 outputCfgPath = "generatedCfg.cfg"
 

@@ -46,9 +46,17 @@ with open(segmentsFilePath, "w") as segmentsFile:
             # split csv values and convert to integers
             values = [int(x) for x in data.replace("\n", "").split(",") if x.strip() != ""]
 
+            orderedValues = []
+            for column in range(0, int(width)):
+                for row in range(0, int(height)):
+                    value = values[column + row*int(width)]
+                    if value != 0:
+                        value -= 1
+                    orderedValues.append(value)
+
             tmpFile = f"{filename}_{name}.tmp"
             with open(tmpFile, "wb") as f:
-                for v in values:
+                for v in orderedValues:
                     f.write(struct.pack("<B", v))
 
             finalFile = f"{filename}_{name}.lvl"
@@ -69,18 +77,21 @@ with open(segmentsFilePath, "w") as segmentsFile:
 
             segmentsFile.write(f'{labelBase}_{name}: .incbin "{asmFilesPath}/{generatedFolder}/{finalFile}"\n')
 
-def writeToLutsFile(file, label, valueformat, levels, val, extra = ''):
+def writeToLutsFile(file, label, valueformat, levels, val, prefix = '', suffix = ''):
     file.write(f'{label}:\n')
     for level in levels:
-        file.write(f"    .{valueformat} {getattr(level, val)}{extra}\n")
+        file.write(f"    .{valueformat} {prefix}{getattr(level, val)}{suffix}\n")
 
 with open(lutsFilePath, "w") as lutsFile:
-    writeToLutsFile(lutsFile, "LevelWidthsLo", "lobytes", levels, "width")
-    writeToLutsFile(lutsFile, "LevelWidthsHi", "hibytes", levels, "width")
+    #writeToLutsFile(lutsFile, "LevelWidthsLo", "lobytes", levels, "width")
+    #writeToLutsFile(lutsFile, "LevelWidthsHi", "hibytes", levels, "width")
     writeToLutsFile(lutsFile, "LevelAreaTypes", "byte", levels, "areaType")
     writeToLutsFile(lutsFile, "LevelTimersLo", "lobytes", levels, "timer")
     writeToLutsFile(lutsFile, "LevelTimersHi", "hibytes", levels, "timer")
-    writeToLutsFile(lutsFile, "LevelFgPtrsLo", "lobytes", levels, "name", "_foreground")
-    writeToLutsFile(lutsFile, "LevelFgPtrsHi", "hibytes", levels, "name", "_foreground")
-    writeToLutsFile(lutsFile, "LevelBgPtrsLo", "lobytes", levels, "name", "_background")
-    writeToLutsFile(lutsFile, "LevelBgPtrsHi", "hibytes", levels, "name", "_background")
+    writeToLutsFile(lutsFile, "LevelFgPtrsLo", "lobytes", levels, "name", suffix="_foreground")
+    writeToLutsFile(lutsFile, "LevelFgPtrsHi", "hibytes", levels, "name", suffix="_foreground")
+    writeToLutsFile(lutsFile, "LevelBgPtrsLo", "lobytes", levels, "name", suffix="_background")
+    writeToLutsFile(lutsFile, "LevelBgPtrsHi", "hibytes", levels, "name", suffix="_background")
+    writeToLutsFile(lutsFile, "LevelFgBanks", "byte", levels, "name", prefix="<.bank(", suffix="_foreground)")
+    writeToLutsFile(lutsFile, "LevelBgBanks", "byte", levels, "name", prefix="<.bank(", suffix="_background)")
+
