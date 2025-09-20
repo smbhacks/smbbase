@@ -138,7 +138,7 @@ def main():
     # Generate TSX file
     tsx_file = Path("tiled_assets/tsx/mtiles.tsx")
     tsx_content = '<?xml version="1.0" encoding="UTF-8"?>\n'
-    tsx_content += '<tileset version="1.10" tiledversion="1.10.2" name="tiled" tilewidth="16" tileheight="16" tilecount="256" columns="16">\n'
+    tsx_content += '<tileset version="1.10" tiledversion="1.10.2" name="Metatiles" tilewidth="16" tileheight="16" tilecount="256" columns="16">\n'
     tsx_content += ' <image source="mtiles.png" width="256" height="256"/>'
     for i, mt in enumerate(metatiles):
         tsx_content += f'\n <tile id="{i}" type="{mt.name}"/>'

@@ -46,11 +46,13 @@ FgLoop:
     jsr huffmunch_read
     ldy $01 ;unclobber 
     ldx $02
-    cmp #0 ;skip so that we dont overwrite bg mtiles
-    beq SkipFgMt
+    sta $03
+    lda MetatileBuffer,x
+    bne BgAlreadyThere
+    lda $03
     sta MetatileBuffer,x
     sta ($06),y
-SkipFgMt:
+BgAlreadyThere:
     tya
     clc
     adc #$10 ;next row

@@ -9,11 +9,11 @@
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
         "level_files/1-1.tmx": {
-            "scale": 1.5449374999999999,
-            "selectedLayer": 0,
+            "scale": 2,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 290.9502811602411,
-                "y": 78.32032040131074
+                "x": 234.25,
+                "y": 85.75
             }
         },
         "tiled_assets/tsx/mtiles.tsx": {
@@ -33,7 +33,7 @@
     "project": "!PROJECT.tiled-project",
     "property.type": "int",
     "recentFiles": [
-        "tiled_assets/tsx/mtiles.tsx",
-        "level_files/1-1.tmx"
+        "level_files/1-1.tmx",
+        "tiled_assets/tsx/mtiles.tsx"
     ]
 }
