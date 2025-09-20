@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="50" height="13" tilewidth="16" tileheight="16" infinite="0" nextlayerid="3" nextobjectid="1">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="50" height="13" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="14">
  <properties>
   <property name="areaType" type="int" value="1"/>
   <property name="playerX" type="int" value="48"/>
@@ -7,7 +7,8 @@
   <property name="timer" type="int" value="300"/>
  </properties>
  <tileset firstgid="1" source="../tiled_assets/tsx/mtiles.tsx"/>
- <layer id="2" name="background" width="50" height="13" visible="0">
+ <tileset firstgid="257" source="../tiled_assets/tsx/entity.tsx"/>
+ <layer id="2" name="background" width="50" height="13">
   <data encoding="csv">
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,86,87,87,87,88,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,86,87,88,
 1,1,1,1,1,1,1,86,87,87,88,1,1,1,1,1,1,1,1,1,1,1,1,1,89,90,90,90,91,1,1,1,1,1,86,87,87,88,1,1,1,1,1,1,1,1,1,89,90,91,
@@ -41,4 +42,12 @@
 60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,1,1,1,1,1,1,1,1,60,60,60,60,60,60,60,60,60,60,60
 </data>
  </layer>
+ <objectgroup id="3" name="entities">
+  <object id="4" gid="257" x="288" y="176" width="16" height="24"/>
+  <object id="5" gid="263" x="448" y="96" width="16" height="24"/>
+  <object id="6" gid="263" x="480" y="96" width="16" height="24"/>
+  <object id="7" gid="264" x="576" y="128" width="16" height="24"/>
+  <object id="12" gid="262" x="736" y="176" width="16" height="24"/>
+  <object id="13" gid="270" x="400" y="128" width="16" height="24"/>
+ </objectgroup>
 </map>

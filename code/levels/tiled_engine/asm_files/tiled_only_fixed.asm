@@ -3,7 +3,8 @@ GetAreaPointerFromWorld:
     rts
 
 SwitchToEnemyLvlBank:
-    rts
+    lda entityBnk
+    jmp switchBNK_save
 
 LoadAreaPointer:
     rts
@@ -68,6 +69,8 @@ BgAlreadyThere:
 .endproc
 
 .proc GetAreaDataAddrs
+    lda #0
+    sta EnemyDataOffset
     ;Load foreground huffmunch state
     ;ldy AreaPointer
     ldy #0
@@ -81,6 +84,12 @@ BgAlreadyThere:
     sta Player_X_Position
     lda LevelPlayerYs,y
     sta Player_Y_Position
+    lda LevelEntityBanks,y
+    sta entityBnk
+    lda LevelEntityPtrsLo,y
+    sta EnemyDataLow
+    lda LevelEntityPtrsHi,y
+    sta EnemyDataHigh
     lda LevelFgBanks,y
     sta fgBnk
     jsr switchBNK_save_fast

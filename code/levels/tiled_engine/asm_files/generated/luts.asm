@@ -16,7 +16,13 @@ LevelBgPtrsLo:
     .lobytes _1_1_background
 LevelBgPtrsHi:
     .hibytes _1_1_background
+LevelEntityPtrsLo:
+    .lobytes _1_1_entities
+LevelEntityPtrsHi:
+    .hibytes _1_1_entities
 LevelFgBanks:
     .byte <.bank(_1_1_foreground)
 LevelBgBanks:
     .byte <.bank(_1_1_background)
+LevelEntityBanks:
+    .byte <.bank(_1_1_entities)

@@ -518,6 +518,7 @@ processingnmi:         .res 1
 .if LevelEngine = TiledLevelEngine
 fgBnk:              .res 1
 bgBnk:              .res 1
+entityBnk:          .res 1
 
 hm_values_wram:
 FOREGROUND_HM_WRAM_OFFS = 0

@@ -594,11 +594,10 @@ WarpNumLoop: lda WarpZoneNumbers,x  ;print warp zone numbers into the
 ;-------------------------------------------------------------------------------------
 
 ProcessEnemyData_:
-rts
-      jsr SwitchToEnemyLvlBank
-      jsr ProcessEnemyData
-      lda #0
-      jmp switchBNK_save_fast
+    jsr SwitchToEnemyLvlBank
+    jsr ProcessEnemyData
+    lda #0
+    jmp switchBNK_save
 
 ;--------------------------------
 ;$06 - used to hold page location of extended right boundary

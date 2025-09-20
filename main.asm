@@ -49,6 +49,9 @@
 
 .include "code/constants.asm"
 .include "code/settings.asm"
+.if LevelEngine = TiledLevelEngine
+    .include "code/levels/tiled_engine/asm_files/generated/entity_constants.asm"
+.endif
 .include "code/defines.asm"
 
 ;-------------------------------------------------------------------------------------

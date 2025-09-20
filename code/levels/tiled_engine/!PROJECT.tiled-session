@@ -1,39 +1,39 @@
 {
-    "Map/SizeTest": {
-        "height": 4300,
-        "width": 2
-    },
-    "activeFile": "level_files/1-1.tmx",
+    "activeFile": "",
     "expandedProjectPaths": [
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
         "level_files/1-1.tmx": {
-            "scale": 2,
-            "selectedLayer": 1,
+            "scale": 1.5449374999999999,
+            "selectedLayer": 2,
             "viewCenter": {
-                "x": 234.25,
-                "y": 85.75
+                "x": 369.27060156155187,
+                "y": -66.99300133500546
             }
         },
-        "tiled_assets/tsx/mtiles.tsx": {
+        "tiled_assets/tsx/enemy.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
+        },
+        "tiled_assets/tsx/entity.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tiled_assets/tsx/mtiles.tsx": {
+            "scaleInDock": 1
         }
     },
-    "map.height": 13,
-    "map.lastUsedFormat": "tmx",
-    "map.tileHeight": 16,
-    "map.tileWidth": 16,
-    "map.width": 50,
+    "last.externalTilesetPath": "C:/Users/zipzi/Documents/GitHub/smbbase/code/levels/tiled_engine/tiled_assets/tsx",
+    "last.imagePath": "C:/Users/zipzi/Documents/GitHub/smbbase/code/levels/tiled_engine/tiled_assets/tsx",
     "openFiles": [
-        "tiled_assets/tsx/mtiles.tsx",
-        "level_files/1-1.tmx"
     ],
     "project": "!PROJECT.tiled-project",
     "property.type": "int",
     "recentFiles": [
-        "level_files/1-1.tmx",
-        "tiled_assets/tsx/mtiles.tsx"
-    ]
+        "tiled_assets/tsx/entity.tsx",
+        "tiled_assets/tsx/enemy.tsx",
+        "level_files/1-1.tmx"
+    ],
+    "tileset.lastUsedFilter": "Tiled tileset files (*.tsx *.xml)"
 }
