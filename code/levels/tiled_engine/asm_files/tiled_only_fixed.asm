@@ -77,6 +77,10 @@ BgAlreadyThere:
     sta hm_node+1
     lda LevelAreaTypes,y
     sta AreaType
+    lda LevelPlayerXs,y
+    sta Player_X_Position
+    lda LevelPlayerYs,y
+    sta Player_Y_Position
     lda LevelFgBanks,y
     sta fgBnk
     jsr switchBNK_save_fast
@@ -93,6 +97,7 @@ BgAlreadyThere:
     sta GameTimerDisplay+2
     ldy #0
     ldx #0
+    stx Player_SprAttrib
     jsr huffmunch_load
     stx foreground_bytesLeft
     sty foreground_bytesLeft+1

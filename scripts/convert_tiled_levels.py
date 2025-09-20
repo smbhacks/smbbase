@@ -16,12 +16,14 @@ curBankSize = 0
 newBank = True
 
 class Level:
-    def __init__(self, name, width, height, areaType, timer):
+    def __init__(self, name, width, height, areaType, timer, playerX, playerY):
         self.name = name
         self.width = width
         self.height = height
         self.areaType = areaType
         self.timer = timer
+        self.playerX = playerX
+        self.playerY = playerY
 
 levels = []
 print("Converting Tiled files to Studsbase compatible files")
@@ -36,7 +38,7 @@ with open(segmentsFilePath, "w") as segmentsFile:
         props = {prop.get("name"): prop.get("value") for prop in root.find("properties").findall("property")}
         
         labelBase = f'_{filename.replace("-", "_")}' 
-        levels.append(Level(labelBase, width, height, props["areaType"], props["timer"]))
+        levels.append(Level(labelBase, width, height, props["areaType"], props["timer"], props["playerX"], props["playerY"]))
 
         for layer in root.findall("layer"):
             name = layer.get("name")
@@ -88,6 +90,8 @@ with open(lutsFilePath, "w") as lutsFile:
     writeToLutsFile(lutsFile, "LevelAreaTypes", "byte", levels, "areaType")
     writeToLutsFile(lutsFile, "LevelTimersLo", "lobytes", levels, "timer")
     writeToLutsFile(lutsFile, "LevelTimersHi", "hibytes", levels, "timer")
+    writeToLutsFile(lutsFile, "LevelPlayerXs", "byte", levels, "playerX")
+    writeToLutsFile(lutsFile, "LevelPlayerYs", "byte", levels, "playerY")
     writeToLutsFile(lutsFile, "LevelFgPtrsLo", "lobytes", levels, "name", suffix="_foreground")
     writeToLutsFile(lutsFile, "LevelFgPtrsHi", "hibytes", levels, "name", suffix="_foreground")
     writeToLutsFile(lutsFile, "LevelBgPtrsLo", "lobytes", levels, "name", suffix="_background")

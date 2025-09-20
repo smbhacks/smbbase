@@ -2,6 +2,8 @@
 <map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="50" height="13" tilewidth="16" tileheight="16" infinite="0" nextlayerid="3" nextobjectid="1">
  <properties>
   <property name="areaType" type="int" value="1"/>
+  <property name="playerX" type="int" value="48"/>
+  <property name="playerY" type="int" value="176"/>
   <property name="timer" type="int" value="300"/>
  </properties>
  <tileset firstgid="1" source="../tiled_assets/tsx/mtiles.tsx"/>

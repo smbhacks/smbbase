@@ -4,6 +4,10 @@ LevelTimersLo:
     .lobytes 300
 LevelTimersHi:
     .hibytes 300
+LevelPlayerXs:
+    .byte 48
+LevelPlayerYs:
+    .byte 176
 LevelFgPtrsLo:
     .lobytes _1_1_foreground
 LevelFgPtrsHi:
