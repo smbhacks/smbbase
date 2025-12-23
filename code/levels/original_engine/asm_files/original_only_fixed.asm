@@ -1404,3 +1404,66 @@ InitEnemyRoutines:
       .word NoInitCode
       .word InitRetainerObj
       .word EndOfEnemyInitCode
+
+;--------------------------------
+;$00 - used to store Y position of group enemies
+;$01 - used to store enemy ID
+;$02 - used to store page location of right side of screen
+;$03 - used to store X position of right side of screen
+
+HandleGroupEnemies:
+        ldy #$00                  ;load value for green koopa troopa
+        sec
+        sbc #$37                  ;subtract $37 from second byte read
+        pha                       ;save result in stack for now
+        cmp #$04                  ;was byte in $3b-$3e range?
+        bcs SnglID                ;if so, branch
+        pha                       ;save another copy to stack
+        ldy #Goomba               ;load value for goomba enemy
+        lda PrimaryHardMode       ;if primary hard mode flag not set,
+        beq PullID                ;branch, otherwise change to value
+        ldy #BuzzyBeetle          ;for buzzy beetle
+PullID: pla                       ;get second copy from stack
+SnglID: sty $01                   ;save enemy id here
+        ldy #$b0                  ;load default y coordinate
+        and #$02                  ;check to see if d1 was set
+        beq SetYGp                ;if so, move y coordinate up,
+        ldy #$70                  ;otherwise branch and use default
+SetYGp: sty $00                   ;save y coordinate here
+        lda ScreenRight_PageLoc   ;get page number of right edge of screen
+        sta $02                   ;save here
+        lda ScreenRight_X_Pos     ;get pixel coordinate of right edge
+        sta $03                   ;save here
+        ldy #$02                  ;load two enemies by default
+        pla                       ;get first copy from stack
+        lsr                       ;check to see if d0 was set
+        bcc CntGrp                ;if not, use default value
+        iny                       ;otherwise increment to three enemies
+CntGrp: sty NumberofGroupEnemies  ;save number of enemies here
+GrLoop: ldx #$ff                  ;start at beginning of enemy buffers
+GSltLp: inx                       ;increment and branch if past
+        cpx #$05                  ;end of buffers
+        bcs NextED
+        lda Enemy_Flag,x          ;check to see if enemy is already
+        bne GSltLp                ;stored in buffer, and branch if so
+        lda $01
+        sta Enemy_ID,x            ;store enemy object identifier
+        lda $02
+        sta Enemy_PageLoc,x       ;store page location for enemy object
+        lda $03
+        sta Enemy_X_Position,x    ;store x coordinate for enemy object
+        clc
+        adc #$18                  ;add 24 pixels for next enemy
+        sta $03
+        lda $02                   ;add carry to page location for
+        adc #$00                  ;next enemy
+        sta $02
+        lda $00                   ;store y coordinate for enemy object
+        sta Enemy_Y_Position,x
+        lda #$01                  ;activate flag for buffer, and
+        sta Enemy_Y_HighPos,x     ;put enemy within the screen vertically
+        sta Enemy_Flag,x
+        jsr CheckpointEnemyID     ;process each enemy object separately
+        dec NumberofGroupEnemies  ;do this until we run out of enemy objects
+        bne GrLoop
+NextED: jmp Inc2B                 ;jump to increment data offset and leave
