@@ -7,8 +7,9 @@
 .byte (8<<4)+10, (0<<5)+(0<<2)+(>EN_GOOMBA), <EN_GOOMBA
 .byte (3<<4)+10, (0<<5)+(0<<2)+(>EN_GOOMBA)+$02, <EN_GOOMBA
 .byte (4<<4)+10, (4<<5)+(0<<2)+(>EN_GOOMBA), <EN_GOOMBA
-.byte (15<<4)+2, (7<<5)+(0<<2)+(>EN_GOOMBA)+$02, <EN_GOOMBA
-.byte (1<<4)+2, (1<<5)+(0<<2)+(>EN_GOOMBA)+$02, <EN_GOOMBA
+.byte $0f, 5
+.byte (0<<4)+2, (0<<5)+(0<<2)+(>EN_GOOMBA), <EN_GOOMBA
+.byte (1<<4)+2, (1<<5)+(0<<2)+(>EN_GOOMBA), <EN_GOOMBA
 .byte (0<<4)+10, (0<<5)+(0<<2)+(>EN_GOOMBA)+$02, <EN_GOOMBA
 .byte (6<<4)+10, (0<<5)+(0<<2)+(>EN_KOOPA_COLOR_1), <EN_KOOPA_COLOR_1
 .byte (13<<4)+10, (0<<5)+(0<<2)+(>EN_GOOMBA), <EN_GOOMBA
