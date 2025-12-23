@@ -84,6 +84,12 @@ with open(segmentsFilePath, "w") as segmentsFile:
                 enemies_firstgid = int(tileset.get("firstgid"))
 
         # handle entities
+        # entity format:
+        # %xxxxyyyy position within current page (16x16 grid)
+        # %00001111 = first byte -> means page skip! (special row $0f)
+        # %00001110 = first byte -> pipe pointer!
+        # %xxxyyyP0 x and y fine offset, P page flag, 
+        # %iiiiiiii i: id (0~256)
         entitiesFilename = f"{filename}_entities.asm"
         with open(os.path.join(asmFilesPath, generatedFolder, entitiesFilename), "w") as entityFile:
             obj_group = root.find("objectgroup")
@@ -99,10 +105,13 @@ with open(segmentsFilePath, "w") as segmentsFile:
                 xPage = entity.x // 256
                 xPos = (entity.x % 256) // 16
                 yPos = (entity.y - 16) // 16
-                thisData = f"({xPos}<<4)+{yPos}, {entityType}"
+                xFine = (entity.x % 16) // 2
+                yFine = (entity.y % 16) // 2
+                thisData = f"({xPos}<<4)+{yPos}, ({xFine}<<5)+({yFine}<<2)+(>{entityType})"
                 if prevXpage < xPage:
                     # add next page flag
-                    thisData += "+$80"
+                    thisData += "+$02"
+                thisData += f", <{entityType}"
                 prevXpage = xPage
                 entityFile.write(f".byte {thisData}\n")
             entityFile.write(f".byte $ff\n")
