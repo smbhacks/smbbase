@@ -188,8 +188,7 @@ CheckRightBounds:
         sta $06                  ;store page location + carry
         iny
         lda (EnemyData),y        ;if MSB of enemy object is clear, branch to check for row $0f
-        and #$02
-        cmp #$02
+        asl
         bcc CheckPageCtrlRow
         lda EnemyObjectPageSel   ;if page select already set, do not set again
         bne CheckPageCtrlRow
@@ -221,12 +220,10 @@ PositionEnemyObj:
         sta Enemy_X_Position,x   ;store column position
         iny
         lda (EnemyData),y
+        and #%01110000
         lsr
         lsr
         lsr
-        lsr
-        lsr
-        asl
         clc 
         adc Enemy_X_Position,x
         sta Enemy_X_Position,x
@@ -259,8 +256,7 @@ CheckRightExtBounds:
         beq ParseRow0e           ;(necessary if branched to $c1cb)
         iny
         lda (EnemyData),y        ;get second byte of object
-        and #%00011100
-        lsr
+        and #%00001110
         clc
         adc Enemy_Y_Position,x
         sta Enemy_Y_Position,x

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="250" height="13" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="59">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="250" height="13" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="63">
  <properties>
   <property name="areaType" type="int" value="1"/>
   <property name="playerX" type="int" value="48"/>
@@ -45,7 +45,6 @@
  <objectgroup id="3" name="entities">
   <object id="15" gid="263" x="640" y="176" width="16" height="24"/>
   <object id="20" gid="257" x="1632" y="176" width="16" height="24"/>
-  <object id="25" gid="257" x="2208" y="176" width="16" height="24"/>
   <object id="26" gid="257" x="2432" y="176" width="16" height="24"/>
   <object id="38" gid="263" x="816" y="176" width="16" height="24"/>
   <object id="39" gid="263" x="840" y="176" width="16" height="24"/>
@@ -56,13 +55,14 @@
   <object id="45" gid="263" x="1766" y="176" width="16" height="24"/>
   <object id="46" gid="263" x="1904" y="176" width="16" height="24"/>
   <object id="47" gid="263" x="1926" y="176" width="16" height="24"/>
-  <object id="48" gid="263" x="2608" y="176" width="16" height="24"/>
-  <object id="49" gid="263" x="2630" y="176" width="16" height="24"/>
   <object id="53" gid="270" x="448" y="144" width="16" height="24"/>
   <object id="54" gid="270" x="608" y="128" width="16" height="24"/>
   <object id="55" gid="272" x="272" y="96" width="16" height="24"/>
   <object id="56" gid="272" x="276" y="96" width="16" height="24"/>
   <object id="57" gid="272" x="274" y="96" width="16" height="24"/>
   <object id="58" gid="272" x="276" y="96" width="16" height="24"/>
+  <object id="59" gid="284" x="2832" y="56" width="16" height="24"/>
+  <object id="60" gid="284" x="2836" y="52" width="16" height="24"/>
+  <object id="61" gid="284" x="2840" y="48" width="16" height="24"/>
  </objectgroup>
 </map>

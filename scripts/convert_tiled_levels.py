@@ -89,7 +89,7 @@ with open(segmentsFilePath, "w") as segmentsFile:
         # %00001111 = first byte -> means page skip! (special row $0f)
         # %00001110 = first byte -> pipe pointer!
         # (rows $00-$0d):
-            # %xxxyyyPI x and y: fine offset, P: page flag, I: msb of id
+            # %PxxxyyyI x and y: fine offset, P: page flag, I: msb of id
             # %iiiiiiii i: id 
         # (special row $0f, page skip)
             # %00pppppp page where the next enemy lies
@@ -113,10 +113,10 @@ with open(segmentsFilePath, "w") as segmentsFile:
                 if prevXpage < xPage-1:
                     pageSkipData = f"$0f, {xPage}"
                     entityFile.write(f".byte {pageSkipData}\n")
-                thisData = f"({xPos}<<4)+{yPos}, ({xFine}<<5)+({yFine}<<2)+(>{entityType})"
+                thisData = f"({xPos}<<4)+{yPos}, ({xFine}<<4)+({yFine}<<1)+(>{entityType})"
                 if prevXpage == xPage-1:
                     # add next page flag
-                    thisData += "+$02"
+                    thisData += "+$80"
                 thisData += f", <{entityType}"
                 prevXpage = xPage
                 entityFile.write(f".byte {thisData}\n")
