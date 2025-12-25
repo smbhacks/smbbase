@@ -276,47 +276,47 @@
    <property name="sizeInBytes" type="int" value="3"/>
   </properties>
  </tile>
- <tile id="55" type="EN_GOOMBA_GROUP_2_HIGHER">
+ <tile id="55" type="EN_UNUSED_9">
   <properties>
    <property name="sizeInBytes" type="int" value="3"/>
   </properties>
  </tile>
- <tile id="56" type="EN_GOOMBA_GROUP_3_HIGHER">
+ <tile id="56" type="EN_UNUSED_10">
   <properties>
    <property name="sizeInBytes" type="int" value="3"/>
   </properties>
  </tile>
- <tile id="57" type="EN_GOOMBA_GROUP_2_LOWER">
+ <tile id="57" type="EN_UNUSED_11">
   <properties>
    <property name="sizeInBytes" type="int" value="3"/>
   </properties>
  </tile>
- <tile id="58" type="EN_GOOMBA_GROUP_3_LOWER">
+ <tile id="58" type="EN_UNUSED_12">
   <properties>
    <property name="sizeInBytes" type="int" value="3"/>
   </properties>
  </tile>
- <tile id="59" type="EN_KOOPA_GROUP_2_HIGHER">
+ <tile id="59" type="EN_UNUSED_13">
   <properties>
    <property name="sizeInBytes" type="int" value="3"/>
   </properties>
  </tile>
- <tile id="60" type="EN_KOOPA_GROUP_3_HIGHER">
+ <tile id="60" type="EN_UNUSED_14">
   <properties>
    <property name="sizeInBytes" type="int" value="3"/>
   </properties>
  </tile>
- <tile id="61" type="EN_KOOPA_GROUP_2_LOWER">
+ <tile id="61" type="EN_UNUSED_15">
   <properties>
    <property name="sizeInBytes" type="int" value="3"/>
   </properties>
  </tile>
- <tile id="62" type="EN_KOOPA_GROUP_3_LOWER">
+ <tile id="62" type="EN_UNUSED_16">
   <properties>
    <property name="sizeInBytes" type="int" value="3"/>
   </properties>
  </tile>
- <tile id="63" type="EN_UNUSED_9">
+ <tile id="63" type="EN_UNUSED_17">
   <properties>
    <property name="sizeInBytes" type="int" value="3"/>
   </properties>

@@ -8,8 +8,8 @@
             "scale": 2,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 2016.5,
-                "y": 103.5
+                "x": 1023.25,
+                "y": 96
             }
         },
         "tiled_assets/tsx/enemy.tsx": {
