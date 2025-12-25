@@ -14,6 +14,10 @@ entityTsxPath = os.path.join(tiledAssetsPath, "tsx", "entity.tsx")
 entityConstantsPath = os.path.join(asmFilesPath, generatedFolder, "entity_constants.asm")
 BANKSIZE = 0x4000 # 16kb
 
+mtiles_tsx_path = "../tiled_assets/tsx/mtiles.tsx"
+entity_tsx_path = "../tiled_assets/tsx/entity.tsx"
+exit_tsx_path = "../tiled_assets/tsx/exit_types.tsx"
+
 bank = 0
 curBankSize = 0
 newBank = True
@@ -31,6 +35,9 @@ def includeInFile(file, size, filename, label, format = "incbin"):
         newBank = False
     file.write(f'{label}: .{format} "{asmFilesPath}/{generatedFolder}/{filename}"\n')
 
+def getLabelBase(name):
+    return f'_{name.replace("-", "_")}'
+
 class Level:
     def __init__(self, name, width, height, areaType, timer, playerX, playerY):
         self.name = name
@@ -42,10 +49,61 @@ class Level:
         self.playerY = playerY
 
 class Enemy:
-    def __init__(self, x, y, id):
+    def __init__(self, x, y, id, props = None):
         self.x = x
         self.y = y
         self.id = id
+        self.props = props or {}
+
+pipe_exit_cache = {}
+def get_firstgid(root, tsx_path):
+    for ts in root.findall("tileset"):
+        if ts.get("source") == tsx_path:
+            return int(ts.get("firstgid"))
+    return None
+
+def load_pipe_exits_from_tmx(tmx_path):
+    tree = ET.parse(tmx_path)
+    root = tree.getroot()
+
+    exit_firstgid = get_firstgid(root, exit_tsx_path)
+    if exit_firstgid is None:
+        raise ValueError(f"Exit TSX not found in {tmx_path}")
+
+    exits = {}
+
+    obj_group = root.find("objectgroup")
+    if obj_group is None:
+        return exits
+
+    for obj in obj_group.findall("object"):
+        gid = obj.get("gid")
+        if gid is None:
+            continue
+
+        gid = int(gid)
+        exit_local_id = gid - exit_firstgid
+        if exit_local_id < 0:
+            continue  # not an exit tile
+
+        props_node = obj.find("properties")
+        if props_node is None:
+            continue
+
+        props = {}
+        for prop in props_node.findall("property"):
+            props[prop.get("name")] = prop.get("value")
+
+        if "exitId" not in props:
+            continue
+
+        exits[props["exitId"]] = {
+            "id": exit_local_id,
+            "x": int(obj.get("x")),
+            "y": int(obj.get("y"))
+        }
+
+    return exits
 
 levels = []
 print("Converting Tiled files to Studsbase compatible files")
@@ -73,24 +131,31 @@ with open(segmentsFilePath, "w") as segmentsFile:
         height = root.get("height")
         props = {prop.get("name"): prop.get("value") for prop in root.find("properties").findall("property")}
         
-        labelBase = f'_{filename.replace("-", "_")}' 
+        labelBase = getLabelBase(filename)
         levels.append(Level(labelBase, width, height, props["areaType"], props["timer"], props["playerX"], props["playerY"]))
 
-        mtiles_firstgid = enemies_firstgid = 0
+        mtiles_firstgid = enemies_firstgid = exit_types_firstgid = 0
+                
         for tileset in root.findall("tileset"):
-            if tileset.get("source") == "../tiled_assets/tsx/mtiles.tsx":
+            if tileset.get("source") == mtiles_tsx_path:
                 mtiles_firstgid = int(tileset.get("firstgid"))
-            if tileset.get("source") == "../tiled_assets/tsx/entity.tsx":
+            if tileset.get("source") == entity_tsx_path:
                 enemies_firstgid = int(tileset.get("firstgid"))
+            if tileset.get("source") == exit_tsx_path:
+                exit_types_firstgid = int(tileset.get("firstgid"))
 
         # handle entities
         # entity format:
         # %xxxxyyyy position within current page (16x16 grid)
         # %00001111 = first byte -> means page skip! (special row $0f)
-        # %00001110 = first byte -> pipe pointer!
+        # %00001110 = first byte -> pipe pointer! (special row $0e)
         # (rows $00-$0d):
             # %PxxxyyyI x and y: fine offset, P: page flag, I: msb of id
             # %iiiiiiii i: id 
+        # (special row $0e)
+            # %Piiiiiii i: area id, P: page flag
+            # %ttpppppp t: exit type (0: regular, 1: exit from vert. pipe) p: page number 
+            # %xxxxyyyy x: x and y coarse pos within page
         # (special row $0f, page skip)
             # %00pppppp page where the next enemy lies
         entitiesFilename = f"{filename}_entities.asm"
@@ -99,7 +164,14 @@ with open(segmentsFilePath, "w") as segmentsFile:
             size = 0
             entityData = []
             for obj in obj_group.findall("object"):
-                entityData.append(Enemy(int(obj.get("x")), int(obj.get("y")), int(obj.get("gid")) - enemies_firstgid))
+                if enemies_firstgid <= int(obj.get("gid")) < enemies_firstgid + len(entityTypes):
+                    props = {}
+                    props_node = obj.find("properties")
+                    if props_node is not None:
+                        for prop in props_node.findall("property"):
+                            value = prop.get("value")
+                            props[prop.get("name")] = value
+                    entityData.append(Enemy(int(obj.get("x")), int(obj.get("y")), int(obj.get("gid")) - enemies_firstgid, props))
             entityData.sort(key=lambda e: e.x)
             prevXpage = 0
             for entity in entityData:
@@ -110,14 +182,40 @@ with open(segmentsFilePath, "w") as segmentsFile:
                 yPos = (entity.y - 16) // 16
                 xFine = (entity.x % 16) // 2
                 yFine = (entity.y % 16) // 2
+
+                # handle page skip
                 if prevXpage < xPage-1:
                     pageSkipData = f"$0f, {xPage}"
                     entityFile.write(f".byte {pageSkipData}\n")
-                thisData = f"({xPos}<<4)+{yPos}, ({xFine}<<4)+({yFine}<<1)+(>{entityType})"
-                if prevXpage == xPage-1:
-                    # add next page flag
-                    thisData += "+$80"
-                thisData += f", <{entityType}"
+                    size += 2
+
+                # the actual entity data
+                if entityType == "EN_PIPE_POINTER":
+                    exitId = entity.props.get("exitId", 0)
+                    targetArea = entity.props.get("targetArea")               
+                    if exitId is None or targetArea is None:
+                        raise ValueError("PIPE POINTER missing exitId or targetArea")
+                    targetTmxPath = os.path.join(levelFilesPath, f"{targetArea}.tmx")
+                    if targetArea not in pipe_exit_cache:
+                        pipe_exit_cache[targetArea] = load_pipe_exits_from_tmx(targetTmxPath)
+                    exits = pipe_exit_cache[targetArea]
+                    if exitId not in exits:
+                        raise ValueError(f"PIPE EXIT exitId={exitId} not found in {targetArea}.tmx")
+                    target = exits[exitId]
+                    txId = target["id"]
+                    txPage = target["x"] // 256
+                    txPos  = (target["x"] % 256) // 16
+                    tyPos  = (target["y"] - 16) // 16
+                    thisData = f"({xPos}<<4)+$0f, {getLabelBase(targetArea)}_id"
+                    if prevXpage == xPage-1:
+                        thisData += "+$80"
+                    thisData += f", ({txId}<<6)+{txPage}, ({txPos}<<4)+{tyPos}"
+                else:
+                    thisData = f"({xPos}<<4)+{yPos}, ({xFine}<<4)+({yFine}<<1)+(>{entityType})"
+                    if prevXpage == xPage-1:
+                        thisData += "+$80"
+                    thisData += f", <{entityType}"
+                
                 prevXpage = xPage
                 entityFile.write(f".byte {thisData}\n")
             entityFile.write(f".byte $ff\n")
@@ -169,4 +267,8 @@ with open(lutsFilePath, "w") as lutsFile:
     writeToLutsFile(lutsFile, "LevelFgBanks", "byte", levels, "name", prefix="<.bank(", suffix="_foreground)")
     writeToLutsFile(lutsFile, "LevelBgBanks", "byte", levels, "name", prefix="<.bank(", suffix="_background)")
     writeToLutsFile(lutsFile, "LevelEntityBanks", "byte", levels, "name", prefix="<.bank(", suffix="_entities)")
-
+    # ID enum
+    i = 0
+    for level in levels:
+        lutsFile.write(f"{getattr(level, "name")}_id = {i}\n")
+        i += 1

@@ -96,9 +96,9 @@
    <property name="sizeInBytes" type="int" value="3"/>
   </properties>
  </tile>
- <tile id="19" type="EN_UNUSED_1">
+ <tile id="19" type="EN_PIPE_POINTER">
   <properties>
-   <property name="sizeInBytes" type="int" value="3"/>
+   <property name="sizeInBytes" type="int" value="4"/>
   </properties>
  </tile>
  <tile id="20" type="EN_CHEEP_CHEEP_ZONE">
