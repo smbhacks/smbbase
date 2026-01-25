@@ -1,3 +1,4 @@
+.byte (15<<4)+1, (1<<4)+(0<<1)+(>EN_GOOMBA)+$80, <EN_GOOMBA
 .byte $0f, 3
 .byte (8<<4)+5, (0<<4)+(0<<1)+(>EN_HAMMER_BRO), <EN_HAMMER_BRO
 .byte (10<<4)+5, (0<<4)+(0<<1)+(>EN_GOOMBA), <EN_GOOMBA
@@ -26,7 +27,5 @@
 .byte (14<<4)+1, (0<<4)+(5<<1)+(>EN_LIFT_SIDEWAYS), <EN_LIFT_SIDEWAYS
 .byte (15<<4)+0, (5<<4)+(6<<1)+(>EN_LIFT_FALLING), <EN_LIFT_FALLING
 .byte (2<<4)+3, (0<<4)+(2<<1)+(>EN_LIFT_FOR_TRAVEL)+$80, <EN_LIFT_FOR_TRAVEL
-.byte (15<<4)+4, (7<<4)+(4<<1)+(>EN_LIFT_UP_SHORT), <EN_LIFT_UP_SHORT
-.byte (1<<4)+4, (4<<4)+(5<<1)+(>EN_LIFT_DOWN_SHORT)+$80, <EN_LIFT_DOWN_SHORT
-.byte (6<<4)+9, (0<<4)+(7<<1)+(>EN_BOWSER), <EN_BOWSER
+.byte (10<<4)+1, (4<<4)+(4<<1)+(>EN_UNUSED_4), <EN_UNUSED_4
 .byte $ff

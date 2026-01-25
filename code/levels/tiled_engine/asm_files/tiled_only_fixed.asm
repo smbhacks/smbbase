@@ -402,7 +402,7 @@ InitEnemyRoutines:
       .word InitEnemyFrenzy
       .word EndFrenzy
       .word NoInitCode
-      .word NoInitCode
+      .word FlagpoleInit
       .word InitShortFirebar
       .word InitShortFirebar
       .word InitShortFirebar
@@ -433,3 +433,25 @@ InitEnemyRoutines:
       .word NoInitCode
       .word InitRetainerObj
       .word EndOfEnemyInitCode
+
+;for the time being, ill just copy
+;the flagpole object into slot 5, and free up the original slot
+;there's a better probably approach that can be implemented later
+FlagpoleInit:
+    lda #FlagpoleFlagObject
+    sta Enemy_ID+5
+    sta Enemy_Flag+5
+    lda Enemy_X_Position,x
+    sta Enemy_X_Position+5
+    lda Enemy_Y_Position,x
+    clc
+    adc #24
+    sta Enemy_Y_Position+5
+    lda Enemy_PageLoc,x
+    sta Enemy_PageLoc+5
+    lda #0
+    sta Enemy_Flag,x
+    ;set initial vertical coordinate for flagpole's floatey number
+    lda #$b0
+    sta FlagpoleFNum_Y_Pos    
+    rts
