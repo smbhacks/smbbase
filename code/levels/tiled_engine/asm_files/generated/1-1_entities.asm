@@ -1,11 +1,7 @@
-.byte (11<<4)+5, (3<<4)+(3<<1)+(>EN_KOOPA_COLOR_1)+$80, <EN_KOOPA_COLOR_1
-.byte (13<<4)+5, (3<<4)+(3<<1)+(>EN_KOOPA_COLOR_2), <EN_KOOPA_COLOR_2
-.byte (15<<4)+5, (3<<4)+(3<<1)+(>EN_BUZZY_BEETLE), <EN_BUZZY_BEETLE
-.byte (1<<4)+5, (3<<4)+(3<<1)+(>EN_KOOPA_DOESNT_FALL)+$80, <EN_KOOPA_DOESNT_FALL
-.byte (3<<4)+5, (3<<4)+(3<<1)+(>EN_UNUSED_KOOPA), <EN_UNUSED_KOOPA
-.byte (7<<4)+5, (7<<4)+(0<<1)+(>EN_HAMMER_BRO)+$80, <EN_HAMMER_BRO
+.byte $0f, 3
+.byte (8<<4)+5, (0<<4)+(0<<1)+(>EN_HAMMER_BRO), <EN_HAMMER_BRO
 .byte (10<<4)+5, (0<<4)+(0<<1)+(>EN_GOOMBA), <EN_GOOMBA
-.byte (11<<4)+$0f, _1_1_bonus_id, (0<<6)+1, (0<<4)+6
+.byte (11<<4)+$0e, _1_1_bonus_id, (0<<6)+1, (0<<4)+6
 .byte (12<<4)+5, (0<<4)+(0<<1)+(>EN_BLOOPER), <EN_BLOOPER
 .byte (14<<4)+5, (0<<4)+(0<<1)+(>EN_BULLET_BILL), <EN_BULLET_BILL
 .byte (0<<4)+5, (0<<4)+(0<<1)+(>EN_UNUSED_FLYING_KOOPA)+$80, <EN_UNUSED_FLYING_KOOPA

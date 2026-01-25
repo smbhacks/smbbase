@@ -9,6 +9,23 @@ SwitchToEnemyLvlBank:
 LoadAreaPointer:
     rts
 
+.proc DecompressUntilEntrance
+    lda EntrancePage
+    sta $00
+    beq Done
+DecompPage:
+    lda #16    
+    sta $01
+LoopThisPage:
+    jsr AreaParserCore
+    dec $01
+    bne LoopThisPage
+    dec $00
+    bne DecompPage
+Done:
+    rts
+.endproc
+
 .proc AreaParserCore
 	lda	BlockBufferColumnPos
     jsr GetBlockBufferAddr
@@ -75,8 +92,8 @@ SetInBBuf:
     lda #0
     sta EnemyDataOffset
     ;Load foreground huffmunch state
-    ;ldy AreaPointer
-    ldy #0
+    ldy AreaPointer
+    ;ldy #0
     lda LevelFgPtrsLo,y
     sta hm_node
     lda LevelFgPtrsHi,y
@@ -116,8 +133,8 @@ SetInBBuf:
     ldy #FOREGROUND_HM_WRAM_OFFS
     jsr SaveHuffmunchState
     ;Load background huffmunch state
-    ;ldy AreaPointer
-    ldy #0
+    ldy AreaPointer
+    ;ldy #0
     lda LevelBgPtrsLo,y
     sta hm_node
     lda LevelBgPtrsHi,y
@@ -284,25 +301,18 @@ InitEnemyObject:
 ExEPar: rts                      ;then leave
 
 ParseRow0e:
-        iny                      ;increment Y to load third byte of object
         iny
-        lda (EnemyData),y
-        lsr                      ;move 3 MSB to the bottom, effectively
-        lsr                      ;making %xxx00000 into %00000xxx
-        lsr
-        lsr
-        lsr
-        cmp WorldNumber          ;is it the same world number as we're on?
-        bne NotUse               ;if not, do not use (this allows multiple uses
-        dey                      ;of the same area, like the underground bonus areas)
         lda (EnemyData),y        ;otherwise, get second byte and use as offset
+        and #$7f
         sta AreaPointer          ;to addresses for level and enemy object data
         iny
         lda (EnemyData),y        ;get third byte again, and this time mask out
-        and #%00011111           ;the 3 MSB from before, save as page number to be
+        and #%00111111           ;the 3 MSB from before, save as page number to be
         sta EntrancePage         ;used upon entry to area, if area is entered
-NotUse: jmp Inc3B
+NotUse: jmp Inc4B
 
+Inc4B:
+        inc EnemyDataOffset      
 Inc3B:  
         inc EnemyDataOffset      
         inc EnemyDataOffset      

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="250" height="13" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="103">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="250" height="13" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="116">
  <properties>
   <property name="areaType" type="int" value="1"/>
   <property name="playerX" type="int" value="48"/>
@@ -44,12 +44,7 @@
 </data>
  </layer>
  <objectgroup id="3" name="objects">
-  <object id="65" gid="257" x="438" y="102" width="16" height="24"/>
-  <object id="66" gid="258" x="470" y="102" width="16" height="24"/>
-  <object id="67" gid="259" x="502" y="102" width="16" height="24"/>
-  <object id="68" gid="260" x="534" y="102" width="16" height="24"/>
-  <object id="69" gid="261" x="566" y="102" width="16" height="24"/>
-  <object id="70" gid="262" x="894" y="96" width="16" height="24"/>
+  <object id="70" gid="262" x="896" y="96" width="16" height="24"/>
   <object id="71" gid="263" x="928" y="96" width="16" height="24"/>
   <object id="72" gid="264" x="960" y="96" width="16" height="24"/>
   <object id="73" gid="265" x="992" y="96" width="16" height="24"/>

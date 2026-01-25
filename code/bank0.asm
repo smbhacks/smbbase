@@ -1496,6 +1496,7 @@ SetInitNTHigh: sty CurrentNTAddr_High   ;store name table address
                dec AreaObjectLength     ;set area object lengths for all empty
                dec AreaObjectLength+1
                dec AreaObjectLength+2
+               jsr DecompressUntilEntrance
                lda #$0b                 ;set value for renderer to update 12 column sets
                sta ColumnSets           ;12 column sets = 24 metatile columns = 1 1/2 screens
                jsr GetAreaDataAddrs     ;get enemy and level addresses and load header

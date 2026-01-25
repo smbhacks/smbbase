@@ -1,5 +1,5 @@
 {
-    "activeFile": "level_files/1-1.tmx",
+    "activeFile": "level_files/1-1_bonus.tmx",
     "expandedProjectPaths": [
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
@@ -11,8 +11,8 @@
             "scale": 2,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 950.75,
-                "y": 83.5
+                "x": 2019.5,
+                "y": 104
             }
         },
         "level_files/1-1_bonus.tmx": {
@@ -20,10 +20,10 @@
                 3
             ],
             "scale": 2,
-            "selectedLayer": 2,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 313.75,
-                "y": 59
+                "x": 387.25,
+                "y": 94.5
             }
         },
         "tiled_assets/tsx/enemy.tsx": {
@@ -49,15 +49,17 @@
     ],
     "openFiles": [
         "level_files/1-1.tmx",
+        "level_files/1-1_bonus.tmx",
+        "tiled_assets/tsx/exit_types.tsx",
         "tiled_assets/tsx/entity.tsx"
     ],
     "project": "!PROJECT.tiled-project",
     "property.type": "int",
     "recentFiles": [
-        "level_files/1-1_bonus.tmx",
+        "level_files/1-1.tmx",
         "tiled_assets/tsx/entity.tsx",
         "tiled_assets/tsx/exit_types.tsx",
-        "level_files/1-1.tmx",
+        "level_files/1-1_bonus.tmx",
         "tiled_assets/tsx/enemy.tsx"
     ],
     "tileset.lastUsedFilter": "Tiled tileset files (*.tsx *.xml)",
