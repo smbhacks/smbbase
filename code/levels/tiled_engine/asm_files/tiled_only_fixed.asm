@@ -9,24 +9,24 @@ SwitchToEnemyLvlBank:
 LoadAreaPointer:
     rts
 
-.proc DecompressUntilEntrance
-    lda EntrancePage
-    sta $00
-    beq Done
-DecompPage:
-    lda #16    
-    sta $01
-LoopThisPage:
-    jsr AreaParserCore
-    dec $01
-    bne LoopThisPage
-    dec $00
-    bne DecompPage
-Done:
-    rts
-.endproc
-
 .proc AreaParserCore
+;deal with backloading flag
+    lda BackloadingFlag
+    beq ParseOneColumn
+    sta $05
+ParseOnePage:
+    lda #16
+    sta $04
+ParseLoop:
+    jsr ParseOneColumn
+    dec $04
+    bne ParseLoop    
+    dec $05
+    bne ParseOnePage
+    lda #0
+    sta BackloadingFlag
+;parse next column
+ParseOneColumn:
 	lda	BlockBufferColumnPos
     jsr GetBlockBufferAddr
 

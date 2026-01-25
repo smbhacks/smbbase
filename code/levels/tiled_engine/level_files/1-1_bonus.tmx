@@ -78,7 +78,7 @@
   <object id="97" gid="300" x="3070" y="88" width="16" height="24"/>
   <object id="98" gid="301" x="3096" y="90" width="16" height="24"/>
   <object id="99" gid="302" x="3168" y="174" width="16" height="24"/>
-  <object id="101" gid="321" x="256" y="112" width="16" height="24">
+  <object id="101" gid="321" x="1024" y="176" width="16" height="24">
    <properties>
     <property name="exitId" type="int" value="0"/>
    </properties>

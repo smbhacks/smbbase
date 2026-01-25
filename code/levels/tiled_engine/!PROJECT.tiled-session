@@ -11,7 +11,7 @@
             "scale": 2,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 2019.5,
+                "x": 2000,
                 "y": 104
             }
         },
@@ -22,8 +22,8 @@
             "scale": 2,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 387.25,
-                "y": 94.5
+                "x": 1999.5,
+                "y": 104
             }
         },
         "tiled_assets/tsx/enemy.tsx": {
