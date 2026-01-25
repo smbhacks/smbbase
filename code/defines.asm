@@ -542,5 +542,8 @@ background_hm_length:  .res 1
 foreground_bytesLeft:  .res 2
 background_bytesLeft:  .res 2
 
+entranceX: .res 1
+entranceY: .res 1
+
 .else
 .endif

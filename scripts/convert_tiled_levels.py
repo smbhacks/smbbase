@@ -205,7 +205,7 @@ with open(segmentsFilePath, "w") as segmentsFile:
                     txId = target["id"]
                     txPage = target["x"] // 256
                     txPos  = (target["x"] % 256) // 16
-                    tyPos  = (target["y"] - 16) // 16
+                    tyPos  = target["y"] // 16
                     thisData = f"({xPos}<<4)+$0e, {getLabelBase(targetArea)}_id"
                     if prevXpage == xPage-1:
                         thisData += "+$80"

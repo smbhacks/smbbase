@@ -1,7 +1,7 @@
 .byte $0f, 3
 .byte (8<<4)+5, (0<<4)+(0<<1)+(>EN_HAMMER_BRO), <EN_HAMMER_BRO
 .byte (10<<4)+5, (0<<4)+(0<<1)+(>EN_GOOMBA), <EN_GOOMBA
-.byte (11<<4)+$0e, _1_1_bonus_id, (0<<6)+4, (0<<4)+10
+.byte (11<<4)+$0e, _1_1_bonus_id, (0<<6)+4, (0<<4)+11
 .byte (12<<4)+5, (0<<4)+(0<<1)+(>EN_BLOOPER), <EN_BLOOPER
 .byte (14<<4)+5, (0<<4)+(0<<1)+(>EN_BULLET_BILL), <EN_BULLET_BILL
 .byte (0<<4)+5, (0<<4)+(0<<1)+(>EN_UNUSED_FLYING_KOOPA)+$80, <EN_UNUSED_FLYING_KOOPA

@@ -10,7 +10,7 @@ LoadAreaPointer:
     rts
 
 .proc AreaParserCore
-;deal with backloading flag
+;deal with backloading flag (skipping to entrance page)
     lda BackloadingFlag
     beq ParseOneColumn
     sta $05
@@ -100,10 +100,20 @@ SetInBBuf:
     sta hm_node+1
     lda LevelAreaTypes,y
     sta AreaType
+    lda AltEntranceControl
+    beq LoadPosFromLut
+LoadPosFromPipePointer:
+    lda entranceX
+    sta Player_X_Position
+    lda entranceY
+    sta Player_Y_Position
+    jmp PlayerPositionLoaded
+LoadPosFromLut:
     lda LevelPlayerXs,y
     sta Player_X_Position
     lda LevelPlayerYs,y
     sta Player_Y_Position
+PlayerPositionLoaded:
     lda LevelEntityBanks,y
     sta entityBnk
     lda LevelEntityPtrsLo,y
@@ -309,6 +319,16 @@ ParseRow0e:
         lda (EnemyData),y        ;get third byte again, and this time mask out
         and #%00111111           ;the 3 MSB from before, save as page number to be
         sta EntrancePage         ;used upon entry to area, if area is entered
+        iny
+        lda (EnemyData),y        ;get fourth byte
+        asl
+        asl
+        asl
+        asl
+        sta entranceY
+        lda (EnemyData),y
+        and #%11110000
+        sta entranceX        
 NotUse: jmp Inc4B
 
 Inc4B:
