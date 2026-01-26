@@ -270,5 +270,5 @@ with open(lutsFilePath, "w") as lutsFile:
     # ID enum
     i = 0
     for level in levels:
-        lutsFile.write(f"{getattr(level, "name")}_id = {i}\n")
+        lutsFile.write(f"{getattr(level, 'name')}_id = {i}\n")
         i += 1
