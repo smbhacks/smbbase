@@ -445,7 +445,7 @@ FlagpoleInit:
     sta Enemy_X_Position+5
     lda Enemy_Y_Position,x
     clc
-    adc #24
+    adc #8
     sta Enemy_Y_Position+5
     lda Enemy_PageLoc,x
     sta Enemy_PageLoc+5
