@@ -179,7 +179,7 @@ with open(segmentsFilePath, "w") as segmentsFile:
                 size += entitySizeInBytes[entity.id]
                 xPage = entity.x // 256
                 xPos = (entity.x % 256) // 16
-                yPos = (entity.y - 16) // 16
+                yPos = entity.y // 16
                 xFine = (entity.x % 16) // 2
                 yFine = (entity.y % 16) // 2
 
