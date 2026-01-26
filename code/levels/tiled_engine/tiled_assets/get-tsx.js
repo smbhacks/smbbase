@@ -7,9 +7,12 @@ dialog.addNewRow();
 var metatiles = dialog.addFilePicker("Choose metatiles.asm file:");
 dialog.addNewRow();
 
+var scriptDir = FileInfo.path(__filename);
+var pyPath = FileInfo.joinPaths(scriptDir, "maketsx.py");
+
 dialog.addButton("OK").clicked.connect(function(){
   var process = new Process();
-  process.exec("python", ["tiled_assets/maketsx.py", CHR.fileUrl, pal.fileUrl, metatiles.fileUrl]); 
+  process.exec("python", [pyPath, CHR.fileUrl, pal.fileUrl, metatiles.fileUrl]); 
   dialog.close();
 });
 
