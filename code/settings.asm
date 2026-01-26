@@ -74,6 +74,10 @@ lift_speed_up = 10
 lift_speed_down = -10
 riding_speed = 16
 
+;Spikes
+RoutineToJumpToOnSpikeCollision = InjurePlayer ;InjurePlayer (not instadeath) or KillPlayer (instadeath)
+starProtectsFromSpikes = true ;star powerup protects from spikes (true/false)
+
 ;Misc.
 starting_lives = 3
 timer_rate = 24 ;frames before ticking the game timer

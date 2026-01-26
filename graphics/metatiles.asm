@@ -325,6 +325,18 @@ DefineMTile "MT_EMPTY_BLOCK", \
 DefineMTile "MT_AXE", \
   $CB, $CD, $CC, $CE, \
   pal3 + hard + interactable
+DefineMTile "MT_SPIKE_TOP", \
+  $EC, $FC, $EC, $FC, \
+  pal2 + hard + interactable
+DefineMTile "MT_SPIKE_BOTTOM", \
+  $EF, $FF, $EF, $FF, \
+  pal2 + hard + interactable
+DefineMTile "MT_SPIKE_LEFT", \
+  $ED, $ED, $EE, $EE, \
+  pal2 + hard + interactable
+DefineMTile "MT_SPIKE_RIGHT", \
+  $FD, $FD, $FE, $FE, \
+  pal2 + hard + interactable
 
 Metatile_Attributes:
 .byte ATTR_OF_MT_BLANK
@@ -428,3 +440,7 @@ Metatile_Attributes:
 .byte ATTR_OF_MT_UNDERWATER_COIN
 .byte ATTR_OF_MT_EMPTY_BLOCK
 .byte ATTR_OF_MT_AXE
+.byte ATTR_OF_MT_SPIKE_TOP
+.byte ATTR_OF_MT_SPIKE_BOTTOM
+.byte ATTR_OF_MT_SPIKE_LEFT
+.byte ATTR_OF_MT_SPIKE_RIGHT

@@ -4712,6 +4712,15 @@ HeadChk: lda Player_Y_Position       ;get player's vertical coordinate
          ldy $04                     ;check lower nybble of vertical coordinate returned
          cpy #$04                    ;from collision detection routine
          bcc DoFootCheck             ;if low nybble < 4, branch
+.if starProtectsFromSpikes = true
+         ldy StarInvincibleTimer
+         bne SpikeHeadCheckDone
+.endif
+         ldy InjuryTimer
+         bne SpikeHeadCheckDone
+         cmp #MT_SPIKE_BOTTOM
+         jeq RoutineToJumpToOnSpikeCollision
+SpikeHeadCheckDone:
          jsr CheckForSolidMTiles     ;check to see what player's head bumped on
          bcs SolidOrClimb            ;if player collided with solid metatile, branch
          ldy AreaType                ;otherwise check area type
@@ -4752,6 +4761,15 @@ AwardTouchedCoin:
       jmp HandleCoinMetatile     ;follow the code to erase coin and award to player 1 coin
 
 ChkFootMTile:
+.if starProtectsFromSpikes = true
+          ldy StarInvincibleTimer
+          bne SpikeFootCheckDone
+.endif
+          ldy InjuryTimer
+          bne SpikeFootCheckDone
+          cmp #MT_SPIKE_TOP
+          jeq RoutineToJumpToOnSpikeCollision
+SpikeFootCheckDone:         
           jsr CheckForClimbMTiles    ;check to see if player landed on climbable metatiles
           bcs DoPlayerSideCheck      ;if so, branch
           ldy Player_Y_Speed         ;check player's vertical speed
@@ -4818,6 +4836,17 @@ BHalf: ldy Local_eb                   ;load block adder offset
 ExSCH: rts                       ;leave
 
 CheckSideMTiles:
+.if starProtectsFromSpikes = true
+          ldy StarInvincibleTimer
+          bne SpikeSideCheckDone
+.endif
+          ldy InjuryTimer
+          bne SpikeSideCheckDone
+          cmp #MT_SPIKE_LEFT
+          jeq RoutineToJumpToOnSpikeCollision
+          cmp #MT_SPIKE_RIGHT
+          jeq RoutineToJumpToOnSpikeCollision
+SpikeSideCheckDone:
           jsr ChkInvisibleMTiles     ;check for hidden or coin 1-up blocks
           bcs ExCSM                  ;branch to leave if either found
           jsr CheckForClimbMTiles    ;check for climbable metatiles

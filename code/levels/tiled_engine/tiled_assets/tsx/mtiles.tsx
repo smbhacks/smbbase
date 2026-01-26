@@ -102,4 +102,8 @@
  <tile id="98" type="MT_UNDERWATER_COIN"/>
  <tile id="99" type="MT_EMPTY_BLOCK"/>
  <tile id="100" type="MT_AXE"/>
+ <tile id="101" type="MT_SPIKE_TOP"/>
+ <tile id="102" type="MT_SPIKE_BOTTOM"/>
+ <tile id="103" type="MT_SPIKE_LEFT"/>
+ <tile id="104" type="MT_SPIKE_RIGHT"/>
 </tileset>
