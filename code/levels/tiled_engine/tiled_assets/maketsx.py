@@ -2,6 +2,8 @@ import sys
 from pathlib import Path
 from PIL import Image as PILImage
 
+SCRIPT_DIR = Path(__file__).resolve().parent
+
 class Metatile:
     def __init__(self):
         self.tiles = [0, 0, 0, 0]
@@ -132,11 +134,12 @@ def main():
         if (metatile_index & 0x0F) == 0x0F:
             image.moveY(16)
 
-    Path("tiled_assets/tsx").mkdir(parents=True, exist_ok=True)
-    image.data.save("tiled_assets/tsx/mtiles.png", "PNG")
+    tsx_dir = SCRIPT_DIR / "tsx"
+    tsx_dir.mkdir(parents=True, exist_ok=True)
+    image.data.save(tsx_dir / "mtiles.png", "PNG")
 
     # Generate TSX file
-    tsx_file = Path("tiled_assets/tsx/mtiles.tsx")
+    tsx_file = tsx_dir / "mtiles.tsx"
     tsx_content = '<?xml version="1.0" encoding="UTF-8"?>\n'
     tsx_content += '<tileset version="1.10" tiledversion="1.10.2" name="Metatiles" tilewidth="16" tileheight="16" tilecount="256" columns="16">\n'
     tsx_content += ' <image source="mtiles.png" width="256" height="256"/>'
