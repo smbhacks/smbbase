@@ -308,11 +308,10 @@ LagFrameTasks:
       lda temp
       pha
 
+      Bank_NoSave #<.bank(MusicSegment)
 .if CustomMusicDriver = OriginalSMBMusic || CustomMusicDriver = VanillaPlusMusic
-      Bank_NoSave #<.bank(SoundEngine)
       jsr SoundEngine
 .else
-      Bank_NoSave #<.bank(CustomMusicEngine)
       jsr CustomMusicEngine
 .endif
       Original_Bank
@@ -415,11 +414,10 @@ InitBuffer:
 	lda Mirror_PPU_CTRL_REG1
 	sta ScrollBit
 
+	Switch_Bank #<.bank(MusicSegment)
 .if CustomMusicDriver = OriginalSMBMusic || CustomMusicDriver = VanillaPlusMusic
-	Switch_Bank #<.bank(SoundEngine)
       jsr SoundEngine           ;play sound
 .else
-	Switch_Bank #<.bank(CustomMusicEngine)
 	jsr CustomMusicEngine
 .endif
 	Switch_Bank #0

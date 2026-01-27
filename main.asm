@@ -70,6 +70,7 @@
 .endif
 ;-------------------------------------------------------------------------------------
 .segment "MUSIC"
+MusicSegment:
 .if CustomMusicDriver = Famitone5Music
     CustomAudioInit 		= FamiToneInit
     CustomAudioSfxInit 		= FamiToneSfxInit

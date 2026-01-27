@@ -3,10 +3,6 @@
 
 ObjectOffset:           .res 1
 FrameCounter:           .res 1
-A_B_Buttons:            .res 1
-Up_Down_Buttons:        .res 1
-Left_Right_Buttons:     .res 1
-PreviousA_B_Buttons:    .res 1
 GameEngineSubroutine:   .res 1
 Enemy_Flag:             .res 7
 Enemy_ID:               .res 7
@@ -145,6 +141,11 @@ FloateyNum_Y_Pos:      .res 7 ;$011e
 ShellChainCounter:     .res 7 ;$0125
 FloateyNum_Timer:      .res 8 ;$012c
 DigitModifier:         .res 6 ;$0134
+
+A_B_Buttons:            .res 1
+Up_Down_Buttons:        .res 1
+Left_Right_Buttons:     .res 1
+PreviousA_B_Buttons:    .res 1
 
 Square1SoundBuffer:     .res 1
 Square2SoundBuffer:     .res 1
