@@ -16,3 +16,10 @@ Error manual:
 - First of all, make sure you have Python installed.
 - Make sure that you allow scripts to run when you open the Tiled project.
 - If you get "No module named PIL", run "pip install pillow".
+
+Pipes: 
+For an enterable pipe, place down a EN_PIPE_POINTER (gray pipe icon) entity in the objects layer, and set these custom properties:
+- exitId (string): An id for the exit (because one level can have multiple exit pipes)
+- targetArea (string): Filename of the exit level (without the file extension)
+In the exit level, make sure you place down the exit marker in the objects layer. Set this property:
+- exitId (string)

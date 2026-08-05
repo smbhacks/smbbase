@@ -420,7 +420,8 @@ LevelNumber:           .res 1 ;$075c
 Hidden1UpFlag:         .res 1 ;$075d
 CoinTally:             .res 1 ;$075e
 WorldNumber:           .res 1 ;$075f
-AreaNumber:            .res 1 ;$0760
+AreaNumber:            .res 1 ;$0760 ;original level engine = used in conjuction with world number to determine areapointer
+                                     ;tiled engine = the index in the luts.asm
 OffscreenPlayerInfo   = OffScr_NumberofLives
 OffScr_NumberofLives:  .res 1 ;$0761
 OffScr_HalfwayPage:    .res 1 ;$0762

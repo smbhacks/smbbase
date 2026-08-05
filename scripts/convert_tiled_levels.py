@@ -202,14 +202,14 @@ with open(segmentsFilePath, "w") as segmentsFile:
                     if exitId not in exits:
                         raise ValueError(f"PIPE EXIT exitId={exitId} not found in {targetArea}.tmx")
                     target = exits[exitId]
-                    txId = target["id"]
+                    tType = target["id"]
                     txPage = target["x"] // 256
                     txPos  = (target["x"] % 256) // 16
                     tyPos  = target["y"] // 16
                     thisData = f"({xPos}<<4)+$0e, {getLabelBase(targetArea)}_id"
                     if prevXpage == xPage-1:
                         thisData += "+$80"
-                    thisData += f", ({txId}<<6)+{txPage}, ({txPos}<<4)+{tyPos}"
+                    thisData += f", ({tType}<<6)+{txPage}, ({txPos}<<4)+{tyPos}"
                 else:
                     thisData = f"({xPos}<<4)+{yPos}, ({xFine}<<4)+({yFine}<<1)+(>{entityType})"
                     if prevXpage == xPage-1:

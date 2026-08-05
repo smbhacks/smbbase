@@ -7,6 +7,8 @@ SwitchToEnemyLvlBank:
     jmp switchBNK_save
 
 LoadAreaPointer:
+    lda AreaNumber
+    sta AreaPointer
     rts
 
 .proc AreaParserCore
