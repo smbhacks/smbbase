@@ -449,4 +449,22 @@ FlagpoleInit:
     ;set initial vertical coordinate for flagpole's floatey number
     lda #$b0
     sta FlagpoleFNum_Y_Pos    
+    ;initialize castle star flag entity
+    txa
+    tay
+    jsr FindEmptyEnemySlot   ;find an empty place on the enemy object buffer
+    lda Enemy_X_Position,y
+    clc 
+    adc #6*16+8
+    sta Enemy_X_Position,x
+    lda Enemy_PageLoc,y
+    adc #0
+    sta Enemy_PageLoc,x
+    lda #$01
+    sta Enemy_Y_HighPos,x    ;set vertical high byte
+    sta Enemy_Flag,x         ;set flag for buffer
+    lda #$90
+    sta Enemy_Y_Position,x   ;set vertical coordinate
+    lda #StarFlagObject      ;set star flag value in buffer itself
+    sta Enemy_ID,x 
     rts

@@ -9,6 +9,9 @@ Make sure you click Enable Extensions!
 The "generated" folder contains the files that are put into your ROM. The content of this folder is fully automatized,
 so don't edit anything in here directly.
 
+In Tiled, get to Edit->Preferences, and there set Interface->Fine grid divisions to 8, and Major grid to 16 tiles by 16 tiles.
+Also set View->Snapping to Snap to Fine Grid.
+
 Error manual:
 - First of all, make sure you have Python installed.
 - Make sure that you allow scripts to run when you open the Tiled project.
