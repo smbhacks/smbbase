@@ -20,3 +20,4 @@ generatedCfg.cfg
 build/output.txt
 code/levels/tiled_engine/\!PROJECT.tiled-session
 /code/levels/tiled_engine/asm_files/generated
+code/levels/tiled_engine/tiled_assets/tsx/mtiles.png

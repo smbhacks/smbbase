@@ -64,13 +64,8 @@ FgLoop:
     jsr huffmunch_read
     ldy $01 ;unclobber 
     ldx $02
-    sta $03
-    lda MetatileBuffer,x
-    beq NoBgThere
-    lda #0
-    beq SetInBBuf ;unc
-NoBgThere:
-    lda $03
+    cmp #0  ;if no foreground tile, then draw bg
+    beq SetInBBuf
     sta MetatileBuffer,x
 SetInBBuf:
     sta ($06),y

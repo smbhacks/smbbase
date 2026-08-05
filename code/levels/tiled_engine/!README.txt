@@ -8,3 +8,8 @@ Make sure you click Enable Extensions!
 
 The "generated" folder contains the files that are put into your ROM. The content of this folder is fully automatized,
 so don't edit anything in here directly.
+
+Error manual:
+- First of all, make sure you have Python installed.
+- Make sure that you allow scripts to run when you open the Tiled project.
+- If you get "No module named PIL", run "pip install pillow".
