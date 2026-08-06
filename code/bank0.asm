@@ -413,8 +413,12 @@ PlayerEndWorld:
                ldy WorldNumber            ;check world number
                cpy #World8                ;if on world 8, player is done with game,
                bcs EndChkBButton          ;thus branch to read controller
-dbgJMP:        lda #$00
+               lda #$00
+.if LevelEngine = TiledLevelEngine
+               inc AreaNumber             ;increment area number pointer
+.else
                sta AreaNumber             ;otherwise initialize area number used as offset
+.endif
                sta LevelNumber            ;and level number control to start at area 1
                sta OperMode_Task          ;initialize secondary mode of operation
                inc WorldNumber            ;increment world number to move onto the next world
