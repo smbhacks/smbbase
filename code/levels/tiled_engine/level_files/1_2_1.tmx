@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="250" height="13" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="122">
+<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="250" height="13" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="124">
  <properties>
-  <property name="areaType" type="int" value="1"/>
+  <property name="areaType" type="int" value="2"/>
+  <property name="autowalk" value="false"/>
   <property name="playerX" type="int" value="48"/>
   <property name="playerY" type="int" value="176"/>
   <property name="timer" type="int" value="300"/>
@@ -46,5 +47,6 @@
  <objectgroup id="3" name="objects">
   <object id="118" gid="283" x="2984" y="40" width="16" height="24"/>
   <object id="120" gid="283" x="328" y="40" width="16" height="24"/>
+  <object id="123" gid="257" x="272" y="176" width="16" height="24"/>
  </objectgroup>
 </map>

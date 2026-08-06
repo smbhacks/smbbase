@@ -39,7 +39,7 @@ def getLabelBase(name):
     return f'_{name.replace("-", "_")}'
 
 class Level:
-    def __init__(self, name, width, height, areaType, timer, playerX, playerY):
+    def __init__(self, name, width, height, areaType, timer, playerX, playerY, flags):
         self.name = name
         self.width = width
         self.height = height
@@ -47,6 +47,7 @@ class Level:
         self.timer = timer
         self.playerX = playerX
         self.playerY = playerY
+        self.flags = flags
 
 class Enemy:
     def __init__(self, x, y, id, props = None):
@@ -132,7 +133,9 @@ with open(segmentsFilePath, "w") as segmentsFile:
         props = {prop.get("name"): prop.get("value") for prop in root.find("properties").findall("property")}
         
         labelBase = getLabelBase(filename)
-        levels.append(Level(labelBase, width, height, props["areaType"], props["timer"], props["playerX"], props["playerY"]))
+        levelFlags = {}
+        levelFlags["autowalk"] = props["autowalk"] 
+        levels.append(Level(labelBase, width, height, props["areaType"], props["timer"], props["playerX"], props["playerY"], levelFlags))
 
         mtiles_firstgid = enemies_firstgid = exit_types_firstgid = 0
                 
@@ -245,6 +248,15 @@ with open(segmentsFilePath, "w") as segmentsFile:
             os.remove(tmpFile)
             includeInFile(segmentsFile, finalSize, finalFile, f"{labelBase}_{name}")
 
+def writeFlagsToLutsFile(file):
+    file.write(f'LevelFlags:\n')
+    for level in levels:
+        flags = getattr(level, "flags")
+        file.write(f"    .byte 0")
+        for flag in flags:
+            file.write(f"+{flag}_{flags[flag]}")
+        file.write(f"\n")
+
 def writeToLutsFile(file, label, valueformat, levels, val, prefix = '', suffix = ''):
     file.write(f'{label}:\n')
     for level in levels:
@@ -267,6 +279,11 @@ with open(lutsFilePath, "w") as lutsFile:
     writeToLutsFile(lutsFile, "LevelFgBanks", "byte", levels, "name", prefix="<.bank(", suffix="_foreground)")
     writeToLutsFile(lutsFile, "LevelBgBanks", "byte", levels, "name", prefix="<.bank(", suffix="_background)")
     writeToLutsFile(lutsFile, "LevelEntityBanks", "byte", levels, "name", prefix="<.bank(", suffix="_entities)")
+    writeFlagsToLutsFile(lutsFile)
+    # flag definitions
+    lutsFile.write(f'autowalk_false = 0 << 0\n')
+    lutsFile.write(f'autowalk_true = 1 << 0\n')
+
     # ID enum
     i = 0
     for level in levels:

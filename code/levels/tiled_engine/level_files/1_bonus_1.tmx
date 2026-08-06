@@ -2,6 +2,7 @@
 <map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="250" height="13" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="122">
  <properties>
   <property name="areaType" type="int" value="2"/>
+  <property name="autowalk" value="false"/>
   <property name="playerX" type="int" value="48"/>
   <property name="playerY" type="int" value="176"/>
   <property name="timer" type="int" value="300"/>

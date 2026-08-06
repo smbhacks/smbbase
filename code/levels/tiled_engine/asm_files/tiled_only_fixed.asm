@@ -91,6 +91,14 @@ SetInBBuf:
     ;Load foreground huffmunch state
     ldy AreaPointer
     ;ldy #0
+    ;Handle flags
+    lda LevelFlags,y
+    lsr
+    bcc NoAutoWalk
+    ldx #6
+    stx PlayerEntranceCtrl
+NoAutoWalk:
+    ;Flags handled
     lda LevelFgPtrsLo,y
     sta hm_node
     lda LevelFgPtrsHi,y
