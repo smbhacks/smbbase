@@ -418,7 +418,7 @@ InitEnemyRoutines:
       .word NoInitCode
       .word NoInitCode
       .word NoInitCode
-      .word InitBalPlatform
+      .word PreInitBalPlatform
       .word InitVertPlatform
       .word LargeLiftUp
       .word LargeLiftDown
@@ -478,3 +478,10 @@ FlagpoleInit:
     lda #StarFlagObject      ;set star flag value in buffer itself
     sta Enemy_ID,x 
     rts
+
+PreInitBalPlatform:
+    lda Enemy_Y_Position,x
+    clc
+    adc #24
+    sta Enemy_Y_Position,x
+    jmp InitBalPlatform
