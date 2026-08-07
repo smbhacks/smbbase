@@ -18,11 +18,11 @@ for /f "usebackq tokens=1,2 delims==" %%a in ("code/settings.asm") do (
 set "engine=%engine: =%"
 if /i "%engine%"=="OriginalLevelEngine" (
     echo Original level engine chosen. 
-    python scripts/makecfg.py "code/levels/original_engine/asm_files/segments.asm"
+    python scripts/makecfg.py "code/levels/original_engine/asm_files/segments.asm" "music/famitone/segments.asm"
 ) else if /i "%engine%"=="TiledLevelEngine" (
     echo Tiled level engine chosen. 
     python scripts/convert_tiled_levels.py
-    python scripts/makecfg.py "code/levels/tiled_engine/asm_files/generated/segments.asm"
+    python scripts/makecfg.py "code/levels/tiled_engine/asm_files/generated/segments.asm" "music/famitone/segments.asm"
 ) else (
     echo Unknown level engine setting. Please fix code/settings.asm
     pause

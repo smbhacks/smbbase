@@ -1,11 +1,31 @@
+;Don't change these values unless you know what you're doing
+;Settings for casual users are after this section.
+TitleScreenModeValue  = 0
+GameModeValue         = 1
+VictoryModeValue      = 2
+GameOverModeValue     = 3
+
+OriginalSMBMusic = 0
+FamistudioMusic = 1
+Famitone5Music = 2
+VanillaPlusMusic = 3
+
+No_Feature = 0
+CHR_Animated = 1
+
+OriginalLevelEngine = 0
+TiledLevelEngine = 1
+
+false = 0
+true = 1
 ;-------------------------------------------------------------------------------------
 ;SETTINGS
 ;To enable/disable a setting, delete/add the semicolon (;) before the definition
 
 ;If you don't know which one to use, I recommend reading music/!README.txt
-CustomMusicDriver = OriginalSMBMusic		;Use the original SMB audio engine
+;CustomMusicDriver = OriginalSMBMusic		;Use the original SMB audio engine
 ;CustomMusicDriver = VanillaPlusMusic		;Use a slightly better version of the SMB audio engine
-;CustomMusicDriver = Famitone5Music		    ;Replace SMB's music driver with Famitone5 (compatible with famitracker)
+CustomMusicDriver = Famitone5Music		    ;Replace SMB's music driver with Famitone5 (compatible with famitracker)
 ;CustomMusicDriver = FamistudioMusic		;Replace SMB's music driver with Famistudio (compatible with famistudio)
 
 ;CHR settings, more information at graphics/chr/!README.txt
@@ -83,3 +103,4 @@ starting_lives = 3
 timer_rate = 24 ;frames before ticking the game timer
 world_select_enabled = 0 ;0: after beating the game, 1: always
 max_world_select = 8 ;(accepted values are powers of 2: 1, 2, 4, 8, 16, 32, 64, 128, 256)
+

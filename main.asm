@@ -47,8 +47,8 @@
 ;-------------------------------------------------------------------------------------
 ;DEFINES
 
-.include "code/constants.asm"
 .include "code/settings.asm"
+.include "code/constants.asm"
 .if LevelEngine = TiledLevelEngine
     .include "code/levels/tiled_engine/asm_files/generated/entity_constants.asm"
 .endif
@@ -69,7 +69,7 @@
     .include "code/levels/tiled_engine/asm_files/tiled_only_bank0.asm"
 .endif
 ;-------------------------------------------------------------------------------------
-.segment "MUSIC"
+.segment "MUS_DRIVER"
 MusicSegment:
 .if CustomMusicDriver = Famitone5Music
     CustomAudioInit 		= FamiToneInit
@@ -78,14 +78,17 @@ MusicSegment:
     CustomAudioMusicPlay 	= FamiToneMusicPlay
     CustomAudioMusicPause 	= FamiToneMusicPause
     CustomAudioUpdate 		= FamiToneUpdate
-    music_data      		= music_music_data
     SFX_CH0 = FT_SFX_CH0
     SFX_CH1 = FT_SFX_CH1
     SFX_CH2 = FT_SFX_CH2
     SFX_CH3 = FT_SFX_CH3
     .include "music/famitone/famitone5.asm"
-    .include "music/famitone/music.s"
     .include "music/famitone/sfx.s"
+    .include "music/famitone/lut.asm"
+    .include "music/custommusicengine.asm"
+    .pushseg
+    .include "music/famitone/segments.asm"
+    .popseg
 .endif
 .if CustomMusicDriver = FamistudioMusic
     CustomAudioInit 		= famistudio_init
@@ -102,6 +105,7 @@ MusicSegment:
     .include "music/famistudio/famistudio.asm"
     .include "music/famistudio/music.s"
     .include "music/famistudio/sfx.s"
+    .include "music/custommusicengine.asm"
 .endif
 .if CustomMusicDriver = OriginalSMBMusic
     MusicHeaderOffsetData = MusicHeaderData - 1

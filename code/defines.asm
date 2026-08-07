@@ -129,6 +129,7 @@ songPlaying:           .res 1 ;$0101
 ScrollH:               .res 1 ;$0102
 ScrollBit:	           .res 1 ;$0103
 bank0:		           .res 1 ;$0104
+bank1:		           .res 1
 PauseSoundQueue:       .res 1 ;$0106
 AreaMusicQueue:        .res 2 ;$0107
 VerticalFlipFlag:      .res 4 ;$0109
@@ -516,6 +517,10 @@ CHR6:                  .res 1
 CHR7:                  .res 1
 processinggame:        .res 1
 processingnmi:         .res 1
+
+.if CustomMusicDriver = Famitone5Music || CustomMusicDriver = FamistudioMusic
+songBank:              .res 1
+.endif
 
 .if LevelEngine = TiledLevelEngine
 fgBnk:              .res 1

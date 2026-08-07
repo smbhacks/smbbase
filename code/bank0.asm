@@ -2225,7 +2225,7 @@ HoleDie:    inx                         ;set flag in X for player death
             beq ChkHoleX                ;if so, branch ahead
             ldy DeathMusicLoaded        ;check value here
             bne HoleBottom              ;if already set, branch to next part
-            iny
+            ldy #DeathMusic
             sty EventMusicQueue         ;otherwise play death music
             sty DeathMusicLoaded        ;and set value here
 HoleBottom: ldy #$06

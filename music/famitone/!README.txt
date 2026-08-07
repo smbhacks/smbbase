@@ -4,8 +4,8 @@ have Famitone defined (enabled) in code/settings.asm!
 When making songs in Famitracker, don't use ROWS = 256. text2data 
 (or any variation) won't work right, and will only output empty songs.
 
-To update ingame music, export music.ftm as text in Famitracker (File->Export TXT...) and then execute UPDATE MUSIC.bat
-Same thing with SFX, except you have to export as NSF. (File->Create NSF...)
+To update ingame music, export the edited modules in the 'modules' folder as text in Famitracker (File->Export TXT...) and then execute UPDATE MUSIC.bat
+For SFX, export sfx.ftm in this folder as NSF. (File->Create NSF...)
 
 LIMITATIONS FOR FAMITONE 5 MUSIC: (pasted from nesdev.org)
 

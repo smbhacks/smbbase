@@ -15,8 +15,10 @@
 
 .macro Original_Bank
     pha
-    lda bank0
-    jsr switchBNK
+    ldx bank0
+    jsr switchBNK_80009FFF_fast
+    ldx bank1
+    jsr switchBNK_A000BFFF_fast
     pla
 .endmacro
 

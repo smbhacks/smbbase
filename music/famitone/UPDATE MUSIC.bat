@@ -1,2 +1,2 @@
-text2vol5 music.txt -ca65 -ntsc
+python "music_updater.py"
 pause

@@ -117,157 +117,6 @@ ClrPauseTimer: lda GamePauseStatus    ;clear timer flag if timer is at zero and 
 SetPause:      sta GamePauseStatus
 ExitPause:     rts
 
-.if CustomMusicDriver = Famitone5Music || CustomMusicDriver = FamistudioMusic
-;Enter music number here (Famitracker music number - 1)
-GroundMus        =  0
-WaterMus         =  1
-CaveMus          =  2
-CastleMus        =  3
-CloudMus         =  4
-PipeMus          =  5
-StarmanMus       =  6
-DeathMus         =  7
-GameOverMus      =  8
-PrincessMus      =  9
-CastleFinishMus  =  10
-LevelFinishMus   =  11
-HurryMus         =  12
-
-MusicLUT:
-      .byte GroundMus, WaterMus, CaveMus, CastleMus, CloudMus, PipeMus, StarmanMus,	-1
-      .byte DeathMus, GameOverMus, PrincessMus, CastleFinishMus, 0, LevelFinishMus, HurryMus, -1
-
-BRICK = 1		-1
-BREATH = 2		-1
-COIN = 3		-1
-GROWPU = 4		-1
-VINE = 5		-1
-BLAST = 6		-1
-GROW = 7		-1
-EXTRALIFE = 8	-1
-BJUMP = 9		-1
-BUMP = 10		-1
-STOMP = 11		-1
-SMACK = 12		-1
-INJURY = 13		-1
-FIREBALL = 14	-1
-FLAGPOLE = 15	-1
-SJUMP = 16		-1
-TIMER = 17		-1
-BOWS_FALL = 18	-1
-PAUSE_= 19		-1
-
-
-noise_sfx_table:
-      .byte BRICK      ,SFX_CH2
-      .byte BREATH     ,SFX_CH2
-      .byte PAUSE_     ,SFX_CH3 ;put pause here cuz i can
-
-sq2_sfx_table:
-      .byte COIN       ,SFX_CH1
-      .byte GROWPU     ,SFX_CH1
-      .byte VINE       ,SFX_CH1
-      .byte BLAST      ,SFX_CH1
-      .byte TIMER      ,SFX_CH1
-      .byte GROW       ,SFX_CH1
-.if CustomMusicDriver = FamistudioMusic
-      .byte EXTRALIFE  ,SFX_CH1
-.else
-      .byte EXTRALIFE  ,SFX_CH3
-.endif
-      .byte BOWS_FALL  ,SFX_CH1
-
-sq1_sfx_table:
-      .byte BJUMP      ,SFX_CH0
-      .byte BUMP       ,SFX_CH0
-      .byte STOMP      ,SFX_CH0
-      .byte SMACK      ,SFX_CH0
-      .byte INJURY     ,SFX_CH0
-      .byte FIREBALL   ,SFX_CH0
-      .byte FLAGPOLE   ,SFX_CH0
-      .byte SJUMP      ,SFX_CH0
-
-CustomMusicEngine:
-	lda EventMusicQueue
-	ora AreaMusicQueue
-	beq NoTrigger
-	lda AreaMusicQueue
-	beq :++
-	sta AreaMusicBuffer
-	ldx #-1
-:
-	inx
-	lsr
-	bcc :-
-	ldy #0
-	sty AreaMusicQueue
-:
-	lda EventMusicQueue
-	beq :++
-	sta EventMusicBuffer
-	ldx #7
-:
-	inx
-	lsr
-	bcc :-
-	ldy #0
-	sty EventMusicQueue
-:
-	lda MusicLUT,x
-	pha
-	ldx #<music_data
-	ldy #>music_data
-	lda #1
-	sta songPlaying
-	jsr CustomAudioInit
-	ldx #<sounds
-	ldy #>sounds
-	jsr CustomAudioSfxInit
-	pla
-	jsr CustomAudioMusicPlay
-NoTrigger:
-	lda Square2SoundQueue
-	beq noSQ2
-	jsr countBITS_asl
-	lda sq2_sfx_table,y
-	ldx sq2_sfx_table+1,y
-	jsr CustomAudioSfxPlay
-	lda #0
-	sta Square2SoundQueue
-noSQ2:
-	lda Square1SoundQueue
-	beq noSQ1
-	jsr countBITS_asl
-	lda sq1_sfx_table,y
-	ldx sq1_sfx_table+1,y
-	jsr CustomAudioSfxPlay
-	lda #0
-	sta Square1SoundQueue
-noSQ1:
-	lda NoiseSoundQueue
-	beq noNOI
-	jsr countBITS_asl
-	lda noise_sfx_table,y
-	ldx noise_sfx_table+1,y
-	jsr CustomAudioSfxPlay
-	lda #0
-	sta NoiseSoundQueue
-noNOI:
-	jmp CustomAudioUpdate
-
-countBITS_asl:
-	ldx #$ff
-	sec
-:
-	inx
-	ror
-	bcc :-
-	txa
-	asl
-	tay
-	rts
-.endif
-
 SetHUDScroll:
 	lda Sprite0HitDetectFlag
 	beq @skipIRQ
@@ -308,10 +157,14 @@ LagFrameTasks:
       lda temp
       pha
 
-      Bank_NoSave #<.bank(MusicSegment)
 .if CustomMusicDriver = OriginalSMBMusic || CustomMusicDriver = VanillaPlusMusic
+      Bank_NoSave #<.bank(MusicSegment)
       jsr SoundEngine
 .else
+      ldx #<.bank(MusicSegment)
+      jsr switchBNK_80009FFF_fast
+      ldx songBank
+      jsr switchBNK_A000BFFF_fast      
       jsr CustomMusicEngine
 .endif
       Original_Bank
@@ -414,10 +267,14 @@ InitBuffer:
 	lda Mirror_PPU_CTRL_REG1
 	sta ScrollBit
 
-	Switch_Bank #<.bank(MusicSegment)
 .if CustomMusicDriver = OriginalSMBMusic || CustomMusicDriver = VanillaPlusMusic
+	Switch_Bank #<.bank(MusicSegment)
       jsr SoundEngine           ;play sound
 .else
+      ldx #<.bank(MusicSegment)
+      jsr switchBNK_80009FFF_fast
+      ldx songBank
+      jsr switchBNK_A000BFFF_fast      
 	jsr CustomMusicEngine
 .endif
 	Switch_Bank #0
@@ -4181,7 +4038,7 @@ ExInjColRoutines:
 
 KillPlayer:
       stx Player_X_Speed   ;halt player's horizontal movement by initializing speed
-      inx
+      ldx #DeathMusic
       stx EventMusicQueue  ;set event music queue to death music
       lda #-speed_at_death
       sta Player_Y_Speed   ;set new vertical speed
@@ -7281,30 +7138,66 @@ PIntLoop: lda IntermediatePlayerData,x   ;load data to display player as he alwa
           rts
 
 ;-------------------------------------------------------------------------------------
+switchBNK_80009FFF_fast:
+      lda #%00000110
+      sta MMC3_BANK_SELECT
+      stx MMC3_BANK_DATA
+      rts
+
+switchBNK_A000BFFF_fast:
+      lda #%00000111
+      sta MMC3_BANK_SELECT
+      stx MMC3_BANK_DATA
+      rts
+
 switchBNK_save:
+      stx temp
+      tax
       sta bank0
+      lda #%00000110
+      sta MMC3_BANK_SELECT
+      stx MMC3_BANK_DATA
+      inx
+      stx bank1
+      lda #%00000111
+      sta MMC3_BANK_SELECT
+      stx MMC3_BANK_DATA
+      ldx temp
+      rts
+
 switchBNK:
       stx temp
       tax
       lda #%00000110
       sta MMC3_BANK_SELECT
       stx MMC3_BANK_DATA
+      inx
       lda #%00000111
       sta MMC3_BANK_SELECT
-      inx
       stx MMC3_BANK_DATA
       ldx temp
       rts
 
 switchBNK_save_fast:
+      tax
       sta bank0
+      lda #%00000110
+      sta MMC3_BANK_SELECT
+      stx MMC3_BANK_DATA
+      inx
+      stx bank1
+      lda #%00000111
+      sta MMC3_BANK_SELECT
+      stx MMC3_BANK_DATA
+      rts
+
 switchBNK_fast:
       tax
       lda #%00000110
       sta MMC3_BANK_SELECT
       stx MMC3_BANK_DATA
+      inx
       lda #%00000111
       sta MMC3_BANK_SELECT
-      inx
       stx MMC3_BANK_DATA
       rts

@@ -31,7 +31,7 @@ def includeInFile(file, size, filename, label, format = "incbin"):
         bank += 1
         newBank = True
     if newBank:
-        file.write(f'.segment "LEVEL{bank}" ;<MakeCfg: NewBank>\n')
+        file.write(f'.segment "LEVEL{bank}" ;<MakeCfg4000: NewBank>\n')
         newBank = False
     file.write(f'{label}: .{format} "{asmFilesPath}/{generatedFolder}/{filename}"\n')
 

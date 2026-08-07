@@ -1,0 +1,15 @@
+;This file is generated, no need to modify manually!
+.segment "MUSIC0" ;<MakeCfg2000: NewBank>
+castle_data: .include "music/famitone/modules/castle.s"
+cloud_data: .include "music/famitone/modules/cloud.s"
+death_data: .include "music/famitone/modules/death.s"
+enter_a_pipe_data: .include "music/famitone/modules/enter_a_pipe.s"
+game_over_data: .include "music/famitone/modules/game_over.s"
+hurry_up_data: .include "music/famitone/modules/hurry_up.s"
+in_another_castle_data: .include "music/famitone/modules/in_another_castle.s"
+level_clear_data: .include "music/famitone/modules/level_clear.s"
+overworld_data: .include "music/famitone/modules/overworld.s"
+princess_saved_data: .include "music/famitone/modules/princess_saved.s"
+starman_data: .include "music/famitone/modules/starman.s"
+underground_data: .include "music/famitone/modules/underground.s"
+water_data: .include "music/famitone/modules/water.s"

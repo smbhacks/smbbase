@@ -58,21 +58,41 @@ Sfx_BrickShatter      = %00000001
 ;music constants
 Silence               = %10000000
 
-StarPowerMusic        = %01000000
-PipeIntroMusic        = %00100000
-CloudMusic            = %00010000
-CastleMusic           = %00001000
-UndergroundMusic      = %00000100
-WaterMusic            = %00000010
-GroundMusic           = %00000001
-
-TimeRunningOutMusic   = %01000000
-EndOfLevelMusic       = %00100000
-AltGameOverMusic      = %00010000
-EndOfCastleMusic      = %00001000
-VictoryMusic          = %00000100
-GameOverMusic         = %00000010
-DeathMusic            = %00000001
+.if CustomMusicDriver = Famitone5Music || CustomMusicDriver = FamistudioMusic
+    .if CustomMusicDriver = Famitone5Music
+        .include "music/famitone/ids.asm"
+    .else
+    .endif
+    StarPowerMusic        = starman_id
+    PipeIntroMusic        = enter_a_pipe_id
+    CloudMusic            = cloud_id
+    CastleMusic           = castle_id
+    UndergroundMusic      = underground_id
+    WaterMusic            = water_id
+    GroundMusic           = overworld_id
+    TimeRunningOutMusic   = hurry_up_id
+    EndOfLevelMusic       = level_clear_id
+    AltGameOverMusic      = game_over_id
+    EndOfCastleMusic      = in_another_castle_id
+    VictoryMusic          = princess_saved_id
+    GameOverMusic         = game_over_id
+    DeathMusic            = death_id
+.else
+    StarPowerMusic        = %01000000
+    PipeIntroMusic        = %00100000
+    CloudMusic            = %00010000
+    CastleMusic           = %00001000
+    UndergroundMusic      = %00000100
+    WaterMusic            = %00000010
+    GroundMusic           = %00000001
+    TimeRunningOutMusic   = %01000000
+    EndOfLevelMusic       = %00100000
+    AltGameOverMusic      = %00010000
+    EndOfCastleMusic      = %00001000
+    VictoryMusic          = %00000100
+    GameOverMusic         = %00000010
+    DeathMusic            = %00000001
+.endif
 
 ;enemy object constants 
 GreenKoopa            = $00
@@ -131,22 +151,3 @@ Up_Dir                = %00001000
 Down_Dir              = %00000100
 Left_Dir              = %00000010
 Right_Dir             = %00000001
-
-TitleScreenModeValue  = 0
-GameModeValue         = 1
-VictoryModeValue      = 2
-GameOverModeValue     = 3
-
-OriginalSMBMusic = 0
-FamistudioMusic = 1
-Famitone5Music = 2
-VanillaPlusMusic = 3
-
-No_Feature = 0
-CHR_Animated = 1
-
-OriginalLevelEngine = 0
-TiledLevelEngine = 1
-
-false = 0
-true = 1

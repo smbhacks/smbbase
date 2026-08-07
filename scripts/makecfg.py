@@ -5,41 +5,54 @@ args = sys.argv[1:]
 templateCfgPath = "scripts/template.cfg"
 outputCfgPath = "generatedCfg.cfg"
 
-segmentsToAssign = []
+sizes = ["2000", "4000"]
+segmentsToAssign = {size: [] for size in sizes}
+freeSpace = {size: [] for size in sizes}
+
 for file in args:
     with open(file, "r", encoding="utf-8") as f:
+        print(f"Reading segments from {file}...")
         content = f.read()
-        p = 0
-        while True:
-            p = content.find("<MakeCfg: NewBank>", p+1)
-            if p == -1:
-                break
-            r1 = r2 = p
-            r1 = content.rfind('"', 0, p)
-            r2 = content.rfind('"', 0, r1)+1
-            segmentsToAssign.append(content[r2:r1])
+        for size in sizes:
+            marker = f"<MakeCfg{size}: NewBank>"
+            p = -1
+            while True:
+                p = content.find(marker, p + 1)
+                if p == -1:
+                    break
+                r1 = content.rfind('"', 0, p)
+                r2 = content.rfind('"', 0, r1) + 1
+                segmentsToAssign[size].append(content[r2:r1])
 
-freeSpace = []
 with open(templateCfgPath, "r", encoding="utf-8") as f:
     templateContent = f.read()
-    p = 0
-    while True:
-        p = templateContent.find("# MakeCfg: free", p+1)
-        if p == -1:
-            break
-        e = templateContent.rfind(":", 0, p)
-        s = templateContent.rfind(" ", 0, e)+1
-        freeSpace.append(templateContent[s:e])
+    for size in sizes:
+        marker = f"# MakeCfg{size}: free"
+        p = -1
+        while True:
+            p = templateContent.find(marker, p + 1)
+            if p == -1:
+                break
+            e = templateContent.rfind(":", 0, p)
+            s = templateContent.rfind(" ", 0, e) + 1
+            freeSpace[size].append(templateContent[s:e])
 
-print("Segments to assign: ", ", ".join(segmentsToAssign))
-print("Free space: ", ", ".join(freeSpace))
-if len(segmentsToAssign) > len(freeSpace):
-    print("Not enough free banks!")
-else:
+for size in sizes:
+    print(f"Segments to assign (0x{size}):", ", ".join(segmentsToAssign[size]))
+    print(f"Free space (0x{size}):", ", ".join(freeSpace[size]))
+
+has_enough_space = True
+for size in sizes:
+    if len(segmentsToAssign[size]) > len(freeSpace[size]):
+        print(f"Not enough free 0x{size} banks! Needed: {len(segmentsToAssign[size])}, Available: {len(freeSpace[size])}")
+        has_enough_space = False
+
+if has_enough_space:
+    makeCfgData = ""
+    for size in sizes:
+        for seg, bank in zip(segmentsToAssign[size], freeSpace[size]):
+            makeCfgData += f"    {seg}:    load = {bank},    type = ro;\n"
+
     with open(outputCfgPath, "w", encoding="utf-8") as f:
-        makeCfgData = ""
-        index = 0
-        for segment in segmentsToAssign:
-            makeCfgData += "    " + segment + ":    load = " + freeSpace[index] + ",    type = ro;\n"
-            index += 1
         f.write(templateContent.replace("# MakeCfg: Insert here", makeCfgData))
+    print("Config generated successfully!")
